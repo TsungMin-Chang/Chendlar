@@ -13,7 +13,7 @@ export default function NavBar() {
   const [openSideBar, setOpenSideBar] = useState(false);
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box className="flex-none" sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar style={{backgroundColor: "rgba(83, 57, 27, 1)"}}>
             <IconButton
@@ -24,13 +24,13 @@ export default function NavBar() {
               sx={{ mr: 2 }}
               onClick={() => setOpenSideBar(true)}
             >
-              <MenuIcon id="menuIcon"/>
+              <MenuIcon/>
             </IconButton>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               February
             </Typography>
             <div className='flex grow'></div>
-            <AccountCircle />
+            <AccountCircle sx={{ fontSize: 30 }}/>
           </Toolbar>
         </AppBar>
       </Box>
