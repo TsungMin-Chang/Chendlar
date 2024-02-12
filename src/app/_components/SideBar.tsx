@@ -75,12 +75,12 @@ export default function SideBar({
         role="presentation"
       >
         <Stack direction="row" spacing={1} alignItems="center">
-          <p className='text-white'>12hr</p>
+          <p className='text-white'>24hr</p>
           <FormControlLabel
             control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
             label=""
           />
-          <p className='text-white'>24hr</p>
+          <p className='text-white'>12hr</p>
         </Stack>
         <button 
           onClick={() => {
