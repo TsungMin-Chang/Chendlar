@@ -132,7 +132,7 @@ export default function AddDialog({
         </DialogContent>
       )}
       {activeStep === steps.length - 1 && (
-        <DialogContent className="flex flex-col gap-y-3 w-[300px]">
+        <DialogContent className="flex flex-col gap-y-5 w-[300px]">
           <FormControl className="flex-1 mt-2">
             <InputLabel id="list-type">Type</InputLabel>
             <Select
@@ -164,7 +164,7 @@ export default function AddDialog({
                     checked={isFinished}
                     onChange={() => setIsFinished(prev => !prev)}
                   />
-                  <div className='flex items-center'>finished</div>
+                  <div className='flex items-center'>done</div>
                 </div>
               </>
             )}
