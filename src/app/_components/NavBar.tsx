@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -8,14 +8,34 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import SideBar from './SideBar';
+import useYearMonthContext from "@/hooks/useYearMonthContext";
 
 export default function NavBar() {
   const [openSideBar, setOpenSideBar] = useState(false);
+  const {year, month} = useYearMonthContext();
+  const currentYear = new Date().getFullYear();
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
   return (
     <>
-      <Box className="flex-none" sx={{ flexGrow: 1 }}>
+      <Box 
+        className="flex-none" 
+        sx={{ flexGrow: 1}}
+      >
         <AppBar position="static">
-          <Toolbar style={{backgroundColor: "rgba(83, 57, 27, 1)"}}>
+          <Toolbar className="bg-[#53391B]">
             <IconButton
               size="large"
               edge="start"
@@ -26,9 +46,15 @@ export default function NavBar() {
             >
               <MenuIcon/>
             </IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              February
-            </Typography>
+            {year === currentYear ? (
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                {months[month]}
+              </Typography>
+            ) : (
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                {months[month]} {year}
+              </Typography>
+            )}
             <div className='flex grow'></div>
             <AccountCircle sx={{ fontSize: 30 }}/>
           </Toolbar>
