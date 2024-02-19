@@ -13,19 +13,20 @@ export default function SideBar({
   openSideBar: boolean,
   onCloseSideBar: () => void
 }) {
+
   const {setDate} = useDateContext();
   const router = useRouter();
 
   const handleToMonth = () => {
     setDate(new Date());
-    router.push("/")
-    onCloseSideBar()
+    router.push("/");
+    onCloseSideBar();
   }
 
   const handleToWeek = () => {
     setDate(new Date());
-    router.push("/week")
-    onCloseSideBar()
+    router.push("/week");
+    onCloseSideBar();
   }
 
   // Material UI

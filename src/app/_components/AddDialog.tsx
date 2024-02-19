@@ -59,7 +59,7 @@ export default function AddDialog({
       setIsChecked(false);
     } else {
       if (!timeData.time1 && !timeData.time2) {
-        alert("What is the starting or ending date of this event?");
+        alert("What is the starting or ending date?");
         return;
       } else if (!!timeData.time1) {
         setTimeData(prev => ({...prev, time2: prev.time1}));
@@ -72,7 +72,7 @@ export default function AddDialog({
   }
   const handleSubmit = async () => {
     if (!type) {
-      alert("What is your event type?");
+      alert("Is it a to-do or an event?");
       return;
     }
     // TODO: more checking on Date (starting has to be earlier than ending)
@@ -86,7 +86,7 @@ export default function AddDialog({
       // };
       // await createNode(apiData.token, apiData.pageId, data);
     } catch (error) {
-      alert("Error: Failed to create a new event!");
+      alert("Error: Failed to create!");
     } finally {
       return;
       // onRefresh();
@@ -110,7 +110,7 @@ export default function AddDialog({
       onClose={handleClose}
     >
       <DialogTitle sx={{fontWeight: 'bold' , fontSize: 22}}>
-        New Event
+        New Affair
       </DialogTitle>
       {activeStep === 0 && (
         <DialogContent className="flex flex-col gap-y-2 w-[300px]">
@@ -141,8 +141,8 @@ export default function AddDialog({
               value={type}
               onChange={(e) => setType(e.target.value)}
             >
-              <MenuItem value={"todo"}>To do </MenuItem>
-              <MenuItem value={"house"}>House keeping</MenuItem>
+              <MenuItem value={"todo"}>To do</MenuItem>
+              <MenuItem value={"event"}>Event</MenuItem>
             </Select>
           </FormControl>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -168,7 +168,7 @@ export default function AddDialog({
                 </div>
               </>
             )}
-            {type === "house" && (
+            {type === "event" && (
               <>
                 <MobileDatePicker 
                   label="From - dd"

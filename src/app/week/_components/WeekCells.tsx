@@ -1,9 +1,12 @@
+import { useRouter } from "next/navigation";
+
 export default function WeekCells({
   firstDayOfWeek
 }: {
   firstDayOfWeek: Date
 }) {
   
+  const router = useRouter();
   const days = [
     "SUN", 
     "MON", 
@@ -27,6 +30,7 @@ export default function WeekCells({
           <div 
             key={i}
             className="flex flex-col justify-center items-center text-gray-300 text-sm border border-[#4E4743]"
+            onClick={() => router.push("/day")}
           >
             <div>{days[new Date(year, month, localDate + i).getDay()]}</div>
             <div>
