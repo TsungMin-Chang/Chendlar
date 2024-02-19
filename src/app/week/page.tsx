@@ -1,31 +1,66 @@
 "use client"
+import { useState } from 'react';
+import { Slide } from 'react-slideshow-image';
+import 'react-slideshow-image/dist/styles.css';
+import useDateContext from "@/hooks/useDateContext";
+import WeekCells from './_components/WeekCells';
 
 export default function WeekPage() {
-  const dayName = ["SUN", "MON", "TUE", "WED", "THR", "FRI", "SAT"];
-  const dummy = ["3/1", "3/2", "3/3", "3/4", "3/5", "3/6", "3/7"];
+  
+  const {date, setDate} = useDateContext();
+  const [slideDate, setSlideDate] = useState(date);
+
+  const handleSwipe = (from: number, to: number) => {
+    
+    if (from === to) {
+      return;
+    }
+
+    if (from === 2 && to === 0) {
+      // Next week - specical case
+      setDate(prev => new Date(prev.getFullYear(), prev.getMonth(), prev.getDate() + 7));
+      setSlideDate(prev => new Date(prev.getFullYear(), prev.getMonth(), prev.getDate() + 21));
+      return;
+    }
+
+    if (from === 0 && to === 2) {
+      // Previous week - special case
+      setDate(prev => new Date(prev.getFullYear(), prev.getMonth(), prev.getDate() - 7));
+      setSlideDate(prev => new Date(prev.getFullYear(), prev.getMonth(), prev.getDate() - 21));
+      return;
+    } 
+
+    if (from < to) {
+      // Next week
+      setDate(prev => new Date(prev.getFullYear(), prev.getMonth(), prev.getDate() + 7));
+      return;
+    }
+
+    if (from > to) {
+      // Previous week
+      setDate(prev => new Date(prev.getFullYear(), prev.getMonth(), prev.getDate() - 7));
+      return;
+    }
+  }
+
   return (
-    <div className="flex-1 flex flex-row" style={{backgroundColor: "rgba(71, 53, 32, 1)"}}>
-      <div className="basis-20 grid grid-rows-7">
-        {Array(dayName.length).fill(0).map((_, i) => (
-          <div 
-            key={i}
-            className="flex flex-col justify-center items-center text-gray-300 text-sm border border-[#4E4743]"
-          >
-            <div>{dayName[i]}</div>
-            <div>{dummy[i]}</div>
-          </div>
-        ))}
-      </div>
-      <div className="basis-full grid grid-cols-5 grid-rows-7">
-        {Array(35).fill(0).map((_, i) => (
-          <div
-            key={i} 
-            className="flex justify-center text-white border border-[#4E4743]"
-          >
-            {}
-          </div>
-        ))}
-      </div>
-    </div>
+    <Slide
+      vertical
+      autoplay={false} 
+      arrows={false}
+      canSwipe={true}
+      onStartChange={(from: number, to: number) => handleSwipe(from, to)}
+      defaultIndex={1}
+    >
+      <WeekCells // previous week
+        firstDayOfWeek={new Date(slideDate.getFullYear(), slideDate.getMonth(), slideDate.getDate() - slideDate.getDay() - 7)}
+      />
+      <WeekCells // current week
+        firstDayOfWeek={new Date(slideDate.getFullYear(), slideDate.getMonth(), slideDate.getDate() - slideDate.getDay())}
+      />
+      <WeekCells // next week
+        firstDayOfWeek={new Date(slideDate.getFullYear(), slideDate.getMonth(), slideDate.getDate() - slideDate.getDay() + 7)}
+      />
+    </Slide>
   );
 }

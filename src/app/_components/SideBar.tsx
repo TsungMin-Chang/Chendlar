@@ -5,6 +5,7 @@ import Switch, { SwitchProps } from '@mui/material/Switch';
 import Stack from '@mui/material/Stack';
 import Drawer from '@mui/material/Drawer';
 import { useRouter } from "next/navigation";
+import useDateContext from "@/hooks/useDateContext";
 
 export default function SideBar({
   openSideBar, onCloseSideBar
@@ -12,7 +13,22 @@ export default function SideBar({
   openSideBar: boolean,
   onCloseSideBar: () => void
 }) {
+  const {setDate} = useDateContext();
   const router = useRouter();
+
+  const handleToMonth = () => {
+    setDate(new Date());
+    router.push("/")
+    onCloseSideBar()
+  }
+
+  const handleToWeek = () => {
+    setDate(new Date());
+    router.push("/week")
+    onCloseSideBar()
+  }
+
+  // Material UI
   const IOSSwitch = styled((props: SwitchProps) => (
     <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
   ))(({ theme }) => ({
@@ -71,7 +87,7 @@ export default function SideBar({
     >
       <div
         className="flex flex-col h-full w-full gap-y-3 p-3 items-center"
-        style={{backgroundColor: "rgba(79, 65, 50, 1)", width: 190}}
+        style={{backgroundColor: "rgba(71, 53, 32, 1)", width: 220}}
         role="presentation"
       >
         <Stack direction="row" spacing={1} alignItems="center">
@@ -83,20 +99,14 @@ export default function SideBar({
           <p className='text-white'>12hr</p>
         </Stack>
         <button 
-          onClick={() => {
-            router.push("/")
-            onCloseSideBar()
-          }}
-          className="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all focus:outline-none hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:shadow-outline"
+          onClick={() => handleToMonth()}
+          className="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 font-bold flex items-center justify-center transition-all focus:outline-none hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:shadow-outline"
         >
           Month
         </button>
         <button
-          onClick={() => {
-            router.push("/week")
-            onCloseSideBar()
-          }}
-          className="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all focus:outline-none hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:shadow-outline"
+          onClick={() => handleToWeek()}
+          className="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 font-bold flex items-center justify-center transition-all focus:outline-none hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:shadow-outline"
         >
           Week
         </button>

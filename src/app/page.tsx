@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import useDateContext from "@/hooks/useDateContext";
 import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
-import Cells from './_components/Cells';
+import MonthCells from './_components/MonthCells';
 
 export default function Home() {
   const days = [
@@ -18,7 +18,7 @@ export default function Home() {
   ];
   const {date, setDate} = useDateContext();
   const [slideDate, setSlideDate] = useState(date);
-
+  
   const handleSwipe = (from: number, to: number) => {
     
     if (from === to) {
@@ -73,18 +73,18 @@ export default function Home() {
           autoplay={false} 
           arrows={false}
           canSwipe={true}
-          onChange={(from: number, to: number) => handleSwipe(from, to)}
+          onStartChange={(from: number, to: number) => handleSwipe(from, to)}
           defaultIndex={1}
         >
-          <Cells // previous month: 0
+          <MonthCells // previous month: 0
             firstDayOfMonth={new Date(slideDate.getFullYear(), slideDate.getMonth() - 1, 1)} 
             lastDayOfMonth={new Date(slideDate.getFullYear(), slideDate.getMonth(), 0)}
           />
-          <Cells // current month: 1
+          <MonthCells // current month: 1
             firstDayOfMonth={new Date(slideDate.getFullYear(), slideDate.getMonth(), 1)} 
             lastDayOfMonth={new Date(slideDate.getFullYear(), slideDate.getMonth() + 1, 0)}
           />
-          <Cells // next month: 2
+          <MonthCells // next month: 2
             firstDayOfMonth={new Date(slideDate.getFullYear(), slideDate.getMonth() + 1, 1)} 
             lastDayOfMonth={new Date(slideDate.getFullYear(), slideDate.getMonth() + 2, 0)}
           />

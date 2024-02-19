@@ -29,7 +29,9 @@ export default function NavBar() {
     "December"
   ];
   return (
-    <>
+    <div 
+      style={{height: "6.5vh"}}
+    >
       <Box 
         className="flex-none" 
         sx={{ flexGrow: 1}}
@@ -64,6 +66,6 @@ export default function NavBar() {
         openSideBar={openSideBar} 
         onCloseSideBar={() => setOpenSideBar(false)}
       />
-    </>
+    </div>
   );
 }
