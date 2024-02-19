@@ -8,11 +8,11 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import SideBar from './SideBar';
-import useYearMonthContext from "@/hooks/useYearMonthContext";
+import useDateContext from "@/hooks/useDateContext";
 
 export default function NavBar() {
   const [openSideBar, setOpenSideBar] = useState(false);
-  const {year, month} = useYearMonthContext();
+  const {date} = useDateContext();
   const currentYear = new Date().getFullYear();
   const months = [
     "January",
@@ -46,13 +46,13 @@ export default function NavBar() {
             >
               <MenuIcon/>
             </IconButton>
-            {year === currentYear ? (
+            {date.getFullYear() === currentYear ? (
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                {months[month]}
+                {months[date.getMonth()]}
               </Typography>
             ) : (
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                {months[month]} {year}
+                {months[date.getMonth()]} {date.getFullYear()}
               </Typography>
             )}
             <div className='flex grow'></div>

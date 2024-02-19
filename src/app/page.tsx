@@ -1,7 +1,7 @@
 "use client";
 // import Image from "next/image";
 import React, { useState } from 'react';
-import useYearMonthContext from "@/hooks/useYearMonthContext";
+import useDateContext from "@/hooks/useDateContext";
 import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
 import Cells from './_components/Cells';
@@ -16,50 +16,40 @@ export default function Home() {
     "FRI", 
     "SAT"
   ];
-  
-  const {year, setYear, month, setMonth} = useYearMonthContext();
-  const [debounce, setDebounce] = useState(false);
-  const [y, setY] = useState(90);
+  const {date, setDate} = useDateContext();
+  const [slideDate, setSlideDate] = useState(date);
 
   const handleSwipe = (from: number, to: number) => {
-    console.log("1", from);
-    console.log("2", to);
-  }
-
-  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    if (Math.abs(e.deltaY) <= 90) {
-      if (y > 90) {
-        setY(90);
-      }
+    
+    if (from === to) {
       return;
     }
 
-    if (Math.abs(e.deltaY) > y) {
-      if (!debounce) {
-        setDebounce(true);
-      }
-      setY(Math.abs(e.deltaY));
+    if (from === 2 && to === 0) {
+      // Next month - specical case
+      setDate(prev => new Date(prev.getFullYear(), prev.getMonth() + 1));
+      setSlideDate(prev => new Date(prev.getFullYear(), prev.getMonth() + 3));
       return;
     }
 
-    if (debounce) {
-      if (e.deltaY > 0) { // move downward, next month
-        if (month === 11) {
-          setYear(prev => prev + 1);
-          setMonth(0);
-        } else {
-          setMonth(prev => prev + 1);
-        }
-      } else if (e.deltaY < 0) { // move upward, previous month
-        if (month === 0) {
-          setYear(prev => prev - 1);
-          setMonth(11);
-        } else {
-          setMonth(prev => prev - 1);
-        }
-      }
-      setDebounce(false);
+    if (from === 0 && to === 2) {
+      // Previous month - special case
+      setDate(prev => new Date(prev.getFullYear(), prev.getMonth() - 1));
+      setSlideDate(prev => new Date(prev.getFullYear(), prev.getMonth() - 3));
+      return;
     }
+
+    if (from < to) {
+      // Next month
+      setDate(prev => new Date(prev.getFullYear(), prev.getMonth() + 1));
+      return;
+    }
+
+    if (from > to) {
+      // Previous month
+      setDate(prev => new Date(prev.getFullYear(), prev.getMonth() - 1));
+      return;
+    } 
   }
 
   return (
@@ -81,21 +71,22 @@ export default function Home() {
         <Slide 
           vertical 
           autoplay={false} 
-          canSwipe={true} 
           arrows={false}
+          canSwipe={true}
           onChange={(from: number, to: number) => handleSwipe(from, to)}
+          defaultIndex={1}
         >
-          <Cells
-            firstDayOfMonth={new Date(year, month - 1, 1)} 
-            lastDayOfMonth={new Date(year, month, 0)}
+          <Cells // previous month: 0
+            firstDayOfMonth={new Date(slideDate.getFullYear(), slideDate.getMonth() - 1, 1)} 
+            lastDayOfMonth={new Date(slideDate.getFullYear(), slideDate.getMonth(), 0)}
           />
-          <Cells 
-            firstDayOfMonth={new Date(year, month, 1)} 
-            lastDayOfMonth={new Date(year, month + 1, 0)}
+          <Cells // current month: 1
+            firstDayOfMonth={new Date(slideDate.getFullYear(), slideDate.getMonth(), 1)} 
+            lastDayOfMonth={new Date(slideDate.getFullYear(), slideDate.getMonth() + 1, 0)}
           />
-          <Cells 
-            firstDayOfMonth={new Date(year, month + 1, 1)} 
-            lastDayOfMonth={new Date(year, month + 2, 0)}
+          <Cells // next month: 2
+            firstDayOfMonth={new Date(slideDate.getFullYear(), slideDate.getMonth() + 1, 1)} 
+            lastDayOfMonth={new Date(slideDate.getFullYear(), slideDate.getMonth() + 2, 0)}
           />
         </Slide>
       </div>
