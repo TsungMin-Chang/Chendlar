@@ -11,6 +11,12 @@ export default function MonthCell({
 
   const router = useRouter();
   const {dummy} = useDummy();
+
+  const year = firstDayOfMonth.getFullYear();
+  const month = firstDayOfMonth.getMonth();
+  const offset = firstDayOfMonth.getDay();
+  const cellDate = index + 1 - offset;
+  const cellDateString = new Date(year, month, cellDate).toLocaleDateString("en-US");
   
   return (
     <div 
@@ -18,13 +24,30 @@ export default function MonthCell({
       onClick={() => router.push("/day")}
     >
       <div className="flex justify-center text-sm text-white">
-        {index + 1 - firstDayOfMonth.getDay()}
+        {cellDate}
       </div>
-      <div className="rounded max-h-4 text-xs pl-1 bg-red-500">3.看電影</div>
-      <div className="rounded max-h-4 text-xs pl-1 bg-pink-500">3.看電影</div>
-      <div className="rounded max-h-4 text-xs pl-1 bg-blue-500">3.看電影</div>
-      <div className="rounded max-h-4 text-xs pl-1 bg-purple-500">3.看電影</div>
-      <div className="rounded max-h-4 text-xs pl-1 bg-yellow-500">3.看電影</div>
+      {
+        dummy[cellDateString] && 
+        dummy[cellDateString].map((ele, i) => (
+          <div
+            key={ele.id + i.toString()}
+            className="rounded-sm max-h-4 text-xs text-zinc-800 pl-1 "
+            style={{backgroundColor: ele.color}}
+          >
+            {ele.type === "todo" && (
+              <>
+                {ele.time2.getHours()}.{ele.title}
+              </>
+            )}
+            {ele.type === "event" && ele.time1.toLocaleDateString("en-US") === cellDateString && (
+              <>
+                {ele.title}
+              </>
+            )}
+            {ele.type === "event" && ele.time1.toLocaleDateString("en-US") !== cellDateString && "... ..." }
+          </div>
+        ))
+      }
     </div>
   )
 }

@@ -43,7 +43,7 @@ export default function WeekCells({
           </div>
         ))}
       </div>
-      <div className="basis-full grid grid-rows-7 grid-flow-col auto-cols-fr">
+      <div className="basis-full grid grid-cols-5 grid-flow-row auto-rows-fr">
         {Array(35).fill(0).map((_, i) => (
           <div
             key={i} 

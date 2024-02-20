@@ -7,7 +7,7 @@ export default function MonthCells({
   firstDayOfMonth: Date,
   lastDayOfMonth: Date
 }) {
-
+  
   return (
     <div
       className="grid grid-cols-7 grid-rows-6"
@@ -20,7 +20,7 @@ export default function MonthCells({
         >
           {(i >= firstDayOfMonth.getDay() && i < firstDayOfMonth.getDay() + lastDayOfMonth.getDate()) && (
             <MonthCell
-              firstDayOfMonth={firstDayOfMonth} 
+              firstDayOfMonth={firstDayOfMonth}
               index={i}
             />
           )}
