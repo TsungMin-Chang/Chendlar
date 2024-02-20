@@ -1,4 +1,4 @@
-import { useRouter } from "next/navigation";
+import MonthCell from "./MonthCell";
 
 export default function MonthCells({
   firstDayOfMonth,
@@ -8,7 +8,6 @@ export default function MonthCells({
   lastDayOfMonth: Date
 }) {
 
-  const router = useRouter();
   return (
     <div
       className="grid grid-cols-7 grid-rows-6"
@@ -19,20 +18,11 @@ export default function MonthCells({
           key={i}
           className="border border-[#4E4743] overflow-hidden"
         >
-          {(i >= firstDayOfMonth.getDay() % 7 && i < firstDayOfMonth.getDay() + lastDayOfMonth.getDate()) && (
-            <div 
-              className="flex flex-col gap-y-1"
-              onClick={() => router.push("/day")}
-            >
-              <div className="flex justify-center text-sm text-white">
-                {i + 1 - firstDayOfMonth.getDay() % 7}
-              </div>
-              <div className="rounded max-h-4 text-xs pl-1 bg-red-500">3.看電影</div>
-              <div className="rounded max-h-4 text-xs pl-1 bg-pink-500">3.看電影</div>
-              <div className="rounded max-h-4 text-xs pl-1 bg-blue-500">3.看電影</div>
-              <div className="rounded max-h-4 text-xs pl-1 bg-purple-500">3.看電影</div>
-              <div className="rounded max-h-4 text-xs pl-1 bg-yellow-500">3.看電影</div>
-            </div>
+          {(i >= firstDayOfMonth.getDay() && i < firstDayOfMonth.getDay() + lastDayOfMonth.getDate()) && (
+            <MonthCell
+              firstDayOfMonth={firstDayOfMonth} 
+              index={i}
+            />
           )}
         </div>
       ))}

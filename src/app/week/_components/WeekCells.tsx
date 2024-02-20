@@ -1,4 +1,5 @@
 import { useRouter } from "next/navigation";
+import useDummy from '@/hooks/useDummy';
 
 export default function WeekCells({
   firstDayOfWeek
@@ -7,6 +8,7 @@ export default function WeekCells({
 }) {
   
   const router = useRouter();
+  const {dummy} = useDummy();
   const days = [
     "SUN", 
     "MON", 

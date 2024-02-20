@@ -34,14 +34,33 @@ export default function AddDialog({
   const [activeStep, setActiveStep] = useState(0);
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");
-  const [isChecked, setIsChecked] = useState(false);
+  const [isOneDay, setIsOneDay] = useState(false);
   const [timeData, setTimeData] = useState<timeProp>({time1: null, time2: null});
   const [color, setColor] = useState("");
-  const [isFinished, setIsFinished] = useState(false);
+  const [isDone, setIsDone] = useState(false);
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
+
+  const handleCheck = () => {
+    if (isOneDay) {
+      setTimeData(prev => ({...prev, time2: null}));
+      setIsOneDay(false);
+    } else {
+      if (!timeData.time1 && !timeData.time2) {
+        alert("What is the starting or ending date?");
+        return;
+      } else if (!!timeData.time1) {
+        setTimeData(prev => ({...prev, time2: prev.time1}));
+        setIsOneDay(true);
+      } else {
+        setTimeData(prev => ({...prev, time1: prev.time2}));
+        setIsOneDay(true);
+      }
+    }
+  }
+
   const handleNext = () => {
     if (!title) {
       alert("You forgot your title!");
@@ -53,37 +72,33 @@ export default function AddDialog({
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
-  const handleCheck = () => {
-    if (isChecked) {
-      setTimeData(prev => ({...prev, time2: null}));
-      setIsChecked(false);
-    } else {
-      if (!timeData.time1 && !timeData.time2) {
-        alert("What is the starting or ending date?");
-        return;
-      } else if (!!timeData.time1) {
-        setTimeData(prev => ({...prev, time2: prev.time1}));
-        setIsChecked(true);
-      } else {
-        setTimeData(prev => ({...prev, time1: prev.time2}));
-        setIsChecked(true);
-      }
-    }
-  }
+
   const handleSubmit = async () => {
     if (!type) {
       alert("Is it a to-do or an event?");
       return;
     }
-    // TODO: more checking on Date (starting has to be earlier than ending)
+
+    if (!timeData.time1 || !timeData.time2) {
+      alert("Please input your time fields.");
+      return;
+    }
+    
+    if (type === "event" && timeData.time1 > timeData.time2) {
+      alert('"From" field should be earlier than "To" field.');
+      return;
+    }
+    
     try {
-      // const data = {
-      //   type: "list",
-      //   frontPointer: pointer,
-      //   listType,
-      //   icon,
-      //   content
-      // };
+      console.log(color);
+      const data = {
+        title,
+        color,
+        type,
+        time1: timeData.time1,
+        time2: timeData.time2,
+        isDone,
+      };
       // await createNode(apiData.token, apiData.pageId, data);
     } catch (error) {
       alert("Error: Failed to create!");
@@ -94,13 +109,13 @@ export default function AddDialog({
     }
   };
   const handleClose = () => {
-    setTitle("");
-    setType("");
     setActiveStep(0);
-    setTimeData({time1: null, time2: null});
-    setIsChecked(false);
+    setTitle("");
     setColor("");
-    setIsFinished(false);
+    setType("");
+    setTimeData({time1: null, time2: null});
+    setIsOneDay(false);
+    setIsDone(false);
     onClose();
   }
 
@@ -139,15 +154,20 @@ export default function AddDialog({
               labelId="list-type"
               label="list-type"
               value={type}
-              onChange={(e) => setType(e.target.value)}
+              onChange={(e) => {
+                setIsOneDay(false);
+                setIsDone(false);
+                setTimeData({time1: null, time2: null});
+                setType(e.target.value)
+              }}
             >
-              <MenuItem value={"todo"}>To do</MenuItem>
+              <MenuItem value={"todo"}>To-do</MenuItem>
               <MenuItem value={"event"}>Event</MenuItem>
             </Select>
           </FormControl>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <div className='flex flex-col gap-y-3'>
-            {type === "todo" && ( // TODO: finished or unfinished checkbox  
+            {type === "todo" && ( // TODO: Done or unDone checkbox  
               <>
                 <MobileDatePicker 
                   label="Date - dd"
@@ -161,8 +181,8 @@ export default function AddDialog({
                 />
                 <div className='flex flex-row gap-x-1'>
                   <Checkbox
-                    checked={isFinished}
-                    onChange={() => setIsFinished(prev => !prev)}
+                    checked={isDone}
+                    onChange={() => setIsDone(prev => !prev)}
                   />
                   <div className='flex items-center'>done</div>
                 </div>
@@ -175,9 +195,9 @@ export default function AddDialog({
                   value={!timeData.time1 ? timeData.time1 : dayjs(timeData.time1)}
                   onChange={(newValue: any) => {
                     if (!!newValue && newValue["$d"] && !!timeData.time2 && newValue["$d"].getTime() === timeData.time2.getTime()) {
-                      setIsChecked(true);
+                      setIsOneDay(true);
                     } else {
-                      setIsChecked(false);
+                      setIsOneDay(false);
                     }
                     setTimeData((prev) => ({...prev, time1: !newValue ? newValue : newValue["$d"]}));
                   }}
@@ -187,16 +207,16 @@ export default function AddDialog({
                   value={!timeData.time2 ? timeData.time2 : dayjs(timeData.time2)}
                   onChange={(newValue: any) => {
                     if (!!newValue && newValue["$d"] && !!timeData.time1 && newValue["$d"].getTime() === timeData.time1.getTime()) {
-                      setIsChecked(true);
+                      setIsOneDay(true);
                     } else {
-                      setIsChecked(false);
+                      setIsOneDay(false);
                     }
                     setTimeData((prev) => ({...prev, time2: !newValue ? newValue : newValue["$d"]}));
                   }}
                 />
                 <div className='flex flex-row gap-x-1'>
                   <Checkbox
-                    checked={isChecked}
+                    checked={isOneDay}
                     onChange={handleCheck}
                   />
                   <div className='flex items-center'>last one day</div>
