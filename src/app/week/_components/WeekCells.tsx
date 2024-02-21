@@ -1,5 +1,5 @@
-import { useRouter } from "next/navigation";
 import useDummy from '@/hooks/useDummy';
+import WeekRow from "./WeekRow";
 
 export default function WeekCells({
   firstDayOfWeek
@@ -7,52 +7,23 @@ export default function WeekCells({
   firstDayOfWeek: Date
 }) {
   
-  const router = useRouter();
   const {dummy} = useDummy();
-  const days = [
-    "SUN", 
-    "MON", 
-    "TUE", 
-    "WED", 
-    "THR", 
-    "FRI", 
-    "SAT"
-  ];
+
   const year = firstDayOfWeek.getFullYear();
   const month = firstDayOfWeek.getMonth();
-  const localDate = firstDayOfWeek.getDate();
+  const firstDayOfWeekDate = firstDayOfWeek.getDate();
   
   return (
     <div 
-      className="flex flex-row bg-[#442B0D]"
+      className="grid grid-rows-7 bg-[#442B0D]"
       style={{height: "94vh"}}
     >
-      <div className="basis-20 grid grid-rows-7">
-        {Array(7).fill(0).map((_, i) => (
-          <div 
-            key={i}
-            className="flex flex-col justify-center items-center text-gray-300 text-sm border border-[#4E4743]"
-            onClick={() => router.push("/day")}
-          >
-            <div>{days[new Date(year, month, localDate + i).getDay()]}</div>
-            <div>
-              {new Date(year, month, localDate + i).getMonth() + 1}
-              /
-              {new Date(year, month, localDate + i).getDate()}
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="basis-full grid grid-cols-5 grid-flow-row auto-rows-fr">
-        {Array(35).fill(0).map((_, i) => (
-          <div
-            key={i} 
-            className="flex justify-center items-center text-white text-sm border border-[#4E4743]"
-          >
-            {i + 1}
-          </div>
-        ))}
-      </div>
+      {Array(7).fill(0).map((_, i) => (
+        <WeekRow
+          data={dummy[new Date(year, month, firstDayOfWeekDate + i).toLocaleDateString("en-US")] ?? null}
+          rowDate={new Date(year, month, firstDayOfWeekDate + i)}
+        />
+      ))}
     </div>
   );
 }
