@@ -1,41 +1,46 @@
-import { useState } from 'react';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from "@mui/material/DialogActions";
+import { useState } from "react";
+
 import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import FormControl from "@mui/material/FormControl";
 import Input from "@mui/material/Input";
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import dayjs from 'dayjs';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
-import Checkbox from '@mui/material/Checkbox';
-import ColorPalette from './ColorPalette';
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
+import dayjs from "dayjs";
+
+import ColorPalette from "./ColorPalette";
 
 type timeProp = {
   time1: null | Date;
   time2: null | Date;
-}
+};
 
 export default function AddDialog({
-  open, onClose
+  open,
+  onClose,
 }: {
-  open: boolean, 
-  onClose: () => void
+  open: boolean;
+  onClose: () => void;
 }) {
-  
   const steps = ["", ""];
   const [activeStep, setActiveStep] = useState(0);
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");
   const [isOneDay, setIsOneDay] = useState(false);
-  const [timeData, setTimeData] = useState<timeProp>({time1: null, time2: null});
+  const [timeData, setTimeData] = useState<timeProp>({
+    time1: null,
+    time2: null,
+  });
   const [color, setColor] = useState("");
   const [isDone, setIsDone] = useState(false);
 
@@ -45,21 +50,21 @@ export default function AddDialog({
 
   const handleCheck = () => {
     if (isOneDay) {
-      setTimeData(prev => ({...prev, time2: null}));
+      setTimeData((prev) => ({ ...prev, time2: null }));
       setIsOneDay(false);
     } else {
       if (!timeData.time1 && !timeData.time2) {
         alert("What is the starting or ending date?");
         return;
       } else if (!!timeData.time1) {
-        setTimeData(prev => ({...prev, time2: prev.time1}));
+        setTimeData((prev) => ({ ...prev, time2: prev.time1 }));
         setIsOneDay(true);
       } else {
-        setTimeData(prev => ({...prev, time1: prev.time2}));
+        setTimeData((prev) => ({ ...prev, time1: prev.time2 }));
         setIsOneDay(true);
       }
     }
-  }
+  };
 
   const handleNext = () => {
     if (!title) {
@@ -83,12 +88,12 @@ export default function AddDialog({
       alert("Please input your time fields.");
       return;
     }
-    
+
     if (type === "event" && timeData.time1 > timeData.time2) {
       alert('"From" field should be earlier than "To" field.');
       return;
     }
-    
+
     try {
       console.log(color);
       const data = {
@@ -113,26 +118,21 @@ export default function AddDialog({
     setTitle("");
     setColor("");
     setType("");
-    setTimeData({time1: null, time2: null});
+    setTimeData({ time1: null, time2: null });
     setIsOneDay(false);
     setIsDone(false);
     onClose();
-  }
+  };
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-    >
-      <DialogTitle sx={{fontWeight: 'bold' , fontSize: 22}}>
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle sx={{ fontWeight: "bold", fontSize: 22 }}>
         New Affair
       </DialogTitle>
       {activeStep === 0 && (
-        <DialogContent className="flex flex-col gap-y-2 w-[300px]">
-          <FormControl className='p-2'>
-            <ClickAwayListener
-              onClickAway={() => {}}
-            >
+        <DialogContent className="flex w-[300px] flex-col gap-y-2">
+          <FormControl className="p-2">
+            <ClickAwayListener onClickAway={() => {}}>
               <Input
                 autoFocus
                 value={title}
@@ -141,14 +141,14 @@ export default function AddDialog({
               />
             </ClickAwayListener>
           </FormControl>
-          <div className="grid grid-cols-5 gap-2 p-2 mt-2">
-            <ColorPalette setColor={setColor}/>
+          <div className="mt-2 grid grid-cols-5 gap-2 p-2">
+            <ColorPalette setColor={setColor} />
           </div>
         </DialogContent>
       )}
       {activeStep === steps.length - 1 && (
-        <DialogContent className="flex flex-col gap-y-5 w-[300px]">
-          <FormControl className="flex-1 mt-2">
+        <DialogContent className="flex w-[300px] flex-col gap-y-5">
+          <FormControl className="mt-2 flex-1">
             <InputLabel id="list-type">Type</InputLabel>
             <Select
               labelId="list-type"
@@ -157,8 +157,8 @@ export default function AddDialog({
               onChange={(e) => {
                 setIsOneDay(false);
                 setIsDone(false);
-                setTimeData({time1: null, time2: null});
-                setType(e.target.value)
+                setTimeData({ time1: null, time2: null });
+                setType(e.target.value);
               }}
             >
               <MenuItem value={"todo"}>To-do</MenuItem>
@@ -166,86 +166,107 @@ export default function AddDialog({
             </Select>
           </FormControl>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <div className='flex flex-col gap-y-3'>
-            {type === "todo" && ( // TODO: Done or unDone checkbox  
-              <>
-                <MobileDatePicker 
-                  label="Date - dd"
-                  value={!timeData.time1 ? timeData.time1 : dayjs(timeData.time1)}
-                  onChange={(newValue: any) => setTimeData((prev) => ({...prev, time1: !newValue ? newValue : newValue["$d"]}))}
-                />
-                <MobileTimePicker
-                  label="Time - hh:mm"
-                  value={!timeData.time2 ? timeData.time2 : dayjs(timeData.time2)}
-                  onChange={(newValue: any) => setTimeData((prev) => ({...prev, time2: !newValue ? newValue : newValue["$d"]}))}
-                />
-                <div className='flex flex-row gap-x-1'>
-                  <Checkbox
-                    checked={isDone}
-                    onChange={() => setIsDone(prev => !prev)}
-                  />
-                  <div className='flex items-center'>done</div>
-                </div>
-              </>
-            )}
-            {type === "event" && (
-              <>
-                <MobileDatePicker 
-                  label="From - dd"
-                  value={!timeData.time1 ? timeData.time1 : dayjs(timeData.time1)}
-                  onChange={(newValue: any) => {
-                    if (!!newValue && newValue["$d"] && !!timeData.time2 && newValue["$d"].getTime() === timeData.time2.getTime()) {
-                      setIsOneDay(true);
-                    } else {
-                      setIsOneDay(false);
+            <div className="flex flex-col gap-y-3">
+              {type === "todo" && ( // TODO: Done or unDone checkbox
+                <>
+                  <MobileDatePicker
+                    label="Date - dd"
+                    value={
+                      !timeData.time1 ? timeData.time1 : dayjs(timeData.time1)
                     }
-                    setTimeData((prev) => ({...prev, time1: !newValue ? newValue : newValue["$d"]}));
-                  }}
-                />
-                <MobileDatePicker 
-                  label="To - dd"
-                  value={!timeData.time2 ? timeData.time2 : dayjs(timeData.time2)}
-                  onChange={(newValue: any) => {
-                    if (!!newValue && newValue["$d"] && !!timeData.time1 && newValue["$d"].getTime() === timeData.time1.getTime()) {
-                      setIsOneDay(true);
-                    } else {
-                      setIsOneDay(false);
+                    onChange={(newValue: any) =>
+                      setTimeData((prev) => ({
+                        ...prev,
+                        time1: !newValue ? newValue : newValue["$d"],
+                      }))
                     }
-                    setTimeData((prev) => ({...prev, time2: !newValue ? newValue : newValue["$d"]}));
-                  }}
-                />
-                <div className='flex flex-row gap-x-1'>
-                  <Checkbox
-                    checked={isOneDay}
-                    onChange={handleCheck}
                   />
-                  <div className='flex items-center'>last one day</div>
-                </div>
-              </>    
-            )}
+                  <MobileTimePicker
+                    label="Time - hh:mm"
+                    value={
+                      !timeData.time2 ? timeData.time2 : dayjs(timeData.time2)
+                    }
+                    onChange={(newValue: any) =>
+                      setTimeData((prev) => ({
+                        ...prev,
+                        time2: !newValue ? newValue : newValue["$d"],
+                      }))
+                    }
+                  />
+                  <div className="flex flex-row gap-x-1">
+                    <Checkbox
+                      checked={isDone}
+                      onChange={() => setIsDone((prev) => !prev)}
+                    />
+                    <div className="flex items-center">done</div>
+                  </div>
+                </>
+              )}
+              {type === "event" && (
+                <>
+                  <MobileDatePicker
+                    label="From - dd"
+                    value={
+                      !timeData.time1 ? timeData.time1 : dayjs(timeData.time1)
+                    }
+                    onChange={(newValue: any) => {
+                      if (
+                        !!newValue &&
+                        newValue["$d"] &&
+                        !!timeData.time2 &&
+                        newValue["$d"].getTime() === timeData.time2.getTime()
+                      ) {
+                        setIsOneDay(true);
+                      } else {
+                        setIsOneDay(false);
+                      }
+                      setTimeData((prev) => ({
+                        ...prev,
+                        time1: !newValue ? newValue : newValue["$d"],
+                      }));
+                    }}
+                  />
+                  <MobileDatePicker
+                    label="To - dd"
+                    value={
+                      !timeData.time2 ? timeData.time2 : dayjs(timeData.time2)
+                    }
+                    onChange={(newValue: any) => {
+                      if (
+                        !!newValue &&
+                        newValue["$d"] &&
+                        !!timeData.time1 &&
+                        newValue["$d"].getTime() === timeData.time1.getTime()
+                      ) {
+                        setIsOneDay(true);
+                      } else {
+                        setIsOneDay(false);
+                      }
+                      setTimeData((prev) => ({
+                        ...prev,
+                        time2: !newValue ? newValue : newValue["$d"],
+                      }));
+                    }}
+                  />
+                  <div className="flex flex-row gap-x-1">
+                    <Checkbox checked={isOneDay} onChange={handleCheck} />
+                    <div className="flex items-center">last one day</div>
+                  </div>
+                </>
+              )}
             </div>
           </LocalizationProvider>
         </DialogContent>
       )}
       <DialogActions>
-        <Button onClick={handleClose}>
-          Cancel
-        </Button>
-        {activeStep > 0 && (
-          <Button onClick={handleBack}>
-            Back
-          </Button>
-        )}
+        <Button onClick={handleClose}>Cancel</Button>
+        {activeStep > 0 && <Button onClick={handleBack}>Back</Button>}
         <div className="grow" />
         {activeStep < steps.length - 1 && (
-          <Button onClick={handleNext}>
-            Next
-          </Button>
+          <Button onClick={handleNext}>Next</Button>
         )}
         {activeStep === steps.length - 1 && (
-          <Button onClick={handleSubmit}>
-            Submit
-          </Button>
+          <Button onClick={handleSubmit}>Submit</Button>
         )}
       </DialogActions>
     </Dialog>

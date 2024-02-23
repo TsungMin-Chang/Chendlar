@@ -1,11 +1,7 @@
 export default function WeekLayout({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <>
-      {children}
-    </>
-  )
-} 
+  return <>{children}</>;
+}

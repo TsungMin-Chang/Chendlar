@@ -4,17 +4,16 @@ import { Affair } from "@/lib/types";
 // 1. "id"
 // 2. "order": start from 0
 // 3. "userId"
-// 4. type: "todo" (will only last one day): add from bottom 
+// 4. type: "todo" (will only last one day): add from bottom
 // 5. type: "event" (will last multiple days): add from top
 // 6. type: "empty" (the difficult case)
 // 7. deal with order in backend
 
 type dummyProp = {
   [key: string]: Affair[];
-}
+};
 
 export default function useDummy() {
-
   const dummy: dummyProp = {
     "3/1/2024": [
       {
@@ -111,10 +110,10 @@ export default function useDummy() {
         isDone: false,
         order: 0,
       },
-    ]
+    ],
   };
-  
+
   return {
-    dummy
+    dummy,
   };
 }

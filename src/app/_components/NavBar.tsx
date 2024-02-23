@@ -1,18 +1,22 @@
 "use client";
-import { useState } from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import SideBar from './SideBar';
+
+import { useState } from "react";
+
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import MenuIcon from "@mui/icons-material/Menu";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+
 import useDateContext from "@/hooks/useDateContext";
+
+import SideBar from "./SideBar";
 
 export default function NavBar() {
   const [openSideBar, setOpenSideBar] = useState(false);
-  const {date} = useDateContext();
+  const { date } = useDateContext();
   const currentYear = new Date().getFullYear();
   const months = [
     "January",
@@ -26,16 +30,11 @@ export default function NavBar() {
     "September",
     "October",
     "November",
-    "December"
+    "December",
   ];
   return (
-    <div 
-      style={{height: "6.5vh"}}
-    >
-      <Box 
-        className="flex-none" 
-        sx={{ flexGrow: 1}}
-      >
+    <div style={{ height: "6.5vh" }}>
+      <Box className="flex-none" sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar className="bg-[#53391B]">
             <IconButton
@@ -46,7 +45,7 @@ export default function NavBar() {
               sx={{ mr: 2 }}
               onClick={() => setOpenSideBar(true)}
             >
-              <MenuIcon/>
+              <MenuIcon />
             </IconButton>
             {date.getFullYear() === currentYear ? (
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -57,13 +56,13 @@ export default function NavBar() {
                 {months[date.getMonth()]} {date.getFullYear()}
               </Typography>
             )}
-            <div className='flex grow'></div>
-            <AccountCircle sx={{ fontSize: 30 }}/>
+            <div className="flex grow"></div>
+            <AccountCircle sx={{ fontSize: 30 }} />
           </Toolbar>
         </AppBar>
       </Box>
       <SideBar
-        openSideBar={openSideBar} 
+        openSideBar={openSideBar}
         onCloseSideBar={() => setOpenSideBar(false)}
       />
     </div>
