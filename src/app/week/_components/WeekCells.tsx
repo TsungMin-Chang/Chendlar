@@ -19,6 +19,7 @@ export default function WeekCells({
         .fill(0)
         .map((_, i) => (
           <WeekRow
+            key={"row" + i.toString()}
             data={
               dummy[
                 new Date(

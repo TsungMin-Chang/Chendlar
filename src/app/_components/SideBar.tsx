@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import Drawer from "@mui/material/Drawer";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Stack from "@mui/material/Stack";
-import Switch, { SwitchProps } from "@mui/material/Switch";
+import type { SwitchProps } from "@mui/material/Switch";
+import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 
 import useDateContext from "@/hooks/useDateContext";

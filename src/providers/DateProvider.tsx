@@ -1,10 +1,11 @@
 "use client";
 
+import type {
+  Dispatch,
+  SetStateAction} from "react";
 import React, {
   useState,
-  createContext,
-  Dispatch,
-  SetStateAction,
+  createContext
 } from "react";
 
 type DateContextProps = {

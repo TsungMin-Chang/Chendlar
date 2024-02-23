@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 
-import { Affair } from "@/lib/types";
+import type { Affair } from "@/lib/types";
 
 export default function DayRow({
   data,

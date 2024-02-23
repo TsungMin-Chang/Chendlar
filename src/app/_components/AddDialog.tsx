@@ -56,7 +56,7 @@ export default function AddDialog({
       if (!timeData.time1 && !timeData.time2) {
         alert("What is the starting or ending date?");
         return;
-      } else if (!!timeData.time1) {
+      } else if (timeData.time1) {
         setTimeData((prev) => ({ ...prev, time2: prev.time1 }));
         setIsOneDay(true);
       } else {
@@ -95,7 +95,6 @@ export default function AddDialog({
     }
 
     try {
-      console.log(color);
       const data = {
         title,
         color,
@@ -104,13 +103,13 @@ export default function AddDialog({
         time2: timeData.time2,
         isDone,
       };
+      console.log(data);
       // await createNode(apiData.token, apiData.pageId, data);
     } catch (error) {
       alert("Error: Failed to create!");
     } finally {
-      return;
-      // onRefresh();
       // handleClose();
+      // onRefresh();
     }
   };
   const handleClose = () => {
