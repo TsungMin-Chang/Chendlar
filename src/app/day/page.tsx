@@ -1,4 +1,4 @@
-// this is a server side component!
+// server side component
 import { FaTrash } from "react-icons/fa6";
 import { MdEdit } from "react-icons/md";
 

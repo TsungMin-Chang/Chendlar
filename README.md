@@ -1,36 +1,140 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Run the project
 
-## Getting Started
-
-First, run the development server:
+0. Create a next app, and select `Yes` on all prompts
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+yarn create next-app
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Install dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+yarn
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+2. Start the database
 
-## Learn More
+```bash
+docker compose up -d
+```
 
-To learn more about Next.js, take a look at the following resources:
+3. Run migrations
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+yarn migrate
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+4. Start the development server
 
-## Deploy on Vercel
+```bash
+yarn dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. Open http://localhost:3000 in your browser
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+# Setup Guide
+
+## Prettier and ESLint
+
+1. Install prettier and prettier plugins
+
+```bash
+yarn add -D prettier prettier-plugin-tailwindcss @trivago/prettier-plugin-sort-imports
+```
+
+2. Install eslint and eslint plugins
+
+```bash
+yarn add -D eslint typescript @typescript-eslint/parser eslint-config-prettier @typescript-eslint/eslint-plugin
+```
+
+3. Copy and paste the `.prettierrc.cjs` and `.eslintrc.json` from this repo to your project root.
+
+4. Add `format` script to `package.json`
+
+```json
+{
+    "scripts": {
+    "format": "prettier --write ."
+    }
+}
+```
+5. Check if the scripts work
+
+```bash
+yarn format
+yarn lint
+```
+
+## Drizzle Setup
+
+1. Install drizzle
+
+```bash
+yarn add drizzle-orm pg
+yarn add -D drizzle-kit @types/pg
+```
+
+2. Copy the `docker-compose.yml` from this repo to your project root.
+
+3. Start the database
+
+```bash
+docker compose up -d
+```
+
+4. Add `POSTGRES_URL` to `.env`:
+
+```text
+...
+POSTGRES_URL=postgres://postgres:postgres@localhost:5432/chendlar
+```
+
+5. Create `db` folder
+   
+6. Create the `./src/db/index.ts` file
+
+7. Create an empty `./src/db/schema.ts` file
+
+8. Copy the `./drizzle.config.ts` from this repo to your project root.
+   Remember to install `dotenv`:
+
+```bash
+yarn add dotenv
+```
+
+9. Change the `target` option in `tsconfig.json` to `es2017`:
+
+```json
+{
+    "compilerOptions": {
+    "target": "es2017",
+    ...
+    }
+}
+```
+
+10. Add scripts
+    Add the following scripts to the `./package.json` file:
+
+```json
+{
+    "scripts": {
+    // This script will update the database schema
+    "migrate": "drizzle-kit push:pg",
+    // This script opens a GUI to manage the database
+    "studio": "drizzle-kit studio"
+    }
+}
+```
+
+    Remember to run `yarn migrate` after you make changes to the database schema, namely the `./src/db/schema.ts` file.
+
+11. Add `pg-data` and `.env` to `.gitignore`
+
+```text
+...
+.env
+...
+/pg-data
+```
