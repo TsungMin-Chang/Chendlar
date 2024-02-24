@@ -11,6 +11,12 @@ import {
 // watch this playlist to learn more about database schemas:
 // https://planetscale.com/learn/courses/mysql-for-developers/schema/introduction-to-schema
 
+// learn more about indexes here:
+// https://planetscale.com/learn/courses/mysql-for-developers/indexes/introduction-to-indexes
+
+// composite indexes: indexes on multiple columns
+// https://planetscale.com/learn/courses/mysql-for-developers/indexes/composite-indexes
+    
 export const usersTable = pgTable(
   "users",
   {
@@ -19,8 +25,6 @@ export const usersTable = pgTable(
     password: varchar("password", { length: 100 }).notNull(),
   },
   (table) => ({
-    // learn more about indexes here:
-    // https://planetscale.com/learn/courses/mysql-for-developers/indexes/introduction-to-indexes
     idIndex: index("id_index").on(table.id),
   }),
 );
@@ -45,8 +49,6 @@ export const affairsTable = pgTable(
   },
   (table) => ({
     timeStringIndex: index("time_string_index").on(table.timeString),
-    // composite indexes: indexes on multiple columns
-    // https://planetscale.com/learn/courses/mysql-for-developers/indexes/composite-indexes
     // replyToAndTimeIndex: index("reply_to_time_index").on(
     //   table.replyToTweetId,
     //   table.createdAt,
