@@ -5,18 +5,9 @@ import {
   boolean,
   timestamp,
   pgTable,
-  index
+  index,
 } from "drizzle-orm/pg-core";
 
-// watch this playlist to learn more about database schemas:
-// https://planetscale.com/learn/courses/mysql-for-developers/schema/introduction-to-schema
-
-// learn more about indexes here:
-// https://planetscale.com/learn/courses/mysql-for-developers/indexes/introduction-to-indexes
-
-// composite indexes: indexes on multiple columns
-// https://planetscale.com/learn/courses/mysql-for-developers/indexes/composite-indexes
-    
 export const usersTable = pgTable(
   "users",
   {
@@ -43,15 +34,11 @@ export const affairsTable = pgTable(
     type: varchar("type", { length: 10 }).notNull(),
     time1: timestamp("time1").notNull(),
     time2: timestamp("time2").notNull(),
-    timeString: varchar("time_string", { length: 20 }).notNull(),
+    dateString: varchar("time_string", { length: 20 }).notNull(),
     isDone: boolean("is_done").notNull(),
     order: integer("order").notNull(),
   },
   (table) => ({
-    timeStringIndex: index("time_string_index").on(table.timeString),
-    // replyToAndTimeIndex: index("reply_to_time_index").on(
-    //   table.replyToTweetId,
-    //   table.createdAt,
-    // ),
+    dateStringIndex: index("time_string_index").on(table.dateString),
   }),
 );

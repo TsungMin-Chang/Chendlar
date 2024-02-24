@@ -1,21 +1,60 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import {
-  getAffairsRequestSchema,
-  postAffairRequestSchema,
-  deleteAffairRequestSchema
-} from "@/validators/crudAffair";
-
-import type {
-  GetAffairsRequest, 
-  PostAffairRequest, 
-  DeleteAffairRequest
-} from "@/validators/crudAffair";
+import { and, eq, asc } from "drizzle-orm";
 
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
-import { and, eq, asc } from "drizzle-orm";
+import {
+  getAffairsRequestSchema,
+  postAffairRequestSchema,
+  deleteAffairRequestSchema,
+} from "@/validators/crudAffair";
+import type {
+  GetAffairsRequest,
+  PostAffairRequest,
+  DeleteAffairRequest,
+} from "@/validators/crudAffair";
 
+export async function POST(request: NextRequest) {
+  const data = await request.json();
+
+  try {
+    postAffairRequestSchema.parse(data);
+  } catch (error) {
+    return NextResponse.json({ error: "Bad Request" }, { status: 400 });
+  }
+
+  const { userId, title, color, type, time1, time2, isDone } =
+    data as PostAffairRequest;
+
+  const dateString = "hihi"; //TODO
+  const order = 0; // TODO
+
+  try {
+    const affairIid = await db
+      .insert(affairsTable)
+      .values({
+        userId,
+        title,
+        color,
+        type,
+        time1,
+        time2,
+        dateString,
+        isDone,
+        order,
+      })
+      .returning({ affairIid: affairsTable.id })
+      .execute();
+
+    return NextResponse.json({ data: affairIid }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 },
+    );
+  }
+}
 
 export async function GET(request: NextRequest) {
   const data = await request.json();
@@ -26,10 +65,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Bad Request" }, { status: 400 });
   }
 
-  const { 
-    userId,
-    timeString
-  } = data as GetAffairsRequest;
+  const { userId, dateString } = data as GetAffairsRequest;
 
   try {
     const affairs = await db
@@ -41,7 +77,7 @@ export async function GET(request: NextRequest) {
         type: affairsTable.type,
         time1: affairsTable.time1,
         time2: affairsTable.time2,
-        timeString: affairsTable.timeString,
+        dateString: affairsTable.dateString,
         isDone: affairsTable.isDone,
         order: affairsTable.order,
       })
@@ -49,8 +85,8 @@ export async function GET(request: NextRequest) {
       .where(
         and(
           eq(affairsTable.userId, userId),
-          eq(affairsTable.timeString, timeString),
-        )
+          eq(affairsTable.dateString, dateString),
+        ),
       )
       .orderBy(asc(affairsTable.order))
       .execute();
@@ -64,75 +100,13 @@ export async function GET(request: NextRequest) {
   }
 }
 
-
-
-export async function POST(request: NextRequest) {
-  const data = await request.json();
-
-  try {
-    postAffairRequestSchema.parse(data);
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Bad Request" }, 
-      { status: 400 }
-    );
-  }
-
-  const { 
-    userId,
-    title,
-    color,
-    type,
-    time1,
-    time2,
-    isDone
-  } = data as PostAffairRequest;
-
-  const timeString = "hihi"; //TODO
-  const order = 0; // TODO
-
-  try {
-    const affairIid = await db
-      .insert(affairsTable)
-      .values({
-        userId,
-        title,
-        color,
-        type,
-        time1,
-        time2,
-        timeString,
-        isDone,
-        order
-      })
-      .returning({ affairIid: affairsTable.id })
-      .execute();
-
-    return NextResponse.json(
-      { data: affairIid }, 
-      { status: 200 }
-    );
-
-  } catch (error) {
-    
-    return NextResponse.json(
-      { error: "Something went wrong" },
-      { status: 500 },
-    );
-
-  }
-}
-
 export async function DELETE(request: NextRequest) {
   const data = await request.json();
 
   try {
     deleteAffairRequestSchema.parse(data);
   } catch (error) {
-    return NextResponse.json(
-      { error: "Bad Request" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Bad Request" }, { status: 400 });
   }
 
   const { affairId } = data as DeleteAffairRequest;
@@ -140,9 +114,7 @@ export async function DELETE(request: NextRequest) {
   try {
     await db
       .delete(affairsTable)
-      .where(
-        eq(affairsTable.id, affairId),
-      )
+      .where(eq(affairsTable.id, affairId))
       .execute();
   } catch (error) {
     return NextResponse.json(

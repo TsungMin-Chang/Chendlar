@@ -12,7 +12,7 @@ export type Affair = {
   type: string;
   time1: Date;
   time2: Date;
-  timeString: string;
+  dateString: string;
   isDone: boolean;
   order: number;
 };

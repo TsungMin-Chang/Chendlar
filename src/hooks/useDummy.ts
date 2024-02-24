@@ -4,7 +4,7 @@ import type { Affair } from "@/lib/types";
 // 1. "id"
 // 2. "order": start from 0
 // 3. "userId"
-// 4. "timeString"
+// 4. "dateString"
 // 5. type: "todo" (will only last one day): add from bottom
 // 6. type: "event" (will last multiple days): add from top
 // 7. type: "empty" (the difficult case)
@@ -25,7 +25,7 @@ export default function useDummy() {
         type: "event",
         time1: new Date(2024, 2, 1, 22, 0),
         time2: new Date(2024, 2, 4, 22, 0),
-        timeString: "3/1/2024",
+        dateString: "3/1/2024",
         isDone: false,
         order: 0,
       },
@@ -37,7 +37,7 @@ export default function useDummy() {
         type: "todo",
         time1: new Date(2024, 2, 1, 22, 0),
         time2: new Date(2024, 1, 1, 4, 0),
-        timeString: "3/1/2024",
+        dateString: "3/1/2024",
         isDone: true,
         order: 1,
       },
@@ -49,7 +49,7 @@ export default function useDummy() {
         type: "todo",
         time1: new Date(2024, 2, 1, 22, 0),
         time2: new Date(2024, 1, 1, 9, 30),
-        timeString: "3/1/2024",
+        dateString: "3/1/2024",
         isDone: true,
         order: 2,
       },
@@ -61,7 +61,7 @@ export default function useDummy() {
         type: "todo",
         time1: new Date(2024, 2, 1, 22, 0),
         time2: new Date(2024, 1, 1, 21, 30),
-        timeString: "3/1/2024",
+        dateString: "3/1/2024",
         isDone: false,
         order: 3,
       },
@@ -73,7 +73,7 @@ export default function useDummy() {
         type: "todo",
         time1: new Date(2024, 2, 1, 22, 0),
         time2: new Date(2024, 1, 1, 18, 0),
-        timeString: "3/1/2024",
+        dateString: "3/1/2024",
         isDone: false,
         order: 4,
       },
@@ -87,7 +87,7 @@ export default function useDummy() {
         type: "event",
         time1: new Date(2024, 2, 1, 22, 0),
         time2: new Date(2024, 2, 4, 22, 0),
-        timeString: "3/2/2024",
+        dateString: "3/2/2024",
         isDone: false,
         order: 0,
       },
@@ -101,7 +101,7 @@ export default function useDummy() {
         type: "event",
         time1: new Date(2024, 2, 1, 22, 0),
         time2: new Date(2024, 2, 4, 22, 0),
-        timeString: "3/3/2024",
+        dateString: "3/3/2024",
         isDone: false,
         order: 0,
       },
@@ -115,7 +115,7 @@ export default function useDummy() {
         type: "event",
         time1: new Date(2024, 2, 1, 22, 0),
         time2: new Date(2024, 2, 4, 22, 0),
-        timeString: "3/4/2024",
+        dateString: "3/4/2024",
         isDone: false,
         order: 0,
       },

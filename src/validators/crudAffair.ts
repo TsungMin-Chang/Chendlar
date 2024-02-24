@@ -3,7 +3,7 @@ import { z } from "zod";
 // GET
 export const getAffairsRequestSchema = z.object({
   userId: z.string().uuid(),
-  timeString: z.string().max(20),
+  dateString: z.string().max(20),
 });
 export type GetAffairsRequest = z.infer<typeof getAffairsRequestSchema>;
 
@@ -11,7 +11,7 @@ export type GetAffairsRequest = z.infer<typeof getAffairsRequestSchema>;
 export const postAffairRequestSchema = z.object({
   userId: z.string().uuid(),
   title: z.string().max(50),
-  color: z.string().max(50),
+  color: z.string().max(10),
   type: z.string().max(10),
   time1: z.date(),
   time2: z.date(),

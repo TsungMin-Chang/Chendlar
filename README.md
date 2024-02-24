@@ -54,11 +54,12 @@ yarn add -D eslint typescript @typescript-eslint/parser eslint-config-prettier @
 
 ```json
 {
-    "scripts": {
+  "scripts": {
     "format": "prettier --write ."
-    }
+  }
 }
 ```
+
 5. Check if the scripts work
 
 ```bash
@@ -91,7 +92,6 @@ POSTGRES_URL=postgres://postgres:postgres@localhost:5432/chendlar
 ```
 
 5. Create `db` folder
-   
 6. Create the `./src/db/index.ts` file
 
 7. Create an empty `./src/db/schema.ts` file
@@ -119,12 +119,12 @@ yarn add dotenv
 
 ```json
 {
-    "scripts": {
+  "scripts": {
     // This script will update the database schema
     "migrate": "drizzle-kit push:pg",
     // This script opens a GUI to manage the database
     "studio": "drizzle-kit studio"
-    }
+  }
 }
 ```
 
