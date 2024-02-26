@@ -1,7 +1,7 @@
 "use client";
 
 // import Image from "next/image";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 

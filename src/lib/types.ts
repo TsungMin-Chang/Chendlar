@@ -16,3 +16,19 @@ export type Affair = {
   isDone: boolean;
   order: number;
 };
+
+export type dbAffair = {
+  id: string;
+  userId: string;
+  title: string;
+  color: string;
+  type: string;
+  time1: Date;
+  time2: Date;
+  isDone: boolean;
+  order: number;
+  dateString: string;
+  year: number;
+  month: number;
+  weekNumber: number;
+};

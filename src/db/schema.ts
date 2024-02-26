@@ -11,7 +11,7 @@ import {
 export const usersTable = pgTable(
   "users",
   {
-    id: uuid("id").defaultRandom(),
+    id: uuid("id").defaultRandom().primaryKey(),
     username: varchar("username", { length: 50 }).notNull(),
     password: varchar("password", { length: 100 }).notNull(),
   },
@@ -23,7 +23,7 @@ export const usersTable = pgTable(
 export const affairsTable = pgTable(
   "affairs",
   {
-    id: uuid("id").defaultRandom(),
+    id: uuid("id").defaultRandom().primaryKey(),
     userId: uuid("user_id")
       .notNull()
       .references(() => usersTable.id, {
@@ -34,11 +34,20 @@ export const affairsTable = pgTable(
     type: varchar("type", { length: 10 }).notNull(),
     time1: timestamp("time1").notNull(),
     time2: timestamp("time2").notNull(),
-    dateString: varchar("time_string", { length: 20 }).notNull(),
     isDone: boolean("is_done").notNull(),
     order: integer("order").notNull(),
+    dateString: varchar("date_string", { length: 20 }).notNull(),
+    year: integer("year").notNull(),
+    month: integer("month").notNull(),
+    weekNumber: integer("week_number").notNull(),
   },
   (table) => ({
-    dateStringIndex: index("time_string_index").on(table.dateString),
+    dateStringIndex: index("date_string_index").on(table.dateString),
+    weekNumberIndex: index("week_number_index").on(table.weekNumber),
+    // composite indexes
+    yearAndMonthIndex: index("year_and_month_index").on(
+      table.year,
+      table.month,
+    ),
   }),
 );

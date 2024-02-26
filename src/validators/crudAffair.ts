@@ -1,13 +1,28 @@
 import { z } from "zod";
 
-// GET
-export const getAffairsRequestSchema = z.object({
-  userId: z.string().uuid(),
-  dateString: z.string().max(20),
-});
-export type GetAffairsRequest = z.infer<typeof getAffairsRequestSchema>;
+// GET day - use server side component
+// export const getDayRequestSchema = z.object({
+//   userId: z.string().uuid(),
+//   dateString: z.string().max(20),
+// });
+// export type GetDayRequest = z.infer<typeof getDayRequestSchema>;
 
-// POST
+// GET month
+export const getMonthsRequestSchema = z.object({
+  userId: z.string().uuid(),
+  year: z.number(),
+  month: z.number(),
+});
+export type GetMonthsRequest = z.infer<typeof getMonthsRequestSchema>;
+
+// GET week
+export const getWeeksRequestSchema = z.object({
+  userId: z.string().uuid(),
+  weekNumber: z.number(),
+});
+export type GetWeeksRequest = z.infer<typeof getWeeksRequestSchema>;
+
+// POST and UPDATE
 export const postAffairRequestSchema = z.object({
   userId: z.string().uuid(),
   title: z.string().max(50),
@@ -18,9 +33,3 @@ export const postAffairRequestSchema = z.object({
   isDone: z.boolean(),
 });
 export type PostAffairRequest = z.infer<typeof postAffairRequestSchema>;
-
-// DELETE
-export const deleteAffairRequestSchema = z.object({
-  affairId: z.string().uuid(),
-});
-export type DeleteAffairRequest = z.infer<typeof deleteAffairRequestSchema>;
