@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "lint:fix": "next lint --fix",
     "format": "prettier --write .",
-    "migrate": "drizzle-kit push:pg"
+    "migrate": "drizzle-kit push:pg",
+    "exec:db": "podman exec -it no-code-website-builder-next_postgresql_1 psql -Upostgres website"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
