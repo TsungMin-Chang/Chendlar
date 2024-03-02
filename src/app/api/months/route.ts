@@ -13,44 +13,45 @@ export async function GET(request: NextRequest) {
   try {
     getMonthsRequestSchema.parse(data);
   } catch (error) {
-    return NextResponse.json({ error: "Bad Request" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
   const { userId, year, month } = data as GetMonthsRequest;
-  // use composite index
-  console.log(year);
-  console.log(month);
-
-  // make sure what you want to send to client
+  
+  // TODO 4: get all the affairs of 3 months - maybe using range?
   try {
     const affairs = await db
       .select({
         id: affairsTable.id,
-        userId: affairsTable.userId,
         title: affairsTable.title,
         color: affairsTable.color,
         type: affairsTable.type,
         time1: affairsTable.time1,
         time2: affairsTable.time2,
-        dateString: affairsTable.dateString,
         isDone: affairsTable.isDone,
         order: affairsTable.order,
+        year: affairsTable.year,
+        month: affairsTable.month,
+        weekNumber: affairsTable.weekNumber,
+        dayNumber: affairsTable.dayNumber,
       })
       .from(affairsTable)
       .where(
         and(
+          eq(affairsTable.year, year),
+          eq(affairsTable.month, month),
           eq(affairsTable.userId, userId),
-          // eq(affairsTable.dateString, dateString),
         ),
       )
+      // TODO 3: order by year, month, weeknumber, daynumber, order - small first
       .orderBy(asc(affairsTable.order))
       .execute();
-
     return NextResponse.json({ data: affairs }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { error: "Something went wrong" },
+      { error: "Something went wrong in db" },
       { status: 500 },
     );
   }
+
 }

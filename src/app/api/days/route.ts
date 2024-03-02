@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-// import { getWeekNumber } from "@/lib/utils";
+// import { getWeekNumber, getDayNumber } from "@/lib/utils";
 // import { and, eq, asc } from "drizzle-orm";
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
@@ -13,20 +13,24 @@ export async function POST(request: NextRequest) {
   try {
     postAffairRequestSchema.parse(data);
   } catch (error) {
-    return NextResponse.json({ error: "Bad Request" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
   const { userId, title, color, type, time1, time2, isDone } =
     data as PostAffairRequest;
 
-  const dateString = "hihi"; //TODO
-  const year = 2024; // TODO
-  const month = 6; //TODO
-  const weekNumber = 128; //TODO
-  const order = 0; // TODO
+  // year, month, dayNumber, weekNumber
+  // TODO 1: will have to break event into mutiple days
+  const year = 2024;
+  const month = 6;
+  const weekNumber = 128;
+  const dayNumber = 64;
+  // TODO 2: will have to consider order for each day
+  const order = 0;
 
   try {
-    const affairIid = await db
+    await db
+      // might be mutiple inserts
       .insert(affairsTable)
       .values({
         userId,
@@ -37,21 +41,21 @@ export async function POST(request: NextRequest) {
         time2,
         isDone,
         order,
-        dateString,
         year,
         month,
         weekNumber,
+        dayNumber
       })
-      .returning({ affairIid: affairsTable.id })
       .execute();
 
-    return NextResponse.json({ data: affairIid }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { error: "Something went wrong" },
+      { error: "Something went wrong in db" },
       { status: 500 },
     );
   }
+
+  return NextResponse.json("OK", { status: 200 });
 }
 
 export async function UPDATE(request: NextRequest) {
@@ -60,20 +64,23 @@ export async function UPDATE(request: NextRequest) {
   try {
     postAffairRequestSchema.parse(data);
   } catch (error) {
-    return NextResponse.json({ error: "Bad Request" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
   const { userId, title, color, type, time1, time2, isDone } =
     data as PostAffairRequest;
 
-  const dateString = "hihi"; //TODO
-  const year = 2024; // TODO
-  const month = 6; //TODO
-  const weekNumber = 128; //TODO
-  const order = 0; // TODO
+  // year, month, dayNumber, weekNumber
+  // will have to break event into mutiple days
+  const year = 2024;
+  const month = 6;
+  const weekNumber = 128;
+  const dayNumber = 64;
+  // will have to consider order
+  const order = 0;
 
   try {
-    const affairIid = await db
+    await db
       .insert(affairsTable)
       .values({
         userId,
@@ -84,19 +91,18 @@ export async function UPDATE(request: NextRequest) {
         time2,
         isDone,
         order,
-        dateString,
         year,
         month,
         weekNumber,
+        dayNumber
       })
-      .returning({ affairIid: affairsTable.id })
       .execute();
-
-    return NextResponse.json({ data: affairIid }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { error: "Something went wrong" },
+      { error: "Something went wrong in db" },
       { status: 500 },
     );
   }
+  
+  return NextResponse.json("OK", { status: 200 });
 }

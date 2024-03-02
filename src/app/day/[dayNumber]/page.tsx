@@ -1,15 +1,16 @@
+// server side component
 // import { eq, asc, sql, and } from "drizzle-orm";
 // import { db } from "@/db";
 // import { usersTable, affairsTable } from "@/db/schema";
 
 type DayPageProps = {
   params: {
-    dayString: string;
+    dayNumber: number;
   };
 };
 
-export default async function DayPage({ params: { dayString } }: DayPageProps) {
-  console.log(dayString);
+export default async function DayPage({ params: { dayNumber } }: DayPageProps) {
+  console.log(dayNumber);
 
   return <></>;
 }

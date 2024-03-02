@@ -8,7 +8,7 @@ export default function TodoItems() {
     <>
       {/* wil be using map function */}
       <div 
-        className="flex flex-row items-center justify-center border border-[#e3f2fd] rounded-full p-2"
+        className="flex flex-row items-center justify-center border-2 border-[#4F4132] rounded-full p-2"
       >
         <div className="pr-2">
           <AiFillHeart color="brown" size={20} />
@@ -20,7 +20,7 @@ export default function TodoItems() {
         </div>
       </div>
 
-      <div className="flex flex-row items-center justify-center border border-[#e3f2fd] rounded-full p-2">
+      <div className="flex flex-row items-center justify-center border-2 border-[#4F4132] rounded-full p-2">
         <div className="pr-2">
           <AiOutlineHeart color="black" size={20} />
         </div>

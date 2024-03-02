@@ -12,12 +12,9 @@ export const usersTable = pgTable(
   "users",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    username: varchar("username", { length: 50 }).notNull(),
-    password: varchar("password", { length: 100 }).notNull(),
+    username: varchar("username", { length: 32 }).notNull(),
+    password: varchar("password", { length: 32 }).notNull(),
   },
-  (table) => ({
-    idIndex: index("id_index").on(table.id),
-  }),
 );
 
 export const affairsTable = pgTable(
@@ -29,22 +26,21 @@ export const affairsTable = pgTable(
       .references(() => usersTable.id, {
         onDelete: "cascade",
       }),
-    title: varchar("title", { length: 50 }).notNull(),
-    color: varchar("color", { length: 10 }).notNull(),
-    type: varchar("type", { length: 10 }).notNull(),
+    title: varchar("title", { length: 20 }).notNull(),
+    color: varchar("color", { length: 8 }).notNull(),
+    type: varchar("type", { length: 8 }).notNull(),
     time1: timestamp("time1").notNull(),
     time2: timestamp("time2").notNull(),
     isDone: boolean("is_done").notNull(),
     order: integer("order").notNull(),
-    dateString: varchar("date_string", { length: 20 }).notNull(),
     year: integer("year").notNull(),
     month: integer("month").notNull(),
     weekNumber: integer("week_number").notNull(),
+    dayNumber: integer("day_number").notNull(),
   },
   (table) => ({
-    dateStringIndex: index("date_string_index").on(table.dateString),
+    dayNumberIndex: index("day_number_index").on(table.dayNumber),
     weekNumberIndex: index("week_number_index").on(table.weekNumber),
-    // composite indexes
     yearAndMonthIndex: index("year_and_month_index").on(
       table.year,
       table.month,

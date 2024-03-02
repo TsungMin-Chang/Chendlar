@@ -1,6 +1,6 @@
 // server side component
-import TodoItems from "./[dayString]/_components/TodoItems";
-import EventItems from "./[dayString]/_components/EventItems";
+import TodoItems from "./[dayNumber]/_components/TodoItems";
+import EventItems from "./[dayNumber]/_components/EventItems";
 
 export default function DayPage() {
   return (

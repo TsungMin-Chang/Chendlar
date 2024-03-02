@@ -93,7 +93,7 @@ export default function SideBar({
     <Drawer open={openSideBar} onClose={() => onCloseSideBar()}>
       <div
         className="flex h-full w-full flex-col items-center gap-y-3 p-3"
-        style={{ backgroundColor: "rgba(71, 53, 32, 1)", width: 220 }}
+        style={{ backgroundColor: "rgba(79, 65, 50, 1)", width: 220 }}
         role="presentation"
       >
         <Stack direction="row" spacing={1} alignItems="center">
