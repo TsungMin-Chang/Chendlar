@@ -1,5 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
+
 import { and, eq, asc, between } from "drizzle-orm";
+
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
 import { postMonthRequestSchema } from "@/validators/crudTypes";
@@ -15,7 +17,7 @@ export async function POST(request: NextRequest) {
   }
 
   const { userId, monthNumber } = data as PostMonthRequest;
-  
+
   try {
     const affairs = await db
       .select({
@@ -39,6 +41,7 @@ export async function POST(request: NextRequest) {
         ),
       )
       .orderBy(asc(affairsTable.dayNumber), asc(affairsTable.order))
+      .groupBy(affairsTable.dayNumber)
       .execute();
     return NextResponse.json({ data: affairs }, { status: 200 });
   } catch (error) {
@@ -47,5 +50,4 @@ export async function POST(request: NextRequest) {
       { status: 500 },
     );
   }
-
 }

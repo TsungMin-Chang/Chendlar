@@ -1,6 +1,6 @@
 // server side component
-import TodoItems from "./[dayNumber]/_components/TodoItems";
 import EventItems from "./[dayNumber]/_components/EventItems";
+import TodoItems from "./[dayNumber]/_components/TodoItems";
 
 export default function DayPage() {
   return (
@@ -21,8 +21,7 @@ export default function DayPage() {
         {/* Event */}
         <div className="flex flex-col gap-y-2 rounded-lg bg-[#8C8784] p-4 pb-6">
           <div className="text-md pb-1 font-bold">Event</div>
-          <EventItems/>
-          
+          <EventItems />
         </div>
       </div>
     </div>

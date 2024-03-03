@@ -1,7 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { getWeekNumber, getDayNumber, getMonthNumber, getDates } from "@/lib/utils";
+
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
+import {
+  getWeekNumber,
+  getDayNumber,
+  getMonthNumber,
+  getDates,
+} from "@/lib/utils";
 import { postAffairRequestSchema } from "@/validators/crudTypes";
 import type { PostAffairRequest } from "@/validators/crudTypes";
 
@@ -43,7 +49,7 @@ export async function POST(request: NextRequest) {
       );
     }
   }
-  
+
   if (type === "event") {
     const dateArray = getDates(time1, time2);
     const eventDbValues = dateArray.map((date) => ({
@@ -58,14 +64,11 @@ export async function POST(request: NextRequest) {
       monthNumber: getMonthNumber(date),
       weekNumber: getWeekNumber(date),
       dayNumber: getDayNumber(date),
-    }))
+    }));
     console.log(eventDbValues);
-    
+
     // Drizzle ORM insert mutiple rows
-    await db
-    .insert(affairsTable)
-    .values(eventDbValues)
-    .execute();
+    await db.insert(affairsTable).values(eventDbValues).execute();
   }
 
   return NextResponse.json("OK", { status: 200 });
@@ -116,6 +119,6 @@ export async function POST(request: NextRequest) {
 //       { status: 500 },
 //     );
 //   }
-  
+
 //   return NextResponse.json("OK", { status: 200 });
 // }

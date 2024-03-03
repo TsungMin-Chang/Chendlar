@@ -8,14 +8,11 @@ import {
   index,
 } from "drizzle-orm/pg-core";
 
-export const usersTable = pgTable(
-  "users",
-  {
-    id: uuid("id").defaultRandom().primaryKey(),
-    username: varchar("username", { length: 32 }).notNull(),
-    password: varchar("password", { length: 32 }).notNull(),
-  },
-);
+export const usersTable = pgTable("users", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  username: varchar("username", { length: 32 }).notNull(),
+  password: varchar("password", { length: 32 }).notNull(),
+});
 
 export const affairsTable = pgTable(
   "affairs",
@@ -40,6 +37,6 @@ export const affairsTable = pgTable(
   (table) => ({
     dayNumberIndex: index("day_number_index").on(table.dayNumber),
     weekNumberIndex: index("week_number_index").on(table.weekNumber),
-    monthNumberIndex: index("month_number_index").on(table.monthNumber)
+    monthNumberIndex: index("month_number_index").on(table.monthNumber),
   }),
 );
