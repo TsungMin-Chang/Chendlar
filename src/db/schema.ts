@@ -33,17 +33,13 @@ export const affairsTable = pgTable(
     time2: timestamp("time2").notNull(),
     isDone: boolean("is_done").notNull(),
     order: integer("order").notNull(),
-    year: integer("year").notNull(),
-    month: integer("month").notNull(),
+    monthNumber: integer("month_number").notNull(),
     weekNumber: integer("week_number").notNull(),
     dayNumber: integer("day_number").notNull(),
   },
   (table) => ({
     dayNumberIndex: index("day_number_index").on(table.dayNumber),
     weekNumberIndex: index("week_number_index").on(table.weekNumber),
-    yearAndMonthIndex: index("year_and_month_index").on(
-      table.year,
-      table.month,
-    ),
+    monthNumberIndex: index("month_number_index").on(table.monthNumber)
   }),
 );

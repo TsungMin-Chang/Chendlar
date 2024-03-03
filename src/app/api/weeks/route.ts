@@ -1,22 +1,20 @@
 import { NextResponse, type NextRequest } from "next/server";
-
-import { and, eq, asc } from "drizzle-orm";
-
+import { and, eq, asc, between } from "drizzle-orm";
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
-import { getWeeksRequestSchema } from "@/validators/crudAffair";
-import type { GetWeeksRequest } from "@/validators/crudAffair";
+import { postWeekRequestSchema } from "@/validators/crudTypes";
+import type { PostWeekRequest } from "@/validators/crudTypes";
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   const data = await request.json();
 
   try {
-    getWeeksRequestSchema.parse(data);
+    postWeekRequestSchema.parse(data);
   } catch (error) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  const { userId, weekNumber } = data as GetWeeksRequest;
+  const { userId, weekNumber } = data as PostWeekRequest;
 
   try {
     const affairs = await db
@@ -29,19 +27,18 @@ export async function GET(request: NextRequest) {
         time2: affairsTable.time2,
         isDone: affairsTable.isDone,
         order: affairsTable.order,
-        year: affairsTable.year,
-        month: affairsTable.month,
+        monthNumber: affairsTable.monthNumber,
         weekNumber: affairsTable.weekNumber,
         dayNumber: affairsTable.dayNumber,
       })
       .from(affairsTable)
       .where(
         and(
-          eq(affairsTable.weekNumber, weekNumber),
+          between(affairsTable.weekNumber, weekNumber - 1, weekNumber + 1),
           eq(affairsTable.userId, userId),
         ),
       )
-      .orderBy(asc(affairsTable.order))
+      .orderBy(asc(affairsTable.dayNumber), asc(affairsTable.order))
       .execute();
     return NextResponse.json({ data: affairs }, { status: 200 });
   } catch (error) {

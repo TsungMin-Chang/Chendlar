@@ -1,24 +1,21 @@
 import { NextResponse, type NextRequest } from "next/server";
-
-import { and, eq, asc } from "drizzle-orm";
-
+import { and, eq, asc, between } from "drizzle-orm";
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
-import { getMonthsRequestSchema } from "@/validators/crudAffair";
-import type { GetMonthsRequest } from "@/validators/crudAffair";
+import { postMonthRequestSchema } from "@/validators/crudTypes";
+import type { PostMonthRequest } from "@/validators/crudTypes";
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   const data = await request.json();
 
   try {
-    getMonthsRequestSchema.parse(data);
+    postMonthRequestSchema.parse(data);
   } catch (error) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  const { userId, year, month } = data as GetMonthsRequest;
+  const { userId, monthNumber } = data as PostMonthRequest;
   
-  // TODO 4: get all the affairs of 3 months - maybe using range?
   try {
     const affairs = await db
       .select({
@@ -30,21 +27,18 @@ export async function GET(request: NextRequest) {
         time2: affairsTable.time2,
         isDone: affairsTable.isDone,
         order: affairsTable.order,
-        year: affairsTable.year,
-        month: affairsTable.month,
+        monthNumber: affairsTable.monthNumber,
         weekNumber: affairsTable.weekNumber,
         dayNumber: affairsTable.dayNumber,
       })
       .from(affairsTable)
       .where(
         and(
-          eq(affairsTable.year, year),
-          eq(affairsTable.month, month),
+          between(affairsTable.monthNumber, monthNumber - 1, monthNumber + 1),
           eq(affairsTable.userId, userId),
         ),
       )
-      // TODO 3: order by year, month, weeknumber, daynumber, order - small first
-      .orderBy(asc(affairsTable.order))
+      .orderBy(asc(affairsTable.dayNumber), asc(affairsTable.order))
       .execute();
     return NextResponse.json({ data: affairs }, { status: 200 });
   } catch (error) {

@@ -7,20 +7,19 @@ import { z } from "zod";
 // });
 // export type GetDayRequest = z.infer<typeof getDayRequestSchema>;
 
-// GET month
-export const getMonthsRequestSchema = z.object({
-  year: z.number(),
-  month: z.number(),
+// GET months
+export const postMonthRequestSchema = z.object({
+  monthNumber: z.number(),
   userId: z.string().uuid(),
 });
-export type GetMonthsRequest = z.infer<typeof getMonthsRequestSchema>;
+export type PostMonthRequest = z.infer<typeof postMonthRequestSchema>;
 
-// GET week
-export const getWeeksRequestSchema = z.object({
+// GET weeks
+export const postWeekRequestSchema = z.object({
   weekNumber: z.number(),
   userId: z.string().uuid(),
 });
-export type GetWeeksRequest = z.infer<typeof getWeeksRequestSchema>;
+export type PostWeekRequest = z.infer<typeof postWeekRequestSchema>;
 
 // POST and UPDATE
 export const postAffairRequestSchema = z.object({

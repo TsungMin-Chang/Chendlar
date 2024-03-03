@@ -1,13 +1,11 @@
 "use client";
-
 // import Image from "next/image";
 import React, { useState } from "react";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
-
 import useDateContext from "@/hooks/useDateContext";
-
 import MonthCells from "./_components/MonthCells";
+// import useMonth from "@/hooks/useMonth";
 
 export default function Home() {
   const days = ["SUN", "MON", "TUE", "WED", "THR", "FRI", "SAT"];

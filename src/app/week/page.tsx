@@ -1,12 +1,10 @@
 "use client";
-
 import { useState } from "react";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
-
 import useDateContext from "@/hooks/useDateContext";
-
 import WeekCells from "./_components/WeekCells";
+// import useWeek from "@/hooks/useWeek";
 
 export default function WeekPage() {
   const { date, setDate } = useDateContext();
