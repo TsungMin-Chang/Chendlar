@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
+import { eq, isNull, and, between } from "drizzle-orm";
 import {
   getWeekNumber,
   getDayNumber,
@@ -10,6 +11,7 @@ import {
 } from "@/lib/utils";
 import { postAffairRequestSchema } from "@/validators/crudTypes";
 import type { PostAffairRequest } from "@/validators/crudTypes";
+import type { DbEvent } from "@/lib/types";
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
@@ -24,9 +26,21 @@ export async function POST(request: NextRequest) {
     data as PostAffairRequest;
 
   if (type === "todo") {
-    // TODO 5: need to find max order so that I can add 1 to it then assign
     try {
-      await db
+      const [{lastId}] = await db
+        .select({
+          lastId: affairsTable.id
+        })
+        .from(affairsTable)
+        .where(
+          and(
+            eq(affairsTable.dayNumber, getDayNumber(time1)),
+            isNull(affairsTable.backPointer)
+          )
+        )
+        .execute();
+      
+      const [{insertedId}] = await db
         .insert(affairsTable)
         .values({
           userId,
@@ -36,12 +50,22 @@ export async function POST(request: NextRequest) {
           time1,
           time2,
           isDone,
-          order: 10000000, // TODO 2: will have to consider order for each day
+          order: 100,
+          frontPointer: lastId ?? null,
+          backPointer: null,
           monthNumber: getMonthNumber(time1),
           weekNumber: getWeekNumber(time1),
           dayNumber: getDayNumber(time1),
         })
+        .returning({ insertedId: affairsTable.id })
         .execute();
+      
+      await db
+        .update(affairsTable)
+        .set({ backPointer: insertedId })
+        .where(eq(affairsTable.id, lastId))
+        .execute();
+
     } catch (error) {
       return NextResponse.json(
         { error: "Something went wrong in db" },
@@ -51,26 +75,114 @@ export async function POST(request: NextRequest) {
   }
 
   if (type === "event") {
-    const dateArray = getDates(time1, time2);
-    const eventDbValues = dateArray.map((date) => ({
-      userId,
-      title,
-      color,
-      type,
-      time1,
-      time2,
-      isDone,
-      order: 10000000, // TODO 2: will have to consider order for each day
-      monthNumber: getMonthNumber(date),
-      weekNumber: getWeekNumber(date),
-      dayNumber: getDayNumber(date),
-    }));
-    console.log(eventDbValues);
+    try {
 
-    // Drizzle ORM insert mutiple rows
-    await db.insert(affairsTable).values(eventDbValues).execute();
+      // get dbEvents that needed to be updated later
+      let minTime1 = time1;
+      let maxTime2 = time2;
+      let dbEvents: DbEvent[] | null = null; 
+      let checker = true;
+      
+      while (checker) {
+        checker = false;
+
+        const events = await db
+          .selectDistinctOn([affairsTable.title], {
+            eventTitle: affairsTable.title,
+            eventOrder: affairsTable.order,
+            eventTime1: affairsTable.time1,
+            eventTime2: affairsTable.time2,
+          })
+          .from(affairsTable)
+          .where(
+            and(
+              eq(affairsTable.type, "event"),
+              between(affairsTable.dayNumber, getDayNumber(minTime1), getDayNumber(maxTime2))
+            )
+          )
+          .execute();
+      
+        for (let i = 0; i < events.length; i++) {
+          const event = events[i];
+          if(event.eventTime1 < minTime1) {
+            minTime1 = event.eventTime1;
+            checker = true;
+          }
+          if(event.eventTime2 > maxTime2) {
+            maxTime2 = event.eventTime2;
+            checker = true;
+          }
+        };
+
+        if (checker === false) {
+          dbEvents = [...events];
+        }
+      }
+
+      // insert new event
+      const dateArray = getDates(time1, time2);
+      for (let i = 0; i < dateArray.length; i++) {
+        const date = dateArray[i];
+
+        const [{firstId}] = await db  // might error?
+          .select({
+            firstId: affairsTable.id
+          })
+          .from(affairsTable)
+          .where(
+            and(
+              eq(affairsTable.dayNumber, getDayNumber(date)),
+              isNull(affairsTable.frontPointer)
+            )
+          )
+          .execute();
+
+        const [{insertedId}] = await db
+          .insert(affairsTable)
+          .values({
+            userId,
+            title,
+            color,
+            type,
+            time1,
+            time2,
+            isDone,
+            order: 0,
+            frontPointer: null,
+            backPointer: firstId ?? null,
+            monthNumber: getMonthNumber(date),
+            weekNumber: getWeekNumber(date),
+            dayNumber: getDayNumber(date),
+          })
+          .returning({ insertedId: affairsTable.id })
+          .execute();
+        
+        await db
+          .update(affairsTable)
+          .set({ frontPointer: insertedId })
+          .where(eq(affairsTable.id, firstId))
+          .execute();
+      }
+
+      // update dbEvents
+      if (dbEvents) {
+        for (let i = 0; i < dbEvents.length; i++) {
+          const dbEvent = dbEvents[i];
+          await db
+            .update(affairsTable)
+            .set({ order: dbEvent.eventOrder + 1 })
+            .where(eq(affairsTable.title, dbEvent.eventTitle))
+            .execute(); 
+        }
+      }
+
+    } catch (error) {
+      return NextResponse.json(
+        { error: "Something went wrong in db" },
+        { status: 500 },
+      );
+    }
   }
-
   return NextResponse.json("OK", { status: 200 });
 }
 

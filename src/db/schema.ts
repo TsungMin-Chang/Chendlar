@@ -30,6 +30,8 @@ export const affairsTable = pgTable(
     time2: timestamp("time2").notNull(),
     isDone: boolean("is_done").notNull(),
     order: integer("order").notNull(),
+    frontPointer: varchar("front_pointer", { length: 40 }),
+    backPointer: varchar("back_pointer", { length: 40 }),
     monthNumber: integer("month_number").notNull(),
     weekNumber: integer("week_number").notNull(),
     dayNumber: integer("day_number").notNull(),

@@ -4,19 +4,19 @@ import { and, eq, asc, between } from "drizzle-orm";
 
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
-import { postMonthRequestSchema } from "@/validators/crudTypes";
-import type { PostMonthRequest } from "@/validators/crudTypes";
+import { getMonthsRequestSchema } from "@/validators/crudTypes";
+import type { GetMonthsRequest } from "@/validators/crudTypes";
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
 
   try {
-    postMonthRequestSchema.parse(data);
+    getMonthsRequestSchema.parse(data);
   } catch (error) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  const { userId, monthNumber } = data as PostMonthRequest;
+  const { userId, monthNumber } = data as GetMonthsRequest;
 
   try {
     const affairs = await db
@@ -29,6 +29,8 @@ export async function POST(request: NextRequest) {
         time2: affairsTable.time2,
         isDone: affairsTable.isDone,
         order: affairsTable.order,
+        frontPointer: affairsTable.frontPointer,
+        backPointer: affairsTable.backPointer,
         monthNumber: affairsTable.monthNumber,
         weekNumber: affairsTable.weekNumber,
         dayNumber: affairsTable.dayNumber,
@@ -40,7 +42,7 @@ export async function POST(request: NextRequest) {
           eq(affairsTable.userId, userId),
         ),
       )
-      .orderBy(asc(affairsTable.dayNumber), asc(affairsTable.order))
+      .orderBy(asc(affairsTable.order))
       .groupBy(affairsTable.dayNumber)
       .execute();
     return NextResponse.json({ data: affairs }, { status: 200 });

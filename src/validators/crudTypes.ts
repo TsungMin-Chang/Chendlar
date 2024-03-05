@@ -8,18 +8,18 @@ import { z } from "zod";
 // export type GetDayRequest = z.infer<typeof getDayRequestSchema>;
 
 // GET months
-export const postMonthRequestSchema = z.object({
+export const getMonthsRequestSchema = z.object({
   monthNumber: z.number(),
   userId: z.string().uuid(),
 });
-export type PostMonthRequest = z.infer<typeof postMonthRequestSchema>;
+export type GetMonthsRequest = z.infer<typeof getMonthsRequestSchema>;
 
 // GET weeks
-export const postWeekRequestSchema = z.object({
+export const getWeeksRequestSchema = z.object({
   weekNumber: z.number(),
   userId: z.string().uuid(),
 });
-export type PostWeekRequest = z.infer<typeof postWeekRequestSchema>;
+export type GetWeeksRequest = z.infer<typeof getWeeksRequestSchema>;
 
 // POST and UPDATE
 export const postAffairRequestSchema = z.object({

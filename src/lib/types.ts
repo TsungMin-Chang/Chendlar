@@ -32,3 +32,10 @@ export type dbAffair = {
   month: number;
   weekNumber: number;
 };
+
+export type DbEvent = {
+  eventTitle: string;
+  eventOrder: number;
+  eventTime1: Date;
+  eventTime2: Date;
+}
