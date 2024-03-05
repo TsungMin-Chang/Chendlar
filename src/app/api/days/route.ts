@@ -1,8 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+import { eq, isNull, and, between } from "drizzle-orm";
+
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
-import { eq, isNull, and, between } from "drizzle-orm";
+import type { DbEvent } from "@/lib/types";
 import {
   getWeekNumber,
   getDayNumber,
@@ -11,7 +13,6 @@ import {
 } from "@/lib/utils";
 import { postAffairRequestSchema } from "@/validators/crudTypes";
 import type { PostAffairRequest } from "@/validators/crudTypes";
-import type { DbEvent } from "@/lib/types";
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
@@ -27,20 +28,20 @@ export async function POST(request: NextRequest) {
 
   if (type === "todo") {
     try {
-      const [{lastId}] = await db
+      const [{ lastId }] = await db
         .select({
-          lastId: affairsTable.id
+          lastId: affairsTable.id,
         })
         .from(affairsTable)
         .where(
           and(
             eq(affairsTable.dayNumber, getDayNumber(time1)),
-            isNull(affairsTable.backPointer)
-          )
+            isNull(affairsTable.backPointer),
+          ),
         )
         .execute();
-      
-      const [{insertedId}] = await db
+
+      const [{ insertedId }] = await db
         .insert(affairsTable)
         .values({
           userId,
@@ -59,13 +60,12 @@ export async function POST(request: NextRequest) {
         })
         .returning({ insertedId: affairsTable.id })
         .execute();
-      
+
       await db
         .update(affairsTable)
         .set({ backPointer: insertedId })
         .where(eq(affairsTable.id, lastId))
         .execute();
-
     } catch (error) {
       return NextResponse.json(
         { error: "Something went wrong in db" },
@@ -76,13 +76,12 @@ export async function POST(request: NextRequest) {
 
   if (type === "event") {
     try {
-
-      // get dbEvents that needed to be updated later
+      // step1: get dbEvents that needed to be updated later
       let minTime1 = time1;
       let maxTime2 = time2;
-      let dbEvents: DbEvent[] | null = null; 
+      let dbEvents: DbEvent[] = [];
       let checker = true;
-      
+
       while (checker) {
         checker = false;
 
@@ -97,47 +96,51 @@ export async function POST(request: NextRequest) {
           .where(
             and(
               eq(affairsTable.type, "event"),
-              between(affairsTable.dayNumber, getDayNumber(minTime1), getDayNumber(maxTime2))
-            )
+              between(
+                affairsTable.dayNumber,
+                getDayNumber(minTime1),
+                getDayNumber(maxTime2),
+              ),
+            ),
           )
           .execute();
-      
+
         for (let i = 0; i < events.length; i++) {
           const event = events[i];
-          if(event.eventTime1 < minTime1) {
+          if (event.eventTime1 < minTime1) {
             minTime1 = event.eventTime1;
             checker = true;
           }
-          if(event.eventTime2 > maxTime2) {
+          if (event.eventTime2 > maxTime2) {
             maxTime2 = event.eventTime2;
             checker = true;
           }
-        };
+        }
 
         if (checker === false) {
           dbEvents = [...events];
         }
       }
 
-      // insert new event
+      // step 2: insert new event
       const dateArray = getDates(time1, time2);
       for (let i = 0; i < dateArray.length; i++) {
         const date = dateArray[i];
 
-        const [{firstId}] = await db  // might error?
+        const [{ firstId }] = await db // might error?
           .select({
-            firstId: affairsTable.id
+            firstId: affairsTable.id,
           })
           .from(affairsTable)
           .where(
             and(
               eq(affairsTable.dayNumber, getDayNumber(date)),
-              isNull(affairsTable.frontPointer)
-            )
+              isNull(affairsTable.frontPointer),
+            ),
           )
           .execute();
 
-        const [{insertedId}] = await db
+        const [{ insertedId }] = await db
           .insert(affairsTable)
           .values({
             userId,
@@ -156,7 +159,7 @@ export async function POST(request: NextRequest) {
           })
           .returning({ insertedId: affairsTable.id })
           .execute();
-        
+
         await db
           .update(affairsTable)
           .set({ frontPointer: insertedId })
@@ -164,18 +167,15 @@ export async function POST(request: NextRequest) {
           .execute();
       }
 
-      // update dbEvents
-      if (dbEvents) {
-        for (let i = 0; i < dbEvents.length; i++) {
-          const dbEvent = dbEvents[i];
-          await db
-            .update(affairsTable)
-            .set({ order: dbEvent.eventOrder + 1 })
-            .where(eq(affairsTable.title, dbEvent.eventTitle))
-            .execute(); 
-        }
+      // step 3: update dbEvents
+      for (let i = 0; i < dbEvents.length; i++) {
+        const dbEvent = dbEvents[i];
+        await db
+          .update(affairsTable)
+          .set({ order: dbEvent.eventOrder + 1 })
+          .where(eq(affairsTable.title, dbEvent.eventTitle))
+          .execute();
       }
-
     } catch (error) {
       return NextResponse.json(
         { error: "Something went wrong in db" },

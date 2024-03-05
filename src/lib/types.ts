@@ -38,4 +38,4 @@ export type DbEvent = {
   eventOrder: number;
   eventTime1: Date;
   eventTime2: Date;
-}
+};

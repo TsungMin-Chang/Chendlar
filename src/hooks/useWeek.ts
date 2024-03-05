@@ -1,7 +1,7 @@
-import type { PostWeekRequest } from "@/validators/crudTypes";
+import type { GetWeeksRequest } from "@/validators/crudTypes";
 
 export default function useWeek() {
-  const getWeeks = async (data: PostWeekRequest) => {
+  const getWeeks = async (data: GetWeeksRequest) => {
     const jsonData = JSON.stringify(data);
     const res = await fetch(`/api/weeks`, {
       method: "POST",

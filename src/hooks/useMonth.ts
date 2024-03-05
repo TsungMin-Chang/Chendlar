@@ -1,7 +1,7 @@
-import type { PostMonthRequest } from "@/validators/crudTypes";
+import type { GetMonthsRequest } from "@/validators/crudTypes";
 
 export default function useMonth() {
-  const getMonths = async (data: PostMonthRequest) => {
+  const getMonths = async (data: GetMonthsRequest) => {
     const jsonData = JSON.stringify(data);
     const res = await fetch(`/api/months`, {
       method: "POST",
