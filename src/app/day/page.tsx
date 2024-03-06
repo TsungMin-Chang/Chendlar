@@ -10,17 +10,17 @@ export default function DayPage() {
     >
       <div className="flex flex-col gap-y-6">
         {/* Day Date */}
-        <div className="m-2 text-lg font-bold text-white">July 24, 2024</div>
+        <div className="ml-2 text-lg font-bold text-zinc-200">July 24, 2024</div>
 
         {/* To do */}
-        <div className="flex flex-col gap-y-2 rounded-lg bg-[#99887F] p-4 pb-6">
-          <div className="text-md pb-1 font-bold">To do</div>
+        <div className="flex flex-col gap-y-2 rounded-lg bg-[#634d3f] border-1 border-black p-4 pb-6 pt-3">
+          <div className="text-lg pb-1 font-bold text-zinc-200">To do</div>
           <TodoItems />
         </div>
 
         {/* Event */}
-        <div className="flex flex-col gap-y-2 rounded-lg bg-[#8C8784] p-4 pb-6">
-          <div className="text-md pb-1 font-bold">Event</div>
+        <div className="flex flex-col gap-y-2 rounded-lg bg-[#634d3f] border-1 border-black p-4 pb-6 pt-3">
+          <div className="text-lg pb-1 font-bold text-zinc-200">Event</div>
           <EventItems />
         </div>
       </div>

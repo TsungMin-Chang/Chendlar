@@ -30,7 +30,7 @@ export default function MonthCell({
         dummy[cellDateString].map((ele, i) => (
           <div
             key={ele.id + i.toString()}
-            className="max-h-4 rounded-sm pl-1 text-xs text-zinc-800 "
+            className="max-h-4 rounded-sm pl-1 text-xs text-zinc-200 "
             style={{ backgroundColor: ele.color }}
           >
             {ele.type === "todo" && (
