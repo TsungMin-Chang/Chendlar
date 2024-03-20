@@ -1,35 +1,40 @@
 import { useRouter } from "next/navigation";
 
 import useDummy from "@/hooks/useDummy";
+// for dummy use, will delete later
+import type { dbAffair } from "@/lib/types";
+
+type MonthCellProps = {
+  cellDisplayDate: number;
+  cellDateString: string; // for dummy use, will delete later
+  cellDayNumber: number;
+  cellAffairs: dbAffair[] | null;
+};
 
 export default function MonthCell({
-  firstDayOfMonth,
-  index,
-}: {
-  firstDayOfMonth: Date;
-  index: number;
-}) {
+  cellDisplayDate,
+  cellDateString, // for dummy use, will delete later
+  cellDayNumber,
+  cellAffairs,
+}: MonthCellProps) {
   const router = useRouter();
-  const { dummy } = useDummy();
+  const { dummy } = useDummy(); // for dummy use, will delete later
 
-  const year = firstDayOfMonth.getFullYear();
-  const month = firstDayOfMonth.getMonth();
-  const offset = firstDayOfMonth.getDay();
-  const cellDate = index + 1 - offset;
-  const cellDateString = new Date(year, month, cellDate).toLocaleDateString(
-    "en-US",
-  );
+  console.log(cellDayNumber); // for router.push(`/day/{$cellDayNumber}`)
+  console.log(cellAffairs); // for mapping and rendering, we are currently using dummy
 
   return (
     <div
       className="flex h-full w-full flex-col gap-y-1"
-      onClick={() => router.push("/day")}
+      onClick={() => router.push("/day/123")}
     >
-      <div className="flex justify-center text-sm text-white">{cellDate}</div>
+      <div className="flex justify-center text-sm text-white">
+        {cellDisplayDate}
+      </div>
       {dummy[cellDateString] &&
         dummy[cellDateString].map((ele, i) => (
           <div
-            key={ele.id + i.toString()}
+            key={"innerCell_Affair" + i.toString()+ ele.id}
             className="max-h-4 rounded-sm pl-1 text-xs text-zinc-200 "
             style={{ backgroundColor: ele.color }}
           >

@@ -5,7 +5,7 @@ type EventItemsProps = {
   events: dbAffair[];
 };
 
-export default function EventItems({events}: EventItemsProps) {
+export default function EventItems({ events }: EventItemsProps) {
   console.log(events);
 
   return (

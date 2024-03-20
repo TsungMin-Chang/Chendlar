@@ -1,20 +1,33 @@
 "use client";
 
-// import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 
 import useDateContext from "@/hooks/useDateContext";
+import useMonth from "@/hooks/useMonth";
+import type { resData } from "@/lib/types";
+import { getMonthNumber } from "@/lib/utils";
 
 import MonthCells from "./_components/MonthCells";
 
-// import useMonth from "@/hooks/useMonth";
-
 export default function Home() {
   const days = ["SUN", "MON", "TUE", "WED", "THR", "FRI", "SAT"];
+  const { getMonths } = useMonth();
+
   const { date, setDate } = useDateContext();
   const [slideDate, setSlideDate] = useState(date);
+  const [monthsData, setMonthsData] = useState<resData | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const currentMonthNumber = getMonthNumber(slideDate);
+      const reqData = { monthNumber: currentMonthNumber, userId: "uuid" };
+      const resData: resData = await getMonths(reqData);
+      setMonthsData(resData);
+    }
+    fetchData();
+  }, [slideDate, getMonths]); // TODO: why should I include getMonths() here? maybe use useRef?
 
   const handleSwipe = (from: number, to: number) => {
     if (from === to) {
@@ -76,6 +89,9 @@ export default function Home() {
             lastDayOfMonth={
               new Date(slideDate.getFullYear(), slideDate.getMonth(), 0)
             }
+            monthData={
+              monthsData ? monthsData[getMonthNumber(slideDate) - 1] : null
+            }
           />
           <MonthCells // current month: 1
             firstDayOfMonth={
@@ -84,6 +100,9 @@ export default function Home() {
             lastDayOfMonth={
               new Date(slideDate.getFullYear(), slideDate.getMonth() + 1, 0)
             }
+            monthData={
+              monthsData ? monthsData[getMonthNumber(slideDate)] : null
+            }
           />
           <MonthCells // next month: 2
             firstDayOfMonth={
@@ -91,6 +110,9 @@ export default function Home() {
             }
             lastDayOfMonth={
               new Date(slideDate.getFullYear(), slideDate.getMonth() + 2, 0)
+            }
+            monthData={
+              monthsData ? monthsData[getMonthNumber(slideDate) + 1] : null
             }
           />
         </Slide>

@@ -1,11 +1,5 @@
 import type { Affair } from "@/lib/types";
 
-// DB TODO:
-// 2. "order": start from 0
-// 5. type: "todo" (last for one day): add from bottom
-// 6. type: "event" (last for multiple days): add from top
-// 7. type: "empty" (the difficult case)
-
 type dummyProp = {
   [key: string]: Affair[];
 };

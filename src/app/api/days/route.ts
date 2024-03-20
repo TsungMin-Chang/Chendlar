@@ -48,14 +48,11 @@ export async function POST(request: NextRequest) {
         .execute();
 
       return NextResponse.json("OK", { status: 200 });
-
     } catch (error) {
-
       return NextResponse.json(
         { error: "Something went wrong in db" },
         { status: 500 },
       );
-
     }
   }
 
@@ -143,17 +140,13 @@ export async function POST(request: NextRequest) {
       }
 
       return NextResponse.json("OK", { status: 200 });
-
     } catch (error) {
-
       return NextResponse.json(
         { error: "Something went wrong in db" },
         { status: 500 },
       );
-
     }
   }
-
 }
 
 // export async function UPDATE(request: NextRequest) {

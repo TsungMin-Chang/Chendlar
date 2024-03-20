@@ -13,10 +13,7 @@ type DayPageProps = {
   };
 };
 
-export default async function DayPage({ 
-  params: { dayNumber } 
-}: DayPageProps) {
-  
+export default async function DayPage({ params: { dayNumber } }: DayPageProps) {
   // console.log(dayNumber);
   const userId = "uuid";
   console.log(userId);
@@ -45,7 +42,7 @@ export default async function DayPage({
     )
     .orderBy(asc(affairsTable.time2))
     .execute();
-  
+
   const events = await db
     .select({
       id: affairsTable.id,
@@ -78,22 +75,20 @@ export default async function DayPage({
     >
       <div className="flex flex-col gap-y-6">
         {/* Day Date */}
-        <div className="ml-2 text-lg font-bold text-zinc-200">July 24, 2024</div>
+        <div className="ml-2 text-lg font-bold text-zinc-200">
+          July 24, 2024
+        </div>
 
         {/* To do */}
-        <div className="flex flex-col gap-y-2 rounded-lg bg-[#634d3f] border-1 border-black p-4 pb-6 pt-3">
-          <div className="text-lg pb-1 font-bold text-zinc-200">To do</div>
-          <TodoItems 
-            todos={todos}
-          />
+        <div className="border-1 flex flex-col gap-y-2 rounded-lg border-black bg-[#634d3f] p-4 pb-6 pt-3">
+          <div className="pb-1 text-lg font-bold text-zinc-200">To do</div>
+          <TodoItems todos={todos} />
         </div>
 
         {/* Event */}
-        <div className="flex flex-col gap-y-2 rounded-lg bg-[#634d3f] border-1 border-black p-4 pb-6 pt-3">
-          <div className="text-lg pb-1 font-bold text-zinc-200">Event</div>
-          <EventItems 
-            events={events}
-          />
+        <div className="border-1 flex flex-col gap-y-2 rounded-lg border-black bg-[#634d3f] p-4 pb-6 pt-3">
+          <div className="pb-1 text-lg font-bold text-zinc-200">Event</div>
+          <EventItems events={events} />
         </div>
       </div>
     </div>

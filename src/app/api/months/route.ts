@@ -4,9 +4,9 @@ import { and, eq, asc, between } from "drizzle-orm";
 
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
+import type { dbAffair, resData } from "@/lib/types";
 import { getMonthsRequestSchema } from "@/validators/crudTypes";
 import type { GetMonthsRequest } from "@/validators/crudTypes";
-import type { dbAffair, resData } from "@/lib/types";
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
@@ -45,7 +45,11 @@ export async function POST(request: NextRequest) {
       .groupBy(affairsTable.dayNumber)
       .execute();
 
-    const data: resData = {[monthNumber - 1]: {}, [monthNumber]: {}, [monthNumber + 1]: {}};
+    const data: resData = {
+      [monthNumber - 1]: {},
+      [monthNumber]: {},
+      [monthNumber + 1]: {},
+    };
 
     dbAffairs.map((affair) => {
       const affairMonthNumber = affair.monthNumber;
@@ -55,16 +59,13 @@ export async function POST(request: NextRequest) {
       } else {
         data[affairMonthNumber][affairDayNumber].push(affair);
       }
-    })
+    });
 
     return NextResponse.json({ data }, { status: 200 });
-
   } catch (error) {
-
     return NextResponse.json(
       { error: "Something went wrong in db" },
       { status: 500 },
     );
-
   }
 }

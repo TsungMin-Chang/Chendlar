@@ -1,18 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 
 import useDateContext from "@/hooks/useDateContext";
+import useWeek from "@/hooks/useWeek";
+import type { resData } from "@/lib/types";
+import { getWeekNumber } from "@/lib/utils";
 
 import WeekCells from "./_components/WeekCells";
 
 // import useWeek from "@/hooks/useWeek";
 
 export default function WeekPage() {
+  const { getWeeks } = useWeek();
+
   const { date, setDate } = useDateContext();
   const [slideDate, setSlideDate] = useState(date);
+  const [weeksData, setWeeksData] = useState<resData | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const currentWeekNumber = getWeekNumber(slideDate);
+      const reqData = { weekNumber: currentWeekNumber, userId: "uuid" };
+      const resData: resData = await getWeeks(reqData);
+      setWeeksData(resData);
+    }
+    fetchData();
+  }, [slideDate, getWeeks]); // TODO: why should I include getMonths() here? maybe use useRef?
 
   const handleSwipe = (from: number, to: number) => {
     if (from === to) {
@@ -73,7 +89,7 @@ export default function WeekPage() {
       onStartChange={(from: number, to: number) => handleSwipe(from, to)}
       defaultIndex={1}
     >
-      <WeekCells // previous week
+      <WeekCells // previous week: 0
         firstDayOfWeek={
           new Date(
             slideDate.getFullYear(),
@@ -81,8 +97,9 @@ export default function WeekPage() {
             slideDate.getDate() - slideDate.getDay() - 7,
           )
         }
+        weekData={weeksData ? weeksData[getWeekNumber(slideDate) - 1] : null}
       />
-      <WeekCells // current week
+      <WeekCells // current week: 1
         firstDayOfWeek={
           new Date(
             slideDate.getFullYear(),
@@ -90,8 +107,9 @@ export default function WeekPage() {
             slideDate.getDate() - slideDate.getDay(),
           )
         }
+        weekData={weeksData ? weeksData[getWeekNumber(slideDate)] : null}
       />
-      <WeekCells // next week
+      <WeekCells // next week: 2
         firstDayOfWeek={
           new Date(
             slideDate.getFullYear(),
@@ -99,6 +117,7 @@ export default function WeekPage() {
             slideDate.getDate() - slideDate.getDay() + 7,
           )
         }
+        weekData={weeksData ? weeksData[getWeekNumber(slideDate) + 1] : null}
       />
     </Slide>
   );

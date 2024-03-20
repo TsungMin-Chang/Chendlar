@@ -41,5 +41,5 @@ export type dbAffair = {
 export type resData = {
   [monthOrWeekNumber: number]: {
     [dayNumber: number]: dbAffair[];
-  }
+  };
 };
