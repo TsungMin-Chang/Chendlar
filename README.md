@@ -83,6 +83,10 @@ yarn add -D drizzle-kit @types/pg
 ```bash
 docker compose up -d
 ```
+OR
+```bash
+podman-compose up -d
+```
 
 4. Add `POSTGRES_URL` to `.env`:
 
