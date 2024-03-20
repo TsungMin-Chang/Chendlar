@@ -6,6 +6,7 @@ import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
 import { getMonthsRequestSchema } from "@/validators/crudTypes";
 import type { GetMonthsRequest } from "@/validators/crudTypes";
+import type { dbAffair, resData } from "@/lib/types";
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest) {
   const { userId, monthNumber } = data as GetMonthsRequest;
 
   try {
-    const affairs = await db
+    const dbAffairs: dbAffair[] = await db
       .select({
         id: affairsTable.id,
         title: affairsTable.title,
@@ -29,8 +30,6 @@ export async function POST(request: NextRequest) {
         time2: affairsTable.time2,
         isDone: affairsTable.isDone,
         order: affairsTable.order,
-        frontPointer: affairsTable.frontPointer,
-        backPointer: affairsTable.backPointer,
         monthNumber: affairsTable.monthNumber,
         weekNumber: affairsTable.weekNumber,
         dayNumber: affairsTable.dayNumber,
@@ -42,14 +41,30 @@ export async function POST(request: NextRequest) {
           eq(affairsTable.userId, userId),
         ),
       )
-      .orderBy(asc(affairsTable.order))
+      .orderBy(asc(affairsTable.order), asc(affairsTable.time2))
       .groupBy(affairsTable.dayNumber)
       .execute();
-    return NextResponse.json({ data: affairs }, { status: 200 });
+
+    const data: resData = {[monthNumber - 1]: {}, [monthNumber]: {}, [monthNumber + 1]: {}};
+
+    dbAffairs.map((affair) => {
+      const affairMonthNumber = affair.monthNumber;
+      const affairDayNumber = affair.dayNumber;
+      if (data[affairMonthNumber][affairDayNumber] === undefined) {
+        data[affairMonthNumber][affairDayNumber] = [affair];
+      } else {
+        data[affairMonthNumber][affairDayNumber].push(affair);
+      }
+    })
+
+    return NextResponse.json({ data }, { status: 200 });
+
   } catch (error) {
+
     return NextResponse.json(
       { error: "Something went wrong in db" },
       { status: 500 },
     );
+
   }
 }

@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { eq, isNull, and, between } from "drizzle-orm";
+import { eq, and, between } from "drizzle-orm";
 
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
@@ -27,21 +27,9 @@ export async function POST(request: NextRequest) {
     data as PostAffairRequest;
 
   if (type === "todo") {
+    // todo is given very large order and will later be sorted by time2
     try {
-      const [{ lastId }] = await db
-        .select({
-          lastId: affairsTable.id,
-        })
-        .from(affairsTable)
-        .where(
-          and(
-            eq(affairsTable.dayNumber, getDayNumber(time1)),
-            isNull(affairsTable.backPointer),
-          ),
-        )
-        .execute();
-
-      const [{ insertedId }] = await db
+      await db
         .insert(affairsTable)
         .values({
           userId,
@@ -52,8 +40,6 @@ export async function POST(request: NextRequest) {
           time2,
           isDone,
           order: 100,
-          frontPointer: lastId ?? null,
-          backPointer: null,
           monthNumber: getMonthNumber(time1),
           weekNumber: getWeekNumber(time1),
           dayNumber: getDayNumber(time1),
@@ -61,20 +47,20 @@ export async function POST(request: NextRequest) {
         .returning({ insertedId: affairsTable.id })
         .execute();
 
-      await db
-        .update(affairsTable)
-        .set({ backPointer: insertedId })
-        .where(eq(affairsTable.id, lastId))
-        .execute();
+      return NextResponse.json("OK", { status: 200 });
+
     } catch (error) {
+
       return NextResponse.json(
         { error: "Something went wrong in db" },
         { status: 500 },
       );
+
     }
   }
 
   if (type === "event") {
+    // event will be sorted by and rendered according to order
     try {
       // step1: get dbEvents that needed to be updated later
       let minTime1 = time1;
@@ -127,20 +113,7 @@ export async function POST(request: NextRequest) {
       for (let i = 0; i < dateArray.length; i++) {
         const date = dateArray[i];
 
-        const [{ firstId }] = await db // might error?
-          .select({
-            firstId: affairsTable.id,
-          })
-          .from(affairsTable)
-          .where(
-            and(
-              eq(affairsTable.dayNumber, getDayNumber(date)),
-              isNull(affairsTable.frontPointer),
-            ),
-          )
-          .execute();
-
-        const [{ insertedId }] = await db
+        await db
           .insert(affairsTable)
           .values({
             userId,
@@ -151,19 +124,11 @@ export async function POST(request: NextRequest) {
             time2,
             isDone,
             order: 0,
-            frontPointer: null,
-            backPointer: firstId ?? null,
             monthNumber: getMonthNumber(date),
             weekNumber: getWeekNumber(date),
             dayNumber: getDayNumber(date),
           })
           .returning({ insertedId: affairsTable.id })
-          .execute();
-
-        await db
-          .update(affairsTable)
-          .set({ frontPointer: insertedId })
-          .where(eq(affairsTable.id, firstId))
           .execute();
       }
 
@@ -176,14 +141,19 @@ export async function POST(request: NextRequest) {
           .where(eq(affairsTable.title, dbEvent.eventTitle))
           .execute();
       }
+
+      return NextResponse.json("OK", { status: 200 });
+
     } catch (error) {
+
       return NextResponse.json(
         { error: "Something went wrong in db" },
         { status: 500 },
       );
+
     }
   }
-  return NextResponse.json("OK", { status: 200 });
+
 }
 
 // export async function UPDATE(request: NextRequest) {

@@ -1,6 +1,13 @@
 // server side component
+import type { dbAffair } from "@/lib/types";
 
-export default function EventItems() {
+type EventItemsProps = {
+  events: dbAffair[];
+};
+
+export default function EventItems({events}: EventItemsProps) {
+  console.log(events);
+
   return (
     <>
       {/* wil be using map function */}

@@ -17,9 +17,15 @@ export type Affair = {
   order: number;
 };
 
+export type DbEvent = {
+  eventTitle: string;
+  eventOrder: number;
+  eventTime1: Date;
+  eventTime2: Date;
+};
+
 export type dbAffair = {
   id: string;
-  userId: string;
   title: string;
   color: string;
   type: string;
@@ -27,15 +33,13 @@ export type dbAffair = {
   time2: Date;
   isDone: boolean;
   order: number;
-  dateString: string;
-  year: number;
-  month: number;
+  monthNumber: number;
   weekNumber: number;
+  dayNumber: number;
 };
 
-export type DbEvent = {
-  eventTitle: string;
-  eventOrder: number;
-  eventTime1: Date;
-  eventTime2: Date;
+export type resData = {
+  [monthOrWeekNumber: number]: {
+    [dayNumber: number]: dbAffair[];
+  }
 };

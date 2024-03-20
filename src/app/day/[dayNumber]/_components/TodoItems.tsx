@@ -2,8 +2,14 @@
 import { AiFillHeart } from "react-icons/ai";
 import { AiOutlineHeart } from "react-icons/ai";
 import { TiDelete } from "react-icons/ti";
+import type { dbAffair } from "@/lib/types";
 
-export default function TodoItems() {
+type TodoItemsProps = {
+  todos: dbAffair[];
+};
+
+export default function TodoItems({todos}: TodoItemsProps) {
+  console.log(todos);
   return (
     <>
       {/* wil be using map function */}
