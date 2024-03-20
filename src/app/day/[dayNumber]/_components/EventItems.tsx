@@ -1,4 +1,4 @@
-// server side component
+// this is a server side component
 import type { dbAffair } from "@/lib/types";
 
 type EventItemsProps = {

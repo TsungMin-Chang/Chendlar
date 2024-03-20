@@ -68,11 +68,11 @@ export default function AddDialog({
 
   const handleNext = () => {
     if (!title) {
-      alert("You forgot your title!");
+      alert("What is the title of this affair?");
       return;
     }
     if (!color) {
-      alert("You forgot to pick a color!");
+      alert("Please select a color for this affair.");
       return;
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -80,7 +80,7 @@ export default function AddDialog({
 
   const handleSubmit = async () => {
     if (!type) {
-      alert("Is it a to-do or an event?");
+      alert("Is it a To-do or an Event?");
       return;
     }
 
@@ -90,7 +90,7 @@ export default function AddDialog({
     }
 
     if (type === "event" && timeData.time1 > timeData.time2) {
-      alert('"From" field should be earlier than "To" field.');
+      alert('The "From" field should be earlier than the "To" field.');
       return;
     }
 
@@ -125,9 +125,7 @@ export default function AddDialog({
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle sx={{ fontWeight: "bold", fontSize: 22 }}>
-        New Affair
-      </DialogTitle>
+      <DialogTitle sx={{ fontWeight: "bold", fontSize: 22 }}>New</DialogTitle>
       {activeStep === 0 && (
         <DialogContent className="flex w-[300px] flex-col gap-y-2">
           <FormControl className="p-2">

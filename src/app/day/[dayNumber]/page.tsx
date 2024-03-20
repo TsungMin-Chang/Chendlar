@@ -14,9 +14,8 @@ type DayPageProps = {
 };
 
 export default async function DayPage({ params: { dayNumber } }: DayPageProps) {
-  // console.log(dayNumber);
+  console.log(dayNumber);
   const userId = "uuid";
-  console.log(userId);
 
   const todos = await db
     .select({

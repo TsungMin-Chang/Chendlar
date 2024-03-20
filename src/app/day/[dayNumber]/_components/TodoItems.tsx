@@ -1,4 +1,4 @@
-// server side component
+// this is a server side component
 import { AiFillHeart } from "react-icons/ai";
 import { AiOutlineHeart } from "react-icons/ai";
 import { TiDelete } from "react-icons/ti";
