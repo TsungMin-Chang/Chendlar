@@ -18,6 +18,12 @@ yarn
 docker compose up -d
 ```
 
+OR
+
+```bash
+podman-compose up -d
+```
+
 3. Run migrations
 
 ```bash
@@ -28,6 +34,13 @@ yarn migrate
 
 ```bash
 yarn dev
+```
+
+OR
+
+```bash
+yarn build
+yarn start
 ```
 
 5. Open http://localhost:3000 in your browser
@@ -48,7 +61,7 @@ yarn add -D prettier prettier-plugin-tailwindcss @trivago/prettier-plugin-sort-i
 yarn add -D eslint typescript @typescript-eslint/parser eslint-config-prettier @typescript-eslint/eslint-plugin
 ```
 
-3. Copy and paste the `.prettierrc.cjs` and `.eslintrc.json` from this repo to your project root.
+3. Copy and paste the `.prettierrc.cjs` and `.eslintrc.json` from previous repo to your project root.
 
 4. Add `format` script to `package.json`
 
@@ -83,7 +96,9 @@ yarn add -D drizzle-kit @types/pg
 ```bash
 docker compose up -d
 ```
+
 OR
+
 ```bash
 podman-compose up -d
 ```
@@ -96,6 +111,7 @@ POSTGRES_URL=postgres://postgres:postgres@localhost:5432/chendlar
 ```
 
 5. Create `db` folder
+
 6. Create the `./src/db/index.ts` file
 
 7. Create an empty `./src/db/schema.ts` file
@@ -125,9 +141,7 @@ yarn add dotenv
 {
   "scripts": {
     // This script will update the database schema
-    "migrate": "drizzle-kit push:pg",
-    // This script opens a GUI to manage the database
-    "studio": "drizzle-kit studio"
+    "migrate": "drizzle-kit push:pg"
   }
 }
 ```

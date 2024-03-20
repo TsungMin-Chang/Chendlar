@@ -40,7 +40,8 @@ export default function MonthCell({
           >
             {ele.type === "todo" && (
               <>
-                <span className="font-medium">{ele.time2.getHours()}.</span>{ele.title}
+                <span className="font-medium">{ele.time2.getHours()}.</span>
+                {ele.title}
               </>
             )}
             {ele.type === "event" &&
