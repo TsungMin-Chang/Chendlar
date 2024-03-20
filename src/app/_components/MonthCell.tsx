@@ -34,7 +34,7 @@ export default function MonthCell({
       {dummy[cellDateString] &&
         dummy[cellDateString].map((ele, i) => (
           <div
-            key={"innerCell_Affair" + i.toString()+ ele.id}
+            key={"innerCell_Affair" + i.toString() + ele.id}
             className="max-h-4 rounded-sm pl-1 text-xs text-zinc-200 "
             style={{ backgroundColor: ele.color }}
           >

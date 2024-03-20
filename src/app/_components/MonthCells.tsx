@@ -25,7 +25,10 @@ export default function MonthCells({
       {Array(42)
         .fill(0)
         .map((_, i) => (
-          <div key={"outterBox"+i.toString()} className="overflow-hidden border border-[#4E4743]">
+          <div
+            key={"outterBox" + i.toString()}
+            className="overflow-hidden border border-[#4E4743]"
+          >
             {i >= firstDayOfMonth.getDay() &&
               i < firstDayOfMonth.getDay() + lastDayOfMonth.getDate() && (
                 <MonthCell
