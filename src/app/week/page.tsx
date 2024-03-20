@@ -23,7 +23,10 @@ export default function WeekPage() {
   useEffect(() => {
     async function fetchData() {
       const currentWeekNumber = getWeekNumber(slideDate);
-      const reqData = { weekNumber: currentWeekNumber, userId: "uuid" };
+      const reqData = {
+        weekNumber: currentWeekNumber,
+        userId: "89eb1010-ca1e-414a-a3f2-3b35a994c4a6",
+      };
       const resData: resData = await getWeeks(reqData);
       setWeeksData(resData);
     }

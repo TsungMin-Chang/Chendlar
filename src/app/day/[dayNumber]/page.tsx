@@ -15,7 +15,7 @@ type DayPageProps = {
 
 export default async function DayPage({ params: { dayNumber } }: DayPageProps) {
   console.log(dayNumber);
-  const userId = "uuid";
+  const userId = "89eb1010-ca1e-414a-a3f2-3b35a994c4a6";
 
   const todos = await db
     .select({

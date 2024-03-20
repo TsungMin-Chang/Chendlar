@@ -22,7 +22,10 @@ export default function Home() {
   useEffect(() => {
     async function fetchData() {
       const currentMonthNumber = getMonthNumber(slideDate);
-      const reqData = { monthNumber: currentMonthNumber, userId: "uuid" };
+      const reqData = {
+        monthNumber: currentMonthNumber,
+        userId: "89eb1010-ca1e-414a-a3f2-3b35a994c4a6",
+      };
       const resData: resData = await getMonths(reqData);
       setMonthsData(resData);
     }
