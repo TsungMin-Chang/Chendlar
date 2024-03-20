@@ -92,7 +92,7 @@ export default function SideBar({
   return (
     <Drawer open={openSideBar} onClose={() => onCloseSideBar()}>
       <div
-        className="flex h-full w-full flex-col items-center gap-y-3 bg-[#5b4020] p-5 pl-6 pt-3"
+        className="flex h-full w-full flex-col items-center gap-y-3 bg-[#4c361c] p-5 pl-6 pt-3"
         style={{ width: 250 }}
         role="presentation"
       >
@@ -106,13 +106,13 @@ export default function SideBar({
         </Stack>
         <button
           onClick={() => handleToMonth()}
-          className="focus:shadow-outline flex w-full max-w-xs items-center justify-center rounded-lg border border-zinc-400 bg-[#473520] py-3 font-bold text-zinc-200 shadow-sm transition-all hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:outline-none"
+          className="focus:shadow-outline flex w-full max-w-xs items-center justify-center rounded-lg border-2 border-zinc-400 bg-[#473520] py-3 font-bold text-zinc-200 shadow-sm transition-all hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:outline-none"
         >
           Month
         </button>
         <button
           onClick={() => handleToWeek()}
-          className="focus:shadow-outline flex w-full max-w-xs items-center justify-center rounded-lg border border-zinc-400 bg-[#473520] py-3 font-bold text-zinc-200 shadow-sm transition-all hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:outline-none"
+          className="focus:shadow-outline flex w-full max-w-xs items-center justify-center rounded-lg border-2 border-zinc-400 bg-[#473520] py-3 font-bold text-zinc-200 shadow-sm transition-all hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:outline-none"
         >
           Week
         </button>
