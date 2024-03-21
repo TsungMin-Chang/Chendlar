@@ -31,7 +31,7 @@ export default function WeekPage() {
       setWeeksData(resData);
     }
     fetchData();
-  }, [slideDate, getWeeks]); // TODO: why should I include getMonths() here? maybe use useRef?
+  }, [slideDate.getMonth()]); // TODO: getWeeks() -> useRef
 
   const handleSwipe = (from: number, to: number) => {
     if (from === to) {

@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
         ),
       )
       .orderBy(asc(affairsTable.order), asc(affairsTable.time2))
-      .groupBy(affairsTable.dayNumber)
+      // .groupBy(affairsTable.dayNumber)
       .execute();
 
     const data: resData = {
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
         data[affairMonthNumber][affairDayNumber].push(affair);
       }
     });
-
+    
     return NextResponse.json({ data }, { status: 200 });
   } catch (error) {
     return NextResponse.json(

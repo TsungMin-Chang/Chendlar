@@ -16,13 +16,13 @@ export default function MonthCell({
   cellDisplayDate,
   cellDateString, // for dummy use, will delete later
   cellDayNumber,
-  cellAffairs,
+  // cellAffairs,
 }: MonthCellProps) {
   const router = useRouter();
   const { dummy } = useDummy(); // for dummy use, will delete later
 
-  console.log(cellDayNumber); // for router.push(`/day/{$cellDayNumber}`)
-  console.log(cellAffairs); // for mapping and rendering, we are currently using dummy
+  // console.log(cellDayNumber); // for router.push(`/day/{$cellDayNumber}`)
+  // console.log(cellAffairs); // for mapping and rendering, we are currently using dummy
 
   return (
     <div

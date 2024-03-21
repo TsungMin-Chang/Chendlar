@@ -19,19 +19,24 @@ import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import dayjs from "dayjs";
 
 import ColorPalette from "./ColorPalette";
+import useDay from "@/hooks/useDay";
 
 type timeProp = {
   time1: null | Date;
   time2: null | Date;
 };
 
+type AddDialogProps = {
+  open: boolean;
+  onClose: () => void;
+};
+
 export default function AddDialog({
   open,
   onClose,
-}: {
-  open: boolean;
-  onClose: () => void;
-}) {
+}: AddDialogProps) {
+  const { postAffair } = useDay();
+
   const steps = ["", ""];
   const [activeStep, setActiveStep] = useState(0);
   const [title, setTitle] = useState("");
@@ -96,6 +101,7 @@ export default function AddDialog({
 
     try {
       const data = {
+        userId: "89eb1010-ca1e-414a-a3f2-3b35a994c4a6",
         title,
         color,
         type,
@@ -104,11 +110,11 @@ export default function AddDialog({
         isDone,
       };
       console.log(data);
-      // await createNode(apiData.token, apiData.pageId, data);
+      await postAffair(data);
     } catch (error) {
       alert("Error: Failed to create!");
     } finally {
-      // handleClose();
+      handleClose();
       // onRefresh();
     }
   };

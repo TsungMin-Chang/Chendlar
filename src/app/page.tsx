@@ -30,7 +30,7 @@ export default function Home() {
       setMonthsData(resData);
     }
     fetchData();
-  }, [slideDate, getMonths]); // TODO: why should I include getMonths() here? maybe use useRef?
+  }, [slideDate.getMonth()]); // TODO: getMonths() -> useRef
 
   const handleSwipe = (from: number, to: number) => {
     if (from === to) {

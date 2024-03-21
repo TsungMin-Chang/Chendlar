@@ -29,6 +29,8 @@ export async function POST(request: NextRequest) {
   if (type === "todo") {
     // todo is given very large order and will later be sorted by time2
     try {
+      console.log("hihi");
+      console.log("0");
       await db
         .insert(affairsTable)
         .values({
@@ -47,6 +49,7 @@ export async function POST(request: NextRequest) {
         .returning({ insertedId: affairsTable.id })
         .execute();
 
+      console.log("1");
       return NextResponse.json("OK", { status: 200 });
     } catch (error) {
       return NextResponse.json(
