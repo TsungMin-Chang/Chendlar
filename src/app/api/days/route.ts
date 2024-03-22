@@ -15,10 +15,11 @@ import { postAffairRequestSchema } from "@/validators/crudTypes";
 import type { PostAffairRequest } from "@/validators/crudTypes";
 
 export async function POST(request: NextRequest) {
+  
   const data = await request.json();
 
   try {
-    postAffairRequestSchema.parse(data);
+    postAffairRequestSchema.safeParse(data);
   } catch (error) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
@@ -29,8 +30,6 @@ export async function POST(request: NextRequest) {
   if (type === "todo") {
     // todo is given very large order and will later be sorted by time2
     try {
-      console.log("hihi");
-      console.log("0");
       await db
         .insert(affairsTable)
         .values({
@@ -38,18 +37,15 @@ export async function POST(request: NextRequest) {
           title,
           color,
           type,
-          time1,
-          time2,
           isDone,
+          time1: new Date(time1),
+          time2: new Date(time2),
           order: 100,
           monthNumber: getMonthNumber(time1),
           weekNumber: getWeekNumber(time1),
           dayNumber: getDayNumber(time1),
         })
-        .returning({ insertedId: affairsTable.id })
         .execute();
-
-      console.log("1");
       return NextResponse.json("OK", { status: 200 });
     } catch (error) {
       return NextResponse.json(
@@ -109,30 +105,26 @@ export async function POST(request: NextRequest) {
       }
 
       // step 2: insert new event
+      const insertDataArray = [];
       const dateArray = getDates(time1, time2);
       for (let i = 0; i < dateArray.length; i++) {
         const date = dateArray[i];
-
-        await db
-          .insert(affairsTable)
-          .values({
-            userId,
-            title,
-            color,
-            type,
-            time1,
-            time2,
-            isDone,
-            order: 0,
-            monthNumber: getMonthNumber(date),
-            weekNumber: getWeekNumber(date),
-            dayNumber: getDayNumber(date),
-          })
-          .returning({ insertedId: affairsTable.id })
-          .execute();
+        insertDataArray.push({
+          ...data, 
+          time1: new Date(time1),
+          time2: new Date(time2),
+          order: 0,
+          monthNumber: getMonthNumber(date),
+          weekNumber: getWeekNumber(date),
+          dayNumber: getDayNumber(date),
+        })
       }
-
-      // step 3: update dbEvents
+      await db
+        .insert(affairsTable)
+        .values(insertDataArray)
+        .execute();
+      
+      // step 3: update dbEvents - have not checked
       for (let i = 0; i < dbEvents.length; i++) {
         const dbEvent = dbEvents[i];
         await db

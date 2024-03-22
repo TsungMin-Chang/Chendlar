@@ -1,4 +1,5 @@
-export const getDayNumber = (myDate: Date) => {
+export const getDayNumber = (reqDate: Date) => {
+  const myDate = new Date(reqDate);
   const baseDay: Date = new Date(2023, 11, 31, 22, 30);
   const myDateYear = myDate.getFullYear();
   const myDateMonth = myDate.getMonth();
@@ -7,13 +8,15 @@ export const getDayNumber = (myDate: Date) => {
   const dayNumber = (newMyDate.valueOf() - baseDay.valueOf()) / 86400000 + 1;
   return dayNumber;
 };
-export const getWeekNumber = (myDate: Date) => {
+export const getWeekNumber = (reqDate: Date) => {
+  const myDate = new Date(reqDate);
   const dayNumber = getDayNumber(myDate);
   const weekNumber = Math.ceil(dayNumber / 7);
   return weekNumber;
 };
 
-export const getMonthNumber = (myDate: Date) => {
+export const getMonthNumber = (reqDate: Date) => {
+  const myDate = new Date(reqDate);
   const baseMonth: Date = new Date(2024, 0, 1, 22, 30);
   const myDateYear = myDate.getFullYear();
   const myDateMonth = myDate.getMonth();
@@ -34,7 +37,9 @@ Date.prototype.addDays = function (days) {
   return date;
 };
 
-export const getDates = (startDate: Date, stopDate: Date) => {
+export const getDates = (reqStartDate: Date, reqStopDate: Date) => {
+  const startDate = new Date(reqStartDate);
+  const stopDate = new Date(reqStopDate);
   const dateArray: Date[] = [];
   let currentDate = startDate;
   while (currentDate <= stopDate) {
