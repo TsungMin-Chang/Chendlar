@@ -15,7 +15,6 @@ import { postAffairRequestSchema } from "@/validators/crudTypes";
 import type { PostAffairRequest } from "@/validators/crudTypes";
 
 export async function POST(request: NextRequest) {
-  
   const data = await request.json();
 
   try {
@@ -110,20 +109,17 @@ export async function POST(request: NextRequest) {
       for (let i = 0; i < dateArray.length; i++) {
         const date = dateArray[i];
         insertDataArray.push({
-          ...data, 
+          ...data,
           time1: new Date(time1),
           time2: new Date(time2),
           order: 0,
           monthNumber: getMonthNumber(date),
           weekNumber: getWeekNumber(date),
           dayNumber: getDayNumber(date),
-        })
+        });
       }
-      await db
-        .insert(affairsTable)
-        .values(insertDataArray)
-        .execute();
-      
+      await db.insert(affairsTable).values(insertDataArray).execute();
+
       // step 3: update dbEvents - have not checked
       for (let i = 0; i < dbEvents.length; i++) {
         const dbEvent = dbEvents[i];

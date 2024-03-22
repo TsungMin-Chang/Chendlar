@@ -11,6 +11,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 
 import useDateContext from "@/hooks/useDateContext";
+import { months } from "@/lib/utils";
 
 import SideBar from "./SideBar";
 
@@ -18,20 +19,6 @@ export default function NavBar() {
   const [openSideBar, setOpenSideBar] = useState(false);
   const { date } = useDateContext();
   const currentYear = new Date().getFullYear();
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
   return (
     <div style={{ height: "6.5vh" }}>
       <Box className="flex-none" sx={{ flexGrow: 1 }}>

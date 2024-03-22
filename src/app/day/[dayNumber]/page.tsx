@@ -3,19 +3,20 @@ import { and, eq, asc } from "drizzle-orm";
 
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
+import { getDateFromDayNumber } from "@/lib/utils";
 
 import EventItems from "./_components/EventItems";
 import TodoItems from "./_components/TodoItems";
 
 type DayPageProps = {
   params: {
-    dayNumber: number;
+    dayNumber: string;
   };
 };
 
 export default async function DayPage({ params: { dayNumber } }: DayPageProps) {
-  console.log(dayNumber);
   const userId = "89eb1010-ca1e-414a-a3f2-3b35a994c4a6";
+  const todate = getDateFromDayNumber(parseInt(dayNumber));
 
   const todos = await db
     .select({
@@ -35,7 +36,7 @@ export default async function DayPage({ params: { dayNumber } }: DayPageProps) {
     .where(
       and(
         eq(affairsTable.userId, userId),
-        eq(affairsTable.dayNumber, dayNumber),
+        eq(affairsTable.dayNumber, parseInt(dayNumber)),
         eq(affairsTable.type, "todo"),
       ),
     )
@@ -60,7 +61,7 @@ export default async function DayPage({ params: { dayNumber } }: DayPageProps) {
     .where(
       and(
         eq(affairsTable.userId, userId),
-        eq(affairsTable.dayNumber, dayNumber),
+        eq(affairsTable.dayNumber, parseInt(dayNumber)),
         eq(affairsTable.type, "event"),
       ),
     )
@@ -73,9 +74,20 @@ export default async function DayPage({ params: { dayNumber } }: DayPageProps) {
       style={{ height: "94vh" }}
     >
       <div className="flex flex-col gap-y-6">
-        {/* Day Date */}
+        {/* Date */}
         <div className="ml-2 text-lg font-bold text-zinc-200">
-          July 24, 2024
+          {todate.getFullYear === new Date().getFullYear
+            ? todate.toLocaleDateString("en-US", {
+                weekday: "short",
+                month: "long",
+                day: "numeric",
+              })
+            : todate.toLocaleDateString("en-US", {
+                weekday: "short",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
         </div>
 
         {/* To do */}

@@ -1,3 +1,19 @@
+export const days = ["SUN", "MON", "TUE", "WED", "THR", "FRI", "SAT"];
+export const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 export const getDayNumber = (reqDate: Date) => {
   const myDate = new Date(reqDate);
   const baseDay: Date = new Date(2023, 11, 31, 22, 30);
@@ -23,6 +39,11 @@ export const getMonthNumber = (reqDate: Date) => {
   const monthNumber =
     (myDateYear - baseMonth.getFullYear()) * 12 + (myDateMonth + 1);
   return monthNumber;
+};
+
+export const getDateFromDayNumber = (dayNum: number) => {
+  const date: Date = new Date(2023, 11, 31 + dayNum - 1, 22, 30);
+  return date;
 };
 
 declare global {

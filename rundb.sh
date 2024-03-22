@@ -1,3 +1,4 @@
+# podman volume create pg-data
 podman run -d -it --replace \
   --name chendlar \
   -e POSTGRES_DB=chendlar \

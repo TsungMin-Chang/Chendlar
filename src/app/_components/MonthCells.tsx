@@ -33,11 +33,6 @@ export default function MonthCells({
               i < firstDayOfMonth.getDay() + lastDayOfMonth.getDate() && (
                 <MonthCell
                   cellDisplayDate={i + 1 - offset}
-                  cellDateString={new Date( // for dummy use, will delete later
-                    year,
-                    month,
-                    i + 1 - offset,
-                  ).toLocaleDateString("en-US")}
                   cellDayNumber={getDayNumber(
                     new Date(year, month, i + 1 - offset),
                   )}

@@ -7,12 +7,11 @@ import "react-slideshow-image/dist/styles.css";
 import useDateContext from "@/hooks/useDateContext";
 import useMonth from "@/hooks/useMonth";
 import type { resData } from "@/lib/types";
-import { getMonthNumber } from "@/lib/utils";
+import { getMonthNumber, days } from "@/lib/utils";
 
 import MonthCells from "./_components/MonthCells";
 
 export default function Home() {
-  const days = ["SUN", "MON", "TUE", "WED", "THR", "FRI", "SAT"];
   const { getMonths } = useMonth();
 
   const { date, setDate } = useDateContext();
@@ -26,8 +25,8 @@ export default function Home() {
         monthNumber: currentMonthNumber,
         userId: "89eb1010-ca1e-414a-a3f2-3b35a994c4a6",
       };
-      const resData: resData = await getMonths(reqData);
-      setMonthsData(resData);
+      const resData = await getMonths(reqData);
+      setMonthsData(resData.data);
     }
     fetchData();
   }, [slideDate.getMonth()]); // TODO: getMonths() -> useRef

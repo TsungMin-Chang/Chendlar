@@ -27,8 +27,8 @@ export default function WeekPage() {
         weekNumber: currentWeekNumber,
         userId: "89eb1010-ca1e-414a-a3f2-3b35a994c4a6",
       };
-      const resData: resData = await getWeeks(reqData);
-      setWeeksData(resData);
+      const resData = await getWeeks(reqData);
+      setWeeksData(resData.data);
     }
     fetchData();
   }, [slideDate.getMonth()]); // TODO: getWeeks() -> useRef

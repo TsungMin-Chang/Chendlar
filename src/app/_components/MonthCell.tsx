@@ -1,33 +1,24 @@
 import { useRouter } from "next/navigation";
 
-import useDummy from "@/hooks/useDummy";
-// for dummy use, will delete later
 import type { dbAffair } from "@/lib/types";
 import { getDayNumber } from "@/lib/utils";
 
 type MonthCellProps = {
   cellDisplayDate: number;
-  cellDateString: string; // for dummy use, will delete later
   cellDayNumber: number;
   cellAffairs: dbAffair[] | null;
 };
 
 export default function MonthCell({
   cellDisplayDate,
-  cellDateString, // for dummy use, will delete later
   cellDayNumber,
-  // cellAffairs,
+  cellAffairs,
 }: MonthCellProps) {
   const router = useRouter();
-  const { dummy } = useDummy(); // for dummy use, will delete later
-
-  // console.log(cellDayNumber); // for router.push(`/day/{$cellDayNumber}`)
-  // console.log(cellAffairs); // for mapping and rendering, we are currently using dummy
-
   return (
     <div
       className="flex h-full w-full flex-col gap-y-1"
-      onClick={() => router.push("/day/123")}
+      onClick={() => router.push(`/day/${cellDayNumber}`)}
     >
       <div className="flex justify-center text-sm text-white">
         <div
@@ -36,26 +27,44 @@ export default function MonthCell({
           {cellDisplayDate}
         </div>
       </div>
-      {dummy[cellDateString] &&
-        dummy[cellDateString].map((ele, i) => (
+      {cellAffairs &&
+        cellAffairs[0] &&
+        Array(cellAffairs[0].order) // empty div for event offest
+          .fill(0)
+          .map((_, i) => (
+            <div
+              key={"empty" + i.toString()}
+              className="invisible max-h-4 text-xs"
+            >
+              empty
+            </div>
+          )) &&
+        cellAffairs.map((affair, i) => (
           <div
-            key={"innerCell_Affair" + i.toString() + ele.id}
-            className="max-h-4 rounded-sm pl-1 text-xs"
-            style={{ backgroundColor: ele.color }}
+            key={"innerCell_Affair" + i.toString() + affair.id}
+            className={`max-h-4 truncate rounded-sm pl-1 text-xs bg-[${affair.color}]`}
           >
-            {ele.type === "todo" && (
+            {/* todo */}
+            {i < 5 && affair.type === "todo" && (
               <>
-                <span className="font-medium">{ele.time2.getHours()}.</span>
-                {ele.title}
+                <span className="font-medium">
+                  {new Date(affair.time2).getHours()}.
+                </span>
+                <span>{affair.title}</span>
               </>
             )}
-            {ele.type === "event" &&
-              ele.time1.toLocaleDateString("en-US") === cellDateString && (
-                <>{ele.title}</>
+
+            {/* event */}
+            {i < 5 &&
+              affair.type === "event" &&
+              getDayNumber(affair.time1) === cellDayNumber && (
+                <span>{affair.title}</span>
               )}
-            {ele.type === "event" &&
-              ele.time1.toLocaleDateString("en-US") !== cellDateString &&
-              "... ..."}
+            {i < 5 &&
+              affair.type === "event" &&
+              getDayNumber(affair.time1) !== cellDayNumber && (
+                <span>{"... ..."}</span>
+              )}
           </div>
         ))}
     </div>

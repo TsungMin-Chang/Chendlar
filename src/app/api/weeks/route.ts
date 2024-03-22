@@ -42,7 +42,6 @@ export async function POST(request: NextRequest) {
         ),
       )
       .orderBy(asc(affairsTable.order), asc(affairsTable.time2))
-      // .groupBy(affairsTable.dayNumber)
       .execute();
 
     const data: resData = {

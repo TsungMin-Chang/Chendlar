@@ -18,8 +18,9 @@ import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import dayjs from "dayjs";
 
-import ColorPalette from "./ColorPalette";
 import useDay from "@/hooks/useDay";
+
+import ColorPalette from "./ColorPalette";
 
 type timeProp = {
   time1: null | Date;
@@ -31,10 +32,7 @@ type AddDialogProps = {
   onClose: () => void;
 };
 
-export default function AddDialog({
-  open,
-  onClose,
-}: AddDialogProps) {
+export default function AddDialog({ open, onClose }: AddDialogProps) {
   const { postAffair } = useDay();
 
   const steps = ["", ""];

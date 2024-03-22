@@ -1,5 +1,3 @@
-import useDummy from "@/hooks/useDummy";
-// for dummy use, will delete later
 import type { dbAffair } from "@/lib/types";
 import { getDayNumber } from "@/lib/utils";
 
@@ -16,8 +14,6 @@ export default function WeekCells({
   firstDayOfWeek,
   weekData,
 }: WeekCellsProps) {
-  const { dummy } = useDummy(); // for dummy use, will delete later
-
   const year = firstDayOfWeek.getFullYear();
   const month = firstDayOfWeek.getMonth();
   const firstDayOfWeekDate = firstDayOfWeek.getDate();
@@ -33,7 +29,7 @@ export default function WeekCells({
             rowDayNumber={getDayNumber(
               new Date(year, month, firstDayOfWeekDate + i),
             )}
-            rowAffairs={
+            rowDbAffairs={
               weekData &&
               weekData[
                 getDayNumber(new Date(year, month, firstDayOfWeekDate + i))
@@ -42,16 +38,6 @@ export default function WeekCells({
                     getDayNumber(new Date(year, month, firstDayOfWeekDate + i))
                   ]
                 : null
-            }
-            data={
-              // for dummy use, will delete later
-              dummy[
-                new Date(
-                  year,
-                  month,
-                  firstDayOfWeekDate + i,
-                ).toLocaleDateString("en-US")
-              ] ?? null
             }
           />
         ))}
