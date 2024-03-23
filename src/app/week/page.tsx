@@ -1,28 +1,31 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 
 import useDateContext from "@/hooks/useDateContext";
+import useRefreshContext from "@/hooks/useRefreshContext";
 import useWeek from "@/hooks/useWeek";
 import type { resData } from "@/lib/types";
 import { getWeekNumber } from "@/lib/utils";
 
 import WeekCells from "./_components/WeekCells";
 
-// import useWeek from "@/hooks/useWeek";
-
 export default function WeekPage() {
   const { getWeeks } = useWeek();
 
   const { date, setDate } = useDateContext();
+  const { refresh } = useRefreshContext();
   const [slideDate, setSlideDate] = useState(date);
   const [weeksData, setWeeksData] = useState<resData | null>(null);
 
+  const currentWeekNumber = useMemo(
+    () => getWeekNumber(slideDate),
+    [slideDate],
+  );
   useEffect(() => {
     async function fetchData() {
-      const currentWeekNumber = getWeekNumber(slideDate);
       const reqData = {
         weekNumber: currentWeekNumber,
         userId: "89eb1010-ca1e-414a-a3f2-3b35a994c4a6",
@@ -31,7 +34,7 @@ export default function WeekPage() {
       setWeeksData(resData.data);
     }
     fetchData();
-  }, [slideDate.getMonth()]); // TODO: getWeeks() -> useRef
+  }, [currentWeekNumber, getWeeks, refresh]);
 
   const handleSwipe = (from: number, to: number) => {
     if (from === to) {

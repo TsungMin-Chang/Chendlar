@@ -1,7 +1,9 @@
+import { useCallback } from "react";
+
 import type { PostAffairRequest } from "@/validators/crudTypes";
 
 export default function useDay() {
-  const postAffair = async (data: PostAffairRequest) => {
+  const postAffair = useCallback(async (data: PostAffairRequest) => {
     const jsonData = JSON.stringify(data);
     const res = await fetch(`/api/days`, {
       method: "POST",
@@ -13,7 +15,7 @@ export default function useDay() {
     }
     const body = await res.json();
     return body;
-  };
+  }, []);
 
   return {
     postAffair,

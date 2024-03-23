@@ -20,27 +20,27 @@ export default function EventItems({ events }: EventItemsProps) {
           </div>
           <div className="grow"></div>
           <div className="flex items-center pr-2 text-sm text-zinc-200">
-          {event.time1.getFullYear === new Date().getFullYear
-            ? event.time1.toLocaleDateString('en-GB', {
-                month: "short",
-                day: "numeric",
-              })
-            : event.time1.toLocaleDateString('en-GB', {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              })}
-             {" "}-{" "}
+            {event.time1.getFullYear === new Date().getFullYear
+              ? event.time1.toLocaleDateString("en-GB", {
+                  month: "short",
+                  day: "numeric",
+                })
+              : event.time1.toLocaleDateString("en-GB", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}{" "}
+            -{" "}
             {event.time2.getFullYear === new Date().getFullYear
-            ? event.time2.toLocaleDateString('en-GB', {
-                month: "short",
-                day: "numeric",
-              })
-            : event.time2.toLocaleDateString('en-GB', {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              })}
+              ? event.time2.toLocaleDateString("en-GB", {
+                  month: "short",
+                  day: "numeric",
+                })
+              : event.time2.toLocaleDateString("en-GB", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
           </div>
         </div>
       ))}

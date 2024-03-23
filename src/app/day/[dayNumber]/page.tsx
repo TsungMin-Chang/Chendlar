@@ -1,4 +1,6 @@
 // server side component
+import Image from "next/image";
+
 import { and, eq, asc } from "drizzle-orm";
 
 import { db } from "@/db";
@@ -90,18 +92,34 @@ export default async function DayPage({ params: { dayNumber } }: DayPageProps) {
               })}
         </div>
 
-        {/* To do */}
-        <div className="border-1 flex flex-col gap-y-2 rounded-lg border-black bg-[#634d3f] p-4 pb-6 pt-3">
-          <div className="pb-1 text-lg font-bold text-zinc-200">To do</div>
-          <TodoItems todos={todos} />
-        </div>
+        {/* To-do */}
+        {todos.length > 0 && (
+          <div className="border-1 flex flex-col gap-y-2 rounded-lg border-black bg-[#634d3f] p-4 pb-6 pt-3">
+            <div className="pb-1 text-lg font-bold text-zinc-200">To do</div>
+            <TodoItems todos={todos} />
+          </div>
+        )}
 
         {/* Event */}
-        <div className="border-1 flex flex-col gap-y-2 rounded-lg border-black bg-[#634d3f] p-4 pb-6 pt-3">
-          <div className="pb-1 text-lg font-bold text-zinc-200">Event</div>
-          <EventItems events={events} />
-        </div>
+        {events.length > 0 && (
+          <div className="border-1 flex flex-col gap-y-2 rounded-lg border-black bg-[#634d3f] p-4 pb-6 pt-3">
+            <div className="pb-1 text-lg font-bold text-zinc-200">Event</div>
+            <EventItems events={events} />
+          </div>
+        )}
       </div>
+
+      {/* No To-do and no Event */}
+      {todos.length === 0 && events.length === 0 && (
+        <div className="mb-18 flex h-full w-full items-center justify-center">
+          <Image
+            src="/chandler-removebg.png"
+            width={500}
+            height={500}
+            alt="Friends' Chandler's calendar"
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -63,7 +63,7 @@ export default function DayRow({
               rowAffairs &&
               rowAffairs[i - 1] && ( // normal cell
                 <div
-                  className={`h-full w-full text-zinc-900 bg-[${rowAffairs[i - 1].color}]`}
+                  className={`h-full w-full text-zinc-900 bg-[${rowAffairs[i - 1].color}] opacity-80`}
                 >
                   {rowAffairs[i - 1].title}
                 </div>

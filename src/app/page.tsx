@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 
 import useDateContext from "@/hooks/useDateContext";
 import useMonth from "@/hooks/useMonth";
+import useRefreshContext from "@/hooks/useRefreshContext";
 import type { resData } from "@/lib/types";
 import { getMonthNumber, days } from "@/lib/utils";
 
@@ -15,12 +16,16 @@ export default function Home() {
   const { getMonths } = useMonth();
 
   const { date, setDate } = useDateContext();
+  const { refresh } = useRefreshContext();
   const [slideDate, setSlideDate] = useState(date);
   const [monthsData, setMonthsData] = useState<resData | null>(null);
 
+  const currentMonthNumber = useMemo(
+    () => getMonthNumber(slideDate),
+    [slideDate],
+  );
   useEffect(() => {
     async function fetchData() {
-      const currentMonthNumber = getMonthNumber(slideDate);
       const reqData = {
         monthNumber: currentMonthNumber,
         userId: "89eb1010-ca1e-414a-a3f2-3b35a994c4a6",
@@ -29,7 +34,7 @@ export default function Home() {
       setMonthsData(resData.data);
     }
     fetchData();
-  }, [slideDate.getMonth()]); // TODO: getMonths() -> useRef
+  }, [currentMonthNumber, getMonths, refresh]);
 
   const handleSwipe = (from: number, to: number) => {
     if (from === to) {

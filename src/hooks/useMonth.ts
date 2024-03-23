@@ -1,7 +1,9 @@
+import { useCallback } from "react";
+
 import type { GetMonthsRequest } from "@/validators/crudTypes";
 
 export default function useMonth() {
-  const getMonths = async (data: GetMonthsRequest) => {
+  const getMonths = useCallback(async (data: GetMonthsRequest) => {
     const jsonData = JSON.stringify(data);
     const res = await fetch(`/api/months`, {
       method: "POST",
@@ -13,7 +15,7 @@ export default function useMonth() {
     }
     const body = await res.json();
     return body;
-  };
+  }, []);
 
   return {
     getMonths,

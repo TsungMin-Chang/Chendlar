@@ -19,6 +19,7 @@ import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import dayjs from "dayjs";
 
 import useDay from "@/hooks/useDay";
+import useRefreshContext from "@/hooks/useRefreshContext";
 
 import ColorPalette from "./ColorPalette";
 
@@ -34,6 +35,7 @@ type AddDialogProps = {
 
 export default function AddDialog({ open, onClose }: AddDialogProps) {
   const { postAffair } = useDay();
+  const { onRefresh } = useRefreshContext();
 
   const steps = ["", ""];
   const [activeStep, setActiveStep] = useState(0);
@@ -57,7 +59,7 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
       setIsOneDay(false);
     } else {
       if (!timeData.time1 && !timeData.time2) {
-        alert("What is the starting or ending date?");
+        alert("What is your starting or ending date?");
         return;
       } else if (timeData.time1) {
         setTimeData((prev) => ({ ...prev, time2: prev.time1 }));
@@ -107,13 +109,12 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
         time2: timeData.time2,
         isDone,
       };
-      console.log(data);
       await postAffair(data);
     } catch (error) {
       alert("Error: Failed to create!");
     } finally {
+      onRefresh();
       handleClose();
-      // onRefresh();
     }
   };
   const handleClose = () => {
@@ -168,7 +169,7 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
           </FormControl>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <div className="flex flex-col gap-y-3">
-              {type === "todo" && ( // TODO: Done or unDone checkbox
+              {type === "todo" && (
                 <>
                   <MobileDatePicker
                     label="Date - dd"
