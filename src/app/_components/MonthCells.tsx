@@ -1,7 +1,7 @@
 import type { dbAffair } from "@/lib/types";
 import { getDayNumber } from "@/lib/utils";
 
-import MonthCell from "./MonthCell";
+import MonthCell from "./DayCell";
 
 type MonthCellsProps = {
   firstDayOfMonth: Date;

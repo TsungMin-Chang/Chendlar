@@ -22,7 +22,7 @@ export default function MonthCell({
     >
       <div className="flex justify-center text-sm text-white">
         <div
-          className={`${cellDayNumber === getDayNumber(new Date()) && "flex h-5 w-5 items-center justify-center rounded-full bg-[#aa2a59] text-xs"}`}
+          className={`${cellDayNumber === getDayNumber(new Date()) && "flex h-5 w-5 items-center justify-center rounded-full bg-[#9f7d57] text-xs"}`}
         >
           {cellDisplayDate}
         </div>
