@@ -44,7 +44,7 @@ export default function NavBar() {
               </Typography>
             )}
             <div className="flex grow"></div>
-            <AccountCircle sx={{ fontSize: 30 }} />
+            <AccountCircle sx={{ fontSize: 32 }} />
           </Toolbar>
         </AppBar>
       </Box>

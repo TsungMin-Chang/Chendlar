@@ -1,4 +1,9 @@
+"use client";
+
 import { useState } from "react";
+
+// import useDay from "@/hooks/useDay";
+import { useRouter } from "next/navigation";
 
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
@@ -18,36 +23,50 @@ import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import dayjs from "dayjs";
 
-import useDay from "@/hooks/useDay";
+import ColorPalette from "@/app/_components/ColorPalette";
 import useRefreshContext from "@/hooks/useRefreshContext";
-
-import ColorPalette from "./ColorPalette";
 
 type timeProp = {
   time1: null | Date;
   time2: null | Date;
 };
 
-type AddDialogProps = {
-  open: boolean;
-  onClose: () => void;
+type EditDialogProps = {
+  affairId?: string;
+  dayNumber: number;
+  affairTitle?: string;
+  affairColor?: string;
+  affairType?: string;
+  affairTime1?: Date;
+  affairTime2?: Date;
+  affairIsDone?: boolean;
 };
 
-export default function AddDialog({ open, onClose }: AddDialogProps) {
-  const { postAffair } = useDay();
+export default function AddDialog({
+  affairId,
+  dayNumber,
+  affairTitle,
+  affairColor,
+  affairType,
+  affairTime1,
+  affairTime2,
+  affairIsDone,
+}: EditDialogProps) {
+  // const { updateAffair } = useDay();
+  const router = useRouter();
   const { onRefresh } = useRefreshContext();
 
   const steps = ["", ""];
   const [activeStep, setActiveStep] = useState(0);
-  const [title, setTitle] = useState("");
-  const [type, setType] = useState("");
+  const [title, setTitle] = useState(affairTitle ?? "");
+  const [type, setType] = useState(affairType ?? "");
   const [isOneDay, setIsOneDay] = useState(false);
   const [timeData, setTimeData] = useState<timeProp>({
-    time1: null,
-    time2: null,
+    time1: affairTime1 ?? null,
+    time2: affairTime2 ?? null,
   });
-  const [color, setColor] = useState("");
-  const [isDone, setIsDone] = useState(false);
+  const [color, setColor] = useState(affairColor ?? "");
+  const [isDone, setIsDone] = useState(affairIsDone ?? false);
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -100,16 +119,17 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
     }
 
     try {
-      const data = {
-        userId: "89eb1010-ca1e-414a-a3f2-3b35a994c4a6",
-        title,
-        color,
-        type,
-        time1: timeData.time1,
-        time2: timeData.time2,
-        isDone,
-      };
-      await postAffair(data);
+      console.log(affairId);
+      // const data = {
+      //   userId: "89eb1010-ca1e-414a-a3f2-3b35a994c4a6",
+      //   title,
+      //   color,
+      //   type,
+      //   time1: timeData.time1,
+      //   time2: timeData.time2,
+      //   isDone,
+      // };
+      // await updateAffair(data);
     } catch (error) {
       alert("Error: Failed to create!");
     } finally {
@@ -118,19 +138,12 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
     }
   };
   const handleClose = () => {
-    setActiveStep(0);
-    setTitle("");
-    setColor("");
-    setType("");
-    setTimeData({ time1: null, time2: null });
-    setIsOneDay(false);
-    setIsDone(false);
-    onClose();
+    router.push(`/day/${dayNumber}`);
   };
 
   return (
-    <Dialog id="dia" open={open} onClose={handleClose}>
-      <DialogTitle sx={{ fontWeight: "bold", fontSize: 22 }}>New</DialogTitle>
+    <Dialog open={true} onClose={handleClose}>
+      <DialogTitle sx={{ fontWeight: "bold", fontSize: 22 }}>Edit</DialogTitle>
       {activeStep === 0 && (
         <DialogContent className="flex w-[300px] flex-col gap-y-2">
           <FormControl className="p-2">
