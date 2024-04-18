@@ -1,50 +1,54 @@
 import type { Dispatch, SetStateAction } from "react";
 
-export default function ColorPlatter({
-  setColor,
-}: {
+type ColorPlatterProps = {
+  color: string,
   setColor: Dispatch<SetStateAction<string>>;
-}) {
+}
+
+export default function ColorPlatter({
+  color,
+  setColor,
+}: ColorPlatterProps) {
   return (
     <>
       <button
-        className="h-6 w-6 rounded-full bg-[#FFC85D] hover:outline focus:outline"
+        className={`h-6 w-6 rounded-full bg-[#FFC85D] ${color === "#FFC85D" && "outline"}`}
         onClick={() => setColor("#FFC85D")}
       />
       <button
-        className="h-6 w-6 rounded-full bg-[#F3935D] hover:outline focus:outline"
+        className={`h-6 w-6 rounded-full bg-[#F3935D] ${color === "#F3935D" && "outline"}`}
         onClick={() => setColor("#F3935D")}
       />
       <button
-        className="h-6 w-6 rounded-full bg-[#F1922A] hover:outline focus:outline"
+        className={`h-6 w-6 rounded-full bg-[#F1922A] ${color === "#F1922A" && "outline"}`}
         onClick={() => setColor("#F1922A")}
       />
       <button
-        className="h-6 w-6 rounded-full bg-[#FF8E9C] hover:outline focus:outline"
+        className={`h-6 w-6 rounded-full bg-[#FF8E9C] ${color === "#FF8E9C" && "outline"}`}
         onClick={() => setColor("#FF8E9C")}
       />
       <button
-        className="h-6 w-6 rounded-full bg-[#FE6E6E] hover:outline focus:outline"
+        className={`h-6 w-6 rounded-full bg-[#FE6E6E] ${color === "#FE6E6E" && "outline"}`}
         onClick={() => setColor("#FE6E6E")}
       />
       <button
-        className="h-6 w-6 rounded-full bg-[#C3C3C3] hover:outline focus:outline"
+        className={`h-6 w-6 rounded-full bg-[#C3C3C3] ${color === "#C3C3C3" && "outline"}`}
         onClick={() => setColor("#C3C3C3")}
       />
       <button
-        className="h-6 w-6 rounded-full bg-[#EFABD8] hover:outline focus:outline"
+        className={`h-6 w-6 rounded-full bg-[#EFABD8] ${color === "#EFABD8" && "outline"}`}
         onClick={() => setColor("#EFABD8")}
       />
       <button
-        className="h-6 w-6 rounded-full bg-[#C47FE4] hover:outline focus:outline"
+        className={`h-6 w-6 rounded-full bg-[#C47FE4] ${color === "#C47FE4" && "outline"}`}
         onClick={() => setColor("#C47FE4")}
       />
       <button
-        className="h-6 w-6 rounded-full bg-[#9C7FF0] hover:outline focus:outline"
+        className={`h-6 w-6 rounded-full bg-[#9C7FF0] ${color === "#9C7FF0" && "outline"}`}
         onClick={() => setColor("#9C7FF0")}
       />
       <button
-        className="h-6 w-6 rounded-full bg-[#6997F0] hover:outline focus:outline"
+        className={`h-6 w-6 rounded-full bg-[#6997F0] ${color === "#6997F0" && "outline"}`}
         onClick={() => setColor("#6997F0")}
       />
     </>

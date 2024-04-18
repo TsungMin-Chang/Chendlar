@@ -151,7 +151,6 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   const data = await request.json();
-
   try {
     updateAffairRequestSchema.safeParse(data);
   } catch (error) {

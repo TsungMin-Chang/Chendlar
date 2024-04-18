@@ -172,7 +172,7 @@ export default function EditDialog({
             </ClickAwayListener>
           </FormControl>
           <div className="mt-2 grid grid-cols-5 gap-2 p-2">
-            <ColorPalette setColor={setColor} />
+            <ColorPalette color={color} setColor={setColor} />
           </div>
         </DialogContent>
       )}
