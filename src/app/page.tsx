@@ -71,11 +71,11 @@ export default function Home() {
   return (
     <>
       <div className="flex flex-1 flex-col bg-[#442B0D]">
-        <div className="grid grid-cols-7" style={{ height: "6vh" }}>
+        <div className="grid grid-cols-7" style={{ height: "5.5vh" }}>
           {days.map((ele, i) => (
             <div
               key={i}
-              className="flex items-center justify-center border border-[#4E4743] text-sm text-gray-300"
+              className="flex items-center justify-center border border-[#5a524f] text-sm text-gray-300"
             >
               {ele}
             </div>
