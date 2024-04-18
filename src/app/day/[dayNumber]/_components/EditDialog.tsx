@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 
-// import useDay from "@/hooks/useDay";
 import { useRouter } from "next/navigation";
 
 import Button from "@mui/material/Button";
@@ -24,6 +23,7 @@ import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import dayjs from "dayjs";
 
 import ColorPalette from "@/app/_components/ColorPalette";
+import useDay from "@/hooks/useDay";
 import useRefreshContext from "@/hooks/useRefreshContext";
 
 type timeProp = {
@@ -42,7 +42,7 @@ type EditDialogProps = {
   affairIsDone?: boolean;
 };
 
-export default function AddDialog({
+export default function EditDialog({
   affairId,
   dayNumber,
   affairTitle,
@@ -52,7 +52,7 @@ export default function AddDialog({
   affairTime2,
   affairIsDone,
 }: EditDialogProps) {
-  // const { updateAffair } = useDay();
+  const { updateAffair } = useDay();
   const router = useRouter();
   const { onRefresh } = useRefreshContext();
 
@@ -103,6 +103,16 @@ export default function AddDialog({
   };
 
   const handleSubmit = async () => {
+    if (
+      !affairId ||
+      !affairType ||
+      !affairTitle ||
+      !affairTime1 ||
+      !affairTime2
+    ) {
+      return;
+    }
+
     if (!type) {
       alert("Is it a To-do or an Event?");
       return;
@@ -119,19 +129,23 @@ export default function AddDialog({
     }
 
     try {
-      console.log(affairId);
-      // const data = {
-      //   userId: "89eb1010-ca1e-414a-a3f2-3b35a994c4a6",
-      //   title,
-      //   color,
-      //   type,
-      //   time1: timeData.time1,
-      //   time2: timeData.time2,
-      //   isDone,
-      // };
-      // await updateAffair(data);
+      const data = {
+        affairId,
+        prevType: affairType,
+        prevTitle: affairTitle,
+        prevTime1: affairTime1,
+        prevTime2: affairTime2,
+        userId: "89eb1010-ca1e-414a-a3f2-3b35a994c4a6",
+        title,
+        color,
+        type,
+        time1: timeData.time1,
+        time2: timeData.time2,
+        isDone,
+      };
+      await updateAffair(data);
     } catch (error) {
-      alert("Error: Failed to create!");
+      alert("Error: Failed to update!");
     } finally {
       onRefresh();
       handleClose();
@@ -139,6 +153,7 @@ export default function AddDialog({
   };
   const handleClose = () => {
     router.push(`/day/${dayNumber}`);
+    router.refresh();
   };
 
   return (

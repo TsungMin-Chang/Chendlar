@@ -1,12 +1,5 @@
 import { z } from "zod";
 
-// GET day - use server side component
-// export const getDayRequestSchema = z.object({
-//   userId: z.string().uuid(),
-//   dateString: z.string().max(20),
-// });
-// export type GetDayRequest = z.infer<typeof getDayRequestSchema>;
-
 // GET months
 export const getMonthsRequestSchema = z.object({
   monthNumber: z.number(),
@@ -21,7 +14,7 @@ export const getWeeksRequestSchema = z.object({
 });
 export type GetWeeksRequest = z.infer<typeof getWeeksRequestSchema>;
 
-// POST and UPDATE
+// POST
 export const postAffairRequestSchema = z.object({
   userId: z.string().uuid(),
   title: z.string().max(20),
@@ -32,3 +25,13 @@ export const postAffairRequestSchema = z.object({
   isDone: z.boolean(),
 });
 export type PostAffairRequest = z.infer<typeof postAffairRequestSchema>;
+
+// UPDATE
+export const updateAffairRequestSchema = postAffairRequestSchema.extend({
+  affairId: z.string().uuid(),
+  prevType: z.string().max(8),
+  prevTitle: z.string().max(20),
+  prevTime1: z.date(),
+  prevTime2: z.date(),
+});
+export type UpdateAffairRequest = z.infer<typeof updateAffairRequestSchema>;

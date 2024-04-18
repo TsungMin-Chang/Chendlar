@@ -24,8 +24,6 @@ export default async function DayPage({
   params: { dayNumber },
   searchParams: { editAffairId },
 }: DayPageProps) {
-  console.log("page - editAffairId", editAffairId);
-
   const dayNumberInt = parseInt(dayNumber);
   const userId = "89eb1010-ca1e-414a-a3f2-3b35a994c4a6";
   const todate = getDateFromDayNumber(dayNumberInt);
@@ -139,11 +137,11 @@ export default async function DayPage({
 
         {/* Chandler's Image */}
         {todos.length === 0 && events.length === 0 && (
-          <div className="mb-0 flex h-full w-full items-center justify-center">
+          <div className="flex h-full w-full items-center justify-center">
             <Image
               src="/chandler-removebg.png"
-              width={400}
-              height={400}
+              width={360}
+              height={360}
               alt="Friends' Chandler's calendar"
             />
           </div>

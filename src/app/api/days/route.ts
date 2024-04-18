@@ -11,20 +11,17 @@ import {
   getMonthNumber,
   getDates,
 } from "@/lib/utils";
-import { postAffairRequestSchema } from "@/validators/crudTypes";
-import type { PostAffairRequest } from "@/validators/crudTypes";
+import {
+  postAffairRequestSchema,
+  updateAffairRequestSchema,
+} from "@/validators/crudTypes";
+import type {
+  PostAffairRequest,
+  UpdateAffairRequest,
+} from "@/validators/crudTypes";
 
-export async function POST(request: NextRequest) {
-  const data = await request.json();
-
-  try {
-    postAffairRequestSchema.safeParse(data);
-  } catch (error) {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
-  }
-
-  const { userId, title, color, type, time1, time2, isDone } =
-    data as PostAffairRequest;
+async function insertDb(data: PostAffairRequest) {
+  const { userId, title, color, type, time1, time2, isDone } = data;
 
   if (type === "todo") {
     // todo is given very large order and will later be sorted by time2
@@ -45,12 +42,9 @@ export async function POST(request: NextRequest) {
           dayNumber: getDayNumber(time1),
         })
         .execute();
-      return NextResponse.json("OK", { status: 200 });
+      return true;
     } catch (error) {
-      return NextResponse.json(
-        { error: "Something went wrong in db" },
-        { status: 500 },
-      );
+      return false;
     }
   }
 
@@ -103,7 +97,7 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      // step 2: insert new event
+      // step 2: insert the new event
       const insertDataArray = [];
       const dateArray = getDates(time1, time2);
       for (let i = 0; i < dateArray.length; i++) {
@@ -129,8 +123,51 @@ export async function POST(request: NextRequest) {
           .where(eq(affairsTable.title, dbEvent.eventTitle))
           .execute();
       }
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+}
 
-      return NextResponse.json("OK", { status: 200 });
+export async function POST(request: NextRequest) {
+  const data = await request.json();
+  try {
+    postAffairRequestSchema.safeParse(data);
+  } catch (error) {
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  }
+
+  const res = await insertDb(data);
+  if (res) {
+    return NextResponse.json("OK", { status: 200 });
+  } else {
+    return NextResponse.json(
+      { error: "Something went wrong in db" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  const data = await request.json();
+
+  try {
+    updateAffairRequestSchema.safeParse(data);
+  } catch (error) {
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  }
+
+  const { affairId, prevType, prevTitle, prevTime1, prevTime2 } =
+    data as UpdateAffairRequest;
+
+  // delete
+  if (prevType === "todo") {
+    try {
+      await db
+        .delete(affairsTable)
+        .where(eq(affairsTable.id, affairId))
+        .execute();
     } catch (error) {
       return NextResponse.json(
         { error: "Something went wrong in db" },
@@ -138,53 +175,35 @@ export async function POST(request: NextRequest) {
       );
     }
   }
+
+  if (prevType === "event") {
+    try {
+      await db
+        .delete(affairsTable)
+        .where(
+          and(
+            eq(affairsTable.title, prevTitle),
+            eq(affairsTable.time1, new Date(prevTime1)),
+            eq(affairsTable.time2, new Date(prevTime2)),
+          ),
+        )
+        .execute();
+    } catch (error) {
+      return NextResponse.json(
+        { error: "Something went wrong in db" },
+        { status: 500 },
+      );
+    }
+  }
+
+  // Call insertDb function
+  const res = await insertDb(data);
+  if (res) {
+    return NextResponse.json("OK", { status: 200 });
+  } else {
+    return NextResponse.json(
+      { error: "Something went wrong in db" },
+      { status: 500 },
+    );
+  }
 }
-
-// export async function UPDATE(request: NextRequest) {
-//   const data = await request.json();
-
-//   try {
-//     postAffairRequestSchema.parse(data);
-//   } catch (error) {
-//     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
-//   }
-
-//   const { userId, title, color, type, time1, time2, isDone } =
-//     data as PostAffairRequest;
-
-//   // year, month, dayNumber, weekNumber
-//   // will have to break event into mutiple days
-//   const year = 2024;
-//   const month = 6;
-//   const weekNumber = 128;
-//   const dayNumber = 64;
-//   // will have to consider order
-//   const order = 0;
-
-//   try {
-//     await db
-//       .insert(affairsTable)
-//       .values({
-//         userId,
-//         title,
-//         color,
-//         type,
-//         time1,
-//         time2,
-//         isDone,
-//         order,
-//         year,
-//         month,
-//         weekNumber,
-//         dayNumber
-//       })
-//       .execute();
-//   } catch (error) {
-//     return NextResponse.json(
-//       { error: "Something went wrong in db" },
-//       { status: 500 },
-//     );
-//   }
-
-//   return NextResponse.json("OK", { status: 200 });
-// }
