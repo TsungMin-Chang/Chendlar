@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { eq, and, between, gt, lt, max } from "drizzle-orm";
+import { eq, and, between, gt, lt, max, min } from "drizzle-orm";
 
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
@@ -50,89 +50,135 @@ async function insertDb(data: PostAffairRequest) {
 
   if (type === "event") {
     // event will be sorted by and rendered according to order
-    try {
-      // step1: get dbEvents that needed to be updated later
-      let minTime1 = new Date(time1);
-      let maxTime2 = new Date(time2);
-      let dbEvents: DbEvent[] = [];
-      let checker = true;
 
-      while (checker) {
-        checker = false;
+    const [{ order: nextOrder }] = await db
+      .select({
+        order: min(affairsTable.order),
+      })
+      .from(affairsTable)
+      .where(
+        and(
+          eq(affairsTable.type, "event"),
+          between(
+            affairsTable.dayNumber,
+            getDayNumber(time1),
+            getDayNumber(time2),
+          ),
+        ),
+      );
 
-        const events = await db
-          .selectDistinctOn([affairsTable.title], {
-            eventTitle: affairsTable.title,
-            eventOrder: affairsTable.order,
-            eventTime1: affairsTable.time1,
-            eventTime2: affairsTable.time2,
-          })
-          .from(affairsTable)
-          .where(
-            and(
-              eq(affairsTable.type, "event"),
-              between(
-                affairsTable.dayNumber,
-                getDayNumber(minTime1),
-                getDayNumber(maxTime2),
+    if (nextOrder === null || (nextOrder !== null && nextOrder > 0)) {
+      // insert the new event directly - no other events need changing
+
+      try {
+        const insertDataArray = [];
+        const dateArray = getDates(time1, time2);
+        for (let i = 0; i < dateArray.length; i++) {
+          const date = dateArray[i];
+          insertDataArray.push({
+            ...data,
+            time1: new Date(time1),
+            time2: new Date(time2),
+            order: nextOrder === null ? 0 : nextOrder - 1,
+            monthNumber: getMonthNumber(date),
+            weekNumber: getWeekNumber(date),
+            dayNumber: getDayNumber(date),
+          });
+        }
+        await db.insert(affairsTable).values(insertDataArray).execute();
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    if (nextOrder !== null && nextOrder === 0) {
+      // insert the new event and handle the side effect
+
+      try {
+        // step1: get dbEvents that needed to be updated later
+        let minTime1 = new Date(time1);
+        let maxTime2 = new Date(time2);
+        let dbEvents: DbEvent[] = [];
+        let checker = true;
+
+        while (checker) {
+          checker = false;
+
+          const events = await db
+            .selectDistinctOn([affairsTable.title], {
+              eventTitle: affairsTable.title,
+              eventOrder: affairsTable.order,
+              eventTime1: affairsTable.time1,
+              eventTime2: affairsTable.time2,
+            })
+            .from(affairsTable)
+            .where(
+              and(
+                eq(affairsTable.type, "event"),
+                between(
+                  affairsTable.dayNumber,
+                  getDayNumber(minTime1),
+                  getDayNumber(maxTime2),
+                ),
               ),
-            ),
-          )
-          .execute();
+            )
+            .execute();
 
-        for (let i = 0; i < events.length; i++) {
-          const eventTime1 = new Date(events[i].eventTime1);
-          const eventTime2 = new Date(events[i].eventTime2);
-          if (eventTime1 < minTime1) {
-            minTime1 = eventTime1;
-            checker = true;
+          for (let i = 0; i < events.length; i++) {
+            const eventTime1 = new Date(events[i].eventTime1);
+            const eventTime2 = new Date(events[i].eventTime2);
+            if (eventTime1 < minTime1) {
+              minTime1 = eventTime1;
+              checker = true;
+            }
+            if (eventTime2 > maxTime2) {
+              maxTime2 = eventTime2;
+              checker = true;
+            }
           }
-          if (eventTime2 > maxTime2) {
-            maxTime2 = eventTime2;
-            checker = true;
+
+          if (checker === false) {
+            dbEvents = [...events];
           }
         }
 
-        if (checker === false) {
-          dbEvents = [...events];
+        // step 2: insert the new event
+        const insertDataArray = [];
+        const dateArray = getDates(time1, time2);
+        for (let i = 0; i < dateArray.length; i++) {
+          const date = dateArray[i];
+          insertDataArray.push({
+            ...data,
+            time1: new Date(time1),
+            time2: new Date(time2),
+            order: 0,
+            monthNumber: getMonthNumber(date),
+            weekNumber: getWeekNumber(date),
+            dayNumber: getDayNumber(date),
+          });
         }
-      }
+        await db.insert(affairsTable).values(insertDataArray).execute();
 
-      // step 2: insert the new event
-      const insertDataArray = [];
-      const dateArray = getDates(time1, time2);
-      for (let i = 0; i < dateArray.length; i++) {
-        const date = dateArray[i];
-        insertDataArray.push({
-          ...data,
-          time1: new Date(time1),
-          time2: new Date(time2),
-          order: 0,
-          monthNumber: getMonthNumber(date),
-          weekNumber: getWeekNumber(date),
-          dayNumber: getDayNumber(date),
-        });
+        // step 3: update dbEvents
+        for (let i = 0; i < dbEvents.length; i++) {
+          const dbEvent = dbEvents[i];
+          await db
+            .update(affairsTable)
+            .set({ order: dbEvent.eventOrder + 1 })
+            .where(
+              and(
+                eq(affairsTable.title, dbEvent.eventTitle),
+                eq(affairsTable.time1, dbEvent.eventTime1),
+                eq(affairsTable.time2, dbEvent.eventTime2),
+              ),
+            )
+            .execute();
+        }
+        return true;
+      } catch (error) {
+        return false;
       }
-      await db.insert(affairsTable).values(insertDataArray).execute();
-
-      // step 3: update dbEvents
-      for (let i = 0; i < dbEvents.length; i++) {
-        const dbEvent = dbEvents[i];
-        await db
-          .update(affairsTable)
-          .set({ order: dbEvent.eventOrder + 1 })
-          .where(
-            and(
-              eq(affairsTable.title, dbEvent.eventTitle),
-              eq(affairsTable.time1, dbEvent.eventTime1),
-              eq(affairsTable.time2, dbEvent.eventTime2),
-            ),
-          )
-          .execute();
-      }
-      return true;
-    } catch (error) {
-      return false;
     }
   }
 }
@@ -260,6 +306,45 @@ async function deleteDb(data: UpdateAffairRequest) {
   }
 }
 
+async function fastUpdateEvent(data: UpdateAffairRequest) {
+  const {
+    type,
+    prevType,
+    time1,
+    time2,
+    prevTime1,
+    prevTime2,
+    title,
+    prevTitle,
+    color,
+    isDone,
+  } = data;
+  if (
+    prevType === "event" &&
+    type === "event" &&
+    new Date(time1).getTime() === new Date(prevTime1).getTime() &&
+    new Date(time2).getTime() === new Date(prevTime2).getTime()
+  ) {
+    try {
+      await db
+        .update(affairsTable)
+        .set({ title, color, isDone })
+        .where(
+          and(
+            eq(affairsTable.title, prevTitle),
+            eq(affairsTable.time1, new Date(prevTime1)),
+            eq(affairsTable.time2, new Date(prevTime2)),
+          ),
+        )
+        .execute();
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+  return false;
+}
+
 export async function POST(request: NextRequest) {
   const data = await request.json();
   try {
@@ -288,7 +373,13 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  // Call deleteDb function
+  // See if can fast update
+  const fastUpdateRes = await fastUpdateEvent(data);
+  if (fastUpdateRes) {
+    return NextResponse.json("OK", { status: 200 });
+  }
+
+  // regular update - step 1: Call deleteDb function
   const deleteRes = await deleteDb(data);
   if (!deleteRes) {
     return NextResponse.json(
@@ -297,7 +388,7 @@ export async function PUT(request: NextRequest) {
     );
   }
 
-  // Call insertDb function
+  // regular update - step 2: Call insertDb function
   const insertRes = await insertDb(data);
   if (insertRes) {
     return NextResponse.json("OK", { status: 200 });

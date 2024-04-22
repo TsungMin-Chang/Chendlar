@@ -31,7 +31,7 @@ export default function MonthCell({
         cellAffairs.map((affair, i) => (
           <>
             {/* invisible div for padding */}
-            {cellAffairs[i].order !== 100 &&
+            {cellAffairs[i].type === "event" &&
               Array(
                 i === 0
                   ? cellAffairs[i].order

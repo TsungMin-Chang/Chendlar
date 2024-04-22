@@ -109,10 +109,11 @@ export default function EditDialog({
       !affairId ||
       !affairType ||
       !affairTitle ||
-      !affairOrder ||
+      affairOrder === undefined ||
       !affairTime1 ||
       !affairTime2
     ) {
+      alert("Missing passed-in props.");
       return;
     }
 

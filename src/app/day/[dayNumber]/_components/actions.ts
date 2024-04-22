@@ -15,7 +15,7 @@ export const heartTodo = async (todoId: string, todoIsDone: boolean) => {
 };
 
 export const deleteTodo = async (todoId: string) => {
-  await db.delete(affairsTable).where(eq(affairsTable.id, todoId));
+  await db.delete(affairsTable).where(eq(affairsTable.id, todoId)).execute();
   return;
 };
 
