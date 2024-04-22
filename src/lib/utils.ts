@@ -60,10 +60,10 @@ Date.prototype.addDays = function (days) {
 
 export const getDates = (reqStartDate: Date, reqStopDate: Date) => {
   const startDate = new Date(reqStartDate);
-  const stopDate = new Date(reqStopDate);
+  const endDate = new Date(reqStopDate);
   const dateArray: Date[] = [];
   let currentDate = startDate;
-  while (currentDate <= stopDate) {
+  while (currentDate <= endDate) {
     dateArray.push(new Date(currentDate));
     currentDate = currentDate.addDays(1);
   }

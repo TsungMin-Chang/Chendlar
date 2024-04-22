@@ -35,6 +35,7 @@ type EditDialogProps = {
   affairId?: string;
   dayNumber: number;
   affairTitle?: string;
+  affairOrder?: number;
   affairColor?: string;
   affairType?: string;
   affairTime1?: Date;
@@ -46,6 +47,7 @@ export default function EditDialog({
   affairId,
   dayNumber,
   affairTitle,
+  affairOrder,
   affairColor,
   affairType,
   affairTime1,
@@ -107,6 +109,7 @@ export default function EditDialog({
       !affairId ||
       !affairType ||
       !affairTitle ||
+      !affairOrder ||
       !affairTime1 ||
       !affairTime2
     ) {
@@ -133,6 +136,7 @@ export default function EditDialog({
         affairId,
         prevType: affairType,
         prevTitle: affairTitle,
+        prevOrder: affairOrder,
         prevTime1: affairTime1,
         prevTime2: affairTime2,
         userId: "89eb1010-ca1e-414a-a3f2-3b35a994c4a6",

@@ -82,6 +82,7 @@ export default async function DayPage({
     .select({
       id: affairsTable.id,
       title: affairsTable.title,
+      order: affairsTable.order,
       color: affairsTable.color,
       type: affairsTable.type,
       time1: affairsTable.time1,
@@ -153,6 +154,7 @@ export default async function DayPage({
           affairId={editAffair.id}
           dayNumber={dayNumberInt}
           affairTitle={editAffair.title}
+          affairOrder={editAffair.order}
           affairColor={editAffair.color}
           affairType={editAffair.type}
           affairTime1={editAffair.time1}

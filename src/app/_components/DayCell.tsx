@@ -28,44 +28,53 @@ export default function MonthCell({
         </div>
       </div>
       {cellAffairs &&
-        cellAffairs[0] &&
-        Array(cellAffairs[0].order) // empty div for event offest
-          .fill(0)
-          .map((_, i) => (
-            <div
-              key={"empty" + i.toString()}
-              className="invisible max-h-4 text-xs"
-            >
-              empty
-            </div>
-          )) &&
         cellAffairs.map((affair, i) => (
-          <div
-            key={"innerCell_Affair" + i.toString() + affair.id}
-            className={`max-h-4 truncate rounded-sm pl-1 text-xs bg-[${affair.color}]`}
-          >
-            {/* todo */}
-            {i < 5 && affair.type === "todo" && (
-              <>
-                <span className="font-medium">
-                  {new Date(affair.time2).getHours()}.
-                </span>
-                <span>{affair.title}</span>
-              </>
-            )}
+          <>
+            {/* invisible div for padding */}
+            {cellAffairs[i].order !== 100 &&
+              Array(
+                i === 0
+                  ? cellAffairs[i].order
+                  : cellAffairs[i].order - cellAffairs[i - 1].order - 1,
+              )
+                .fill(0)
+                .map((_, j) => (
+                  <div
+                    key={"empty" + j.toString()}
+                    className="invisible max-h-4 text-xs"
+                  >
+                    empty
+                  </div>
+                ))}
 
-            {/* event */}
-            {i < 5 &&
-              affair.type === "event" &&
-              getDayNumber(affair.time1) === cellDayNumber && (
-                <span>{affair.title}</span>
+            {/* visible div */}
+            <div
+              key={"inner" + i.toString() + affair.id}
+              className={`max-h-4 truncate rounded-sm pl-1 text-xs bg-[${affair.color}]`}
+            >
+              {/* todo */}
+              {i < 5 && affair.type === "todo" && (
+                <>
+                  <span className="font-medium">
+                    {new Date(affair.time2).getHours()}.
+                  </span>
+                  <span>{affair.title}</span>
+                </>
               )}
-            {i < 5 &&
-              affair.type === "event" &&
-              getDayNumber(affair.time1) !== cellDayNumber && (
-                <span>{"... ..."}</span>
-              )}
-          </div>
+
+              {/* event */}
+              {i < 5 &&
+                affair.type === "event" &&
+                getDayNumber(affair.time1) === cellDayNumber && (
+                  <span>{affair.title}</span>
+                )}
+              {i < 5 &&
+                affair.type === "event" &&
+                getDayNumber(affair.time1) !== cellDayNumber && (
+                  <span>{"... ..."}</span>
+                )}
+            </div>
+          </>
         ))}
     </div>
   );

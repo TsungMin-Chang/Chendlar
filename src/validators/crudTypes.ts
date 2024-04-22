@@ -31,6 +31,7 @@ export const updateAffairRequestSchema = postAffairRequestSchema.extend({
   affairId: z.string().uuid(),
   prevType: z.string().max(8),
   prevTitle: z.string().max(20),
+  prevOrder: z.number(),
   prevTime1: z.date(),
   prevTime2: z.date(),
 });

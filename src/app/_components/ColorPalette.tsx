@@ -1,14 +1,11 @@
 import type { Dispatch, SetStateAction } from "react";
 
 type ColorPlatterProps = {
-  color: string,
+  color: string;
   setColor: Dispatch<SetStateAction<string>>;
-}
+};
 
-export default function ColorPlatter({
-  color,
-  setColor,
-}: ColorPlatterProps) {
+export default function ColorPlatter({ color, setColor }: ColorPlatterProps) {
   return (
     <>
       <button

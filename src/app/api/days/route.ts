@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { eq, and, between } from "drizzle-orm";
+import { eq, and, between, gt, lt, max } from "drizzle-orm";
 
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
@@ -52,8 +52,8 @@ async function insertDb(data: PostAffairRequest) {
     // event will be sorted by and rendered according to order
     try {
       // step1: get dbEvents that needed to be updated later
-      let minTime1 = time1;
-      let maxTime2 = time2;
+      let minTime1 = new Date(time1);
+      let maxTime2 = new Date(time2);
       let dbEvents: DbEvent[] = [];
       let checker = true;
 
@@ -81,13 +81,14 @@ async function insertDb(data: PostAffairRequest) {
           .execute();
 
         for (let i = 0; i < events.length; i++) {
-          const event = events[i];
-          if (event.eventTime1 < minTime1) {
-            minTime1 = event.eventTime1;
+          const eventTime1 = new Date(events[i].eventTime1);
+          const eventTime2 = new Date(events[i].eventTime2);
+          if (eventTime1 < minTime1) {
+            minTime1 = eventTime1;
             checker = true;
           }
-          if (event.eventTime2 > maxTime2) {
-            maxTime2 = event.eventTime2;
+          if (eventTime2 > maxTime2) {
+            maxTime2 = eventTime2;
             checker = true;
           }
         }
@@ -114,13 +115,142 @@ async function insertDb(data: PostAffairRequest) {
       }
       await db.insert(affairsTable).values(insertDataArray).execute();
 
-      // step 3: update dbEvents - have not checked
+      // step 3: update dbEvents
       for (let i = 0; i < dbEvents.length; i++) {
         const dbEvent = dbEvents[i];
         await db
           .update(affairsTable)
           .set({ order: dbEvent.eventOrder + 1 })
-          .where(eq(affairsTable.title, dbEvent.eventTitle))
+          .where(
+            and(
+              eq(affairsTable.title, dbEvent.eventTitle),
+              eq(affairsTable.time1, dbEvent.eventTime1),
+              eq(affairsTable.time2, dbEvent.eventTime2),
+            ),
+          )
+          .execute();
+      }
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+}
+
+async function deleteDb(data: UpdateAffairRequest) {
+  const {
+    affairId,
+    prevType,
+    prevTitle: deleteEventTitle,
+    prevOrder: deleteEventOrder,
+    prevTime1: deleteEventTime1,
+    prevTime2: deleteEventTime2,
+  } = data;
+
+  if (prevType === "todo") {
+    try {
+      await db
+        .delete(affairsTable)
+        .where(eq(affairsTable.id, affairId))
+        .execute();
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  if (prevType === "event") {
+    try {
+      // step 1: get dbEvents whose order needs to be updated
+      let minTime1 = new Date(deleteEventTime1);
+      let maxTime2 = new Date(deleteEventTime2);
+      let dbEvents: DbEvent[] = [];
+      let checker = true;
+
+      while (checker) {
+        checker = false;
+
+        const events = await db
+          .selectDistinctOn([affairsTable.title], {
+            eventTitle: affairsTable.title,
+            eventOrder: affairsTable.order,
+            eventTime1: affairsTable.time1,
+            eventTime2: affairsTable.time2,
+          })
+          .from(affairsTable)
+          .where(
+            and(
+              eq(affairsTable.type, "event"),
+              gt(affairsTable.order, deleteEventOrder),
+              between(
+                affairsTable.dayNumber,
+                getDayNumber(minTime1),
+                getDayNumber(maxTime2),
+              ),
+            ),
+          )
+          .execute();
+
+        for (let i = 0; i < events.length; i++) {
+          const eventTime1 = new Date(events[i].eventTime1);
+          const eventTime2 = new Date(events[i].eventTime2);
+          if (eventTime1 < minTime1) {
+            minTime1 = eventTime1;
+            checker = true;
+          }
+          if (eventTime2 > maxTime2) {
+            maxTime2 = eventTime2;
+            checker = true;
+          }
+        }
+
+        if (checker === false) {
+          dbEvents = events.sort((a, b) => a.eventOrder - b.eventOrder);
+        }
+      }
+
+      // step 2: delete event
+      await db
+        .delete(affairsTable)
+        .where(
+          and(
+            eq(affairsTable.title, deleteEventTitle),
+            eq(affairsTable.time1, new Date(deleteEventTime1)),
+            eq(affairsTable.time2, new Date(deleteEventTime2)),
+          ),
+        );
+
+      // step 3: update dbEvents
+      for (let i = 0; i < dbEvents.length; i++) {
+        const dbEvent = dbEvents[i];
+
+        const [{ order: prevOrder }] = await db
+          .select({
+            order: max(affairsTable.order),
+          })
+          .from(affairsTable)
+          .where(
+            and(
+              eq(affairsTable.type, "event"),
+              lt(affairsTable.order, dbEvent.eventOrder),
+              between(
+                affairsTable.dayNumber,
+                getDayNumber(dbEvent.eventTime1),
+                getDayNumber(dbEvent.eventTime2),
+              ),
+            ),
+          );
+
+        await db
+          .update(affairsTable)
+          .set({ order: prevOrder === null ? 0 : prevOrder + 1 })
+          .where(
+            and(
+              eq(affairsTable.title, dbEvent.eventTitle),
+              eq(affairsTable.time1, dbEvent.eventTime1),
+              eq(affairsTable.time2, dbEvent.eventTime2),
+            ),
+          )
           .execute();
       }
       return true;
@@ -138,6 +268,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
+  // Call insertDb function
   const res = await insertDb(data);
   if (res) {
     return NextResponse.json("OK", { status: 200 });
@@ -157,47 +288,18 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  const { affairId, prevType, prevTitle, prevTime1, prevTime2 } =
-    data as UpdateAffairRequest;
-
-  // delete
-  if (prevType === "todo") {
-    try {
-      await db
-        .delete(affairsTable)
-        .where(eq(affairsTable.id, affairId))
-        .execute();
-    } catch (error) {
-      return NextResponse.json(
-        { error: "Something went wrong in db" },
-        { status: 500 },
-      );
-    }
-  }
-
-  if (prevType === "event") {
-    try {
-      await db
-        .delete(affairsTable)
-        .where(
-          and(
-            eq(affairsTable.title, prevTitle),
-            eq(affairsTable.time1, new Date(prevTime1)),
-            eq(affairsTable.time2, new Date(prevTime2)),
-          ),
-        )
-        .execute();
-    } catch (error) {
-      return NextResponse.json(
-        { error: "Something went wrong in db" },
-        { status: 500 },
-      );
-    }
+  // Call deleteDb function
+  const deleteRes = await deleteDb(data);
+  if (!deleteRes) {
+    return NextResponse.json(
+      { error: "Something went wrong in db" },
+      { status: 500 },
+    );
   }
 
   // Call insertDb function
-  const res = await insertDb(data);
-  if (res) {
+  const insertRes = await insertDb(data);
+  if (insertRes) {
     return NextResponse.json("OK", { status: 200 });
   } else {
     return NextResponse.json(

@@ -64,7 +64,12 @@ export default function EventItems({ events, dayNumberInt }: EventItemsProps) {
             className="flex"
             action={async () => {
               "use server";
-              await deleteEvent(event.title, event.time1, event.time2);
+              await deleteEvent(
+                event.title,
+                event.order,
+                event.time1,
+                event.time2,
+              );
               revalidatePath(`/day/${dayNumberInt}`);
               redirect(`/day/${dayNumberInt}`);
             }}
