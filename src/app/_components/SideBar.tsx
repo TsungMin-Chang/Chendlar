@@ -18,18 +18,20 @@ export default function SideBar({
   openSideBar: boolean;
   onCloseSideBar: () => void;
 }) {
-  const { setDate } = useDateContext();
+  const { setDate, setIsHalfDay, isHalfDay } = useDateContext();
   const router = useRouter();
 
   const handleToMonth = () => {
     setDate(new Date());
     router.push("/");
+    router.refresh();
     onCloseSideBar();
   };
 
   const handleToWeek = () => {
     setDate(new Date());
     router.push("/week");
+    router.refresh();
     onCloseSideBar();
   };
 
@@ -99,7 +101,13 @@ export default function SideBar({
         <Stack direction="row" spacing={1} alignItems="center">
           <p className="text-white">24hr</p>
           <FormControlLabel
-            control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+            control={
+              <IOSSwitch
+                sx={{ m: 1 }}
+                checked={isHalfDay}
+                onChange={(event) => setIsHalfDay(event.target.checked)}
+              />
+            }
             label=""
           />
           <p className="text-white">12hr</p>

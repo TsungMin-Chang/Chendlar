@@ -2,6 +2,7 @@ import { AiFillHeart } from "react-icons/ai";
 
 import { useRouter } from "next/navigation";
 
+import useDateContext from "@/hooks/useDateContext";
 import type { dbAffair } from "@/lib/types";
 import { getDayNumber } from "@/lib/utils";
 
@@ -17,6 +18,7 @@ export default function MonthCell({
   cellAffairs,
 }: MonthCellProps) {
   const router = useRouter();
+  const { isHalfDay } = useDateContext();
   return (
     <div
       className="flex h-full w-full flex-col gap-y-1"
@@ -61,11 +63,13 @@ export default function MonthCell({
                     <AiFillHeart color="brown" size={14} />
                   ) : (
                     <span>
-                      {new Date(affair.time2).getHours()}:
-                      {new Date(affair.time2).getMinutes().toString()[0]}{" "}
+                      {isHalfDay && new Date(affair.time2).getHours() > 12
+                        ? new Date(affair.time2).getHours() - 12
+                        : new Date(affair.time2).getHours()}
+                      :{new Date(affair.time2).getMinutes().toString()[0]}
                     </span>
                   )}
-                  {affair.title}
+                  <span className="pl-0.5">{affair.title}</span>
                 </div>
               )}
 
