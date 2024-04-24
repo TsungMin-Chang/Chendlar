@@ -34,7 +34,7 @@ type AddDialogProps = {
 };
 
 export default function AddDialog({ open, onClose }: AddDialogProps) {
-  const { postAffair } = useDay();
+  const { postAffair, loading, setLoading } = useDay();
   const { onRefresh } = useRefreshContext();
 
   const steps = ["", ""];
@@ -126,6 +126,7 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
     setIsOneDay(false);
     setIsDone(false);
     onClose();
+    setLoading(false);
   };
 
   return (
@@ -268,7 +269,9 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
           <Button onClick={handleNext}>Next</Button>
         )}
         {activeStep === steps.length - 1 && (
-          <Button onClick={handleSubmit}>Submit</Button>
+          <Button onClick={handleSubmit} disabled={loading}>
+            Submit
+          </Button>
         )}
       </DialogActions>
     </Dialog>

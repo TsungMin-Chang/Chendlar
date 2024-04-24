@@ -1,3 +1,5 @@
+import { AiFillHeart } from "react-icons/ai";
+
 import { useRouter } from "next/navigation";
 
 import type { dbAffair } from "@/lib/types";
@@ -54,12 +56,17 @@ export default function MonthCell({
             >
               {/* todo */}
               {i < 5 && affair.type === "todo" && (
-                <>
-                  <span className="font-medium">
-                    {new Date(affair.time2).getHours()}.
-                  </span>
-                  <span>{affair.title}</span>
-                </>
+                <div className="flex flex-row">
+                  {affair.isDone ? (
+                    <AiFillHeart color="brown" size={14} />
+                  ) : (
+                    <span>
+                      {new Date(affair.time2).getHours()}:
+                      {new Date(affair.time2).getMinutes().toString()[0]}{" "}
+                    </span>
+                  )}
+                  {affair.title}
+                </div>
               )}
 
               {/* event */}

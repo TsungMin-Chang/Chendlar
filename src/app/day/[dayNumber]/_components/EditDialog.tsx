@@ -54,7 +54,7 @@ export default function EditDialog({
   affairTime2,
   affairIsDone,
 }: EditDialogProps) {
-  const { updateAffair } = useDay();
+  const { updateAffair, loading, setLoading } = useDay();
   const router = useRouter();
   const { onRefresh } = useRefreshContext();
 
@@ -159,6 +159,7 @@ export default function EditDialog({
   const handleClose = () => {
     router.push(`/day/${dayNumber}`);
     router.refresh();
+    setLoading(false);
   };
 
   return (
@@ -301,7 +302,9 @@ export default function EditDialog({
           <Button onClick={handleNext}>Next</Button>
         )}
         {activeStep === steps.length - 1 && (
-          <Button onClick={handleSubmit}>Submit</Button>
+          <Button onClick={handleSubmit} disabled={loading}>
+            Submit
+          </Button>
         )}
       </DialogActions>
     </Dialog>

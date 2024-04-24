@@ -10,7 +10,6 @@ export const heartTodo = async (todoId: string, todoIsDone: boolean) => {
     .update(affairsTable)
     .set({ isDone: !todoIsDone })
     .where(eq(affairsTable.id, todoId));
-
   return;
 };
 
@@ -25,9 +24,10 @@ export const deleteEvent = async (
   deleteEventTime1: Date,
   deleteEventTime2: Date,
 ) => {
+
   // step 1: get dbEvents whose order needs to be updated
-  let minTime1 = deleteEventTime1;
-  let maxTime2 = deleteEventTime2;
+  let minTime1 = new Date(deleteEventTime1);
+  let maxTime2 = new Date(deleteEventTime2);
   let dbEvents: DbEvent[] = [];
   let checker = true;
 
@@ -79,8 +79,8 @@ export const deleteEvent = async (
     .where(
       and(
         eq(affairsTable.title, deleteEventTitle),
-        eq(affairsTable.time1, deleteEventTime1),
-        eq(affairsTable.time2, deleteEventTime2),
+        eq(affairsTable.time1, new Date(deleteEventTime1)),
+        eq(affairsTable.time2, new Date(deleteEventTime2)),
       ),
     );
 
@@ -111,8 +111,8 @@ export const deleteEvent = async (
       .where(
         and(
           eq(affairsTable.title, dbEvent.eventTitle),
-          eq(affairsTable.time1, dbEvent.eventTime1),
-          eq(affairsTable.time2, dbEvent.eventTime2),
+          eq(affairsTable.time1, new Date(dbEvent.eventTime1)),
+          eq(affairsTable.time2, new Date(dbEvent.eventTime2)),
         ),
       )
       .execute();
