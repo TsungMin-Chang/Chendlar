@@ -24,7 +24,6 @@ export const deleteEvent = async (
   deleteEventTime1: Date,
   deleteEventTime2: Date,
 ) => {
-
   // step 1: get dbEvents whose order needs to be updated
   let minTime1 = new Date(deleteEventTime1);
   let maxTime2 = new Date(deleteEventTime2);

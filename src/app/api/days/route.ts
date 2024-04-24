@@ -221,8 +221,9 @@ async function deleteDb(data: UpdateAffairRequest) {
   }
 }
 
-async function fastUpdateEvent(data: UpdateAffairRequest) {
+async function fastUpdate(data: UpdateAffairRequest) {
   const {
+    affairId,
     type,
     prevType,
     time1,
@@ -234,6 +235,31 @@ async function fastUpdateEvent(data: UpdateAffairRequest) {
     color,
     isDone,
   } = data;
+
+  // todo
+  if (prevType === "todo" && type === "todo") {
+    try {
+      await db
+        .update(affairsTable)
+        .set({
+          title,
+          color,
+          time1: new Date(time1),
+          time2: new Date(time2),
+          isDone,
+          monthNumber: getMonthNumber(time1),
+          weekNumber: getWeekNumber(time1),
+          dayNumber: getDayNumber(time1),
+        })
+        .where(eq(affairsTable.id, affairId))
+        .execute();
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  // event
   if (
     prevType === "event" &&
     type === "event" &&
@@ -243,7 +269,7 @@ async function fastUpdateEvent(data: UpdateAffairRequest) {
     try {
       await db
         .update(affairsTable)
-        .set({ title, color, isDone })
+        .set({ title, color })
         .where(
           and(
             eq(affairsTable.title, prevTitle),
@@ -288,13 +314,13 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  // fast update event
-  const fastUpdateRes = await fastUpdateEvent(data);
+  // fast update
+  const fastUpdateRes = await fastUpdate(data);
   if (fastUpdateRes) {
     return NextResponse.json("OK", { status: 200 });
   }
 
-  // regular update - step 1: Call deleteDb function
+  // regular update - step 1: deleteDb function
   const deleteRes = await deleteDb(data);
   if (!deleteRes) {
     return NextResponse.json(
@@ -303,7 +329,7 @@ export async function PUT(request: NextRequest) {
     );
   }
 
-  // regular update - step 2: Call insertDb function
+  // regular update - step 2: insertDb function
   const insertRes = await insertDb(data);
   if (insertRes) {
     return NextResponse.json("OK", { status: 200 });
