@@ -41,6 +41,7 @@ type EditDialogProps = {
   affairTime1?: Date;
   affairTime2?: Date;
   affairIsDone?: boolean;
+  isHalfDay: boolean;
 };
 
 export default function EditDialog({
@@ -53,6 +54,7 @@ export default function EditDialog({
   affairTime1,
   affairTime2,
   affairIsDone,
+  isHalfDay,
 }: EditDialogProps) {
   const { updateAffair, loading, setLoading } = useDay();
   const router = useRouter();
@@ -157,7 +159,7 @@ export default function EditDialog({
     }
   };
   const handleClose = () => {
-    router.push(`/day/${dayNumber}`);
+    router.push(`/day/${dayNumber}/?isHalfDay=${isHalfDay}`)
     router.refresh();
     setLoading(false);
   };

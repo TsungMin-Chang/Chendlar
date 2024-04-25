@@ -1,6 +1,7 @@
 import * as React from "react";
+import { useEffect } from "react";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 import Drawer from "@mui/material/Drawer";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -20,6 +21,14 @@ export default function SideBar({
 }) {
   const { setDate, setIsHalfDay, isHalfDay } = useDateContext();
   const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (pathname.slice(1,4) === "day") {
+      router.push(pathname + `/?isHalfDay=${isHalfDay}`)
+      router.refresh(); 
+    }
+  }, [isHalfDay]);
 
   const handleToMonth = () => {
     setDate(new Date());

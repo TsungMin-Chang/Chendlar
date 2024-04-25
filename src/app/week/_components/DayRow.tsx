@@ -51,7 +51,7 @@ export default function DayRow({
             {i === 0 && ( // first cell displays the actual data
               <div
                 className="flex flex-col items-center justify-center text-sm text-gray-300"
-                onClick={() => router.push(`/day/${rowDayNumber}`)}
+                onClick={() => router.push(`/day/${rowDayNumber}`)} // add isHalfDay as searchParam
               >
                 <div>{days[rowDisplayDate.getDay()]}</div>
                 <div>

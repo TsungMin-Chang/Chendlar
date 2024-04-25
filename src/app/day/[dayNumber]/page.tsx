@@ -17,12 +17,13 @@ type DayPageProps = {
   };
   searchParams: {
     editAffairId?: string;
+    isHalfDay?: string;
   };
 };
 
 export default async function DayPage({
   params: { dayNumber },
-  searchParams: { editAffairId },
+  searchParams: { editAffairId, isHalfDay },
 }: DayPageProps) {
   const dayNumberInt = parseInt(dayNumber);
   const userId = "89eb1010-ca1e-414a-a3f2-3b35a994c4a6";
@@ -123,7 +124,11 @@ export default async function DayPage({
           {todos.length > 0 && (
             <div className="border-1 flex flex-col gap-y-2 rounded-lg border-black bg-[#634d3f] p-4 pb-6 pt-3">
               <div className="pb-1 text-lg font-bold text-zinc-200">To do</div>
-              <TodoItems todos={todos} dayNumberInt={dayNumberInt} />
+              <TodoItems
+                todos={todos}
+                dayNumberInt={dayNumberInt}
+                isHalfDay={isHalfDay === "true"}
+              />
             </div>
           )}
 
@@ -131,7 +136,11 @@ export default async function DayPage({
           {events.length > 0 && (
             <div className="border-1 flex flex-col gap-y-2 rounded-lg border-black bg-[#634d3f] p-4 pb-6 pt-3">
               <div className="pb-1 text-lg font-bold text-zinc-200">Event</div>
-              <EventItems events={events} dayNumberInt={dayNumberInt} />
+              <EventItems
+                events={events}
+                dayNumberInt={dayNumberInt}
+                isHalfDay={isHalfDay === "true"}
+              />
             </div>
           )}
         </div>
@@ -160,6 +169,7 @@ export default async function DayPage({
           affairTime1={editAffair.time1}
           affairTime2={editAffair.time2}
           affairIsDone={editAffair.isDone}
+          isHalfDay={isHalfDay === "true"}
         />
       )}
     </>

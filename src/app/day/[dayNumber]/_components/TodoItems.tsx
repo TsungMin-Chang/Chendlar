@@ -14,9 +14,14 @@ import { heartTodo, deleteTodo } from "./actions";
 type TodoItemsProps = {
   todos: dbAffair[];
   dayNumberInt: number;
+  isHalfDay: boolean;
 };
 
-export default function TodoItems({ todos, dayNumberInt }: TodoItemsProps) {
+export default function TodoItems({
+  todos,
+  dayNumberInt,
+  isHalfDay,
+}: TodoItemsProps) {
   return (
     <>
       {todos.map((todo) => (
@@ -31,7 +36,7 @@ export default function TodoItems({ todos, dayNumberInt }: TodoItemsProps) {
               "use server";
               await heartTodo(todo.id, todo.isDone);
               revalidatePath(`/day/${dayNumberInt}`);
-              redirect(`/day/${dayNumberInt}`);
+              redirect(`/day/${dayNumberInt}/?isHalfDay=${isHalfDay}`);
             }}
           >
             <button className="z-10 pr-2" type={"submit"}>
@@ -48,12 +53,20 @@ export default function TodoItems({ todos, dayNumberInt }: TodoItemsProps) {
             <Link
               href={{
                 pathname: `/day/${dayNumberInt}`,
-                query: { editAffairId: todo.id },
+                query: { editAffairId: todo.id, isHalfDay },
               }}
             >
               <div className="justify-self-start text-zinc-200">
-                {new Date(todo.time2).getHours()}:
-                {new Date(todo.time2).getMinutes().toString().padStart(2, "0")}{" "}
+                {isHalfDay && new Date(todo.time2).getHours() > 12
+                  ? new Date(todo.time2).getHours() - 12
+                  : new Date(todo.time2).getHours()}
+                {":"}
+                {new Date(todo.time2)
+                  .getMinutes()
+                  .toString()
+                  .padStart(2, "0")}{" "}
+                {isHalfDay &&
+                  (new Date(todo.time2).getHours() > 12 ? "pm" : "am")}{" "}
                 {todo.title}
               </div>
             </Link>
@@ -66,7 +79,7 @@ export default function TodoItems({ todos, dayNumberInt }: TodoItemsProps) {
               "use server";
               await deleteTodo(todo.id);
               revalidatePath(`/day/${dayNumberInt}`);
-              redirect(`/day/${dayNumberInt}`);
+              redirect(`/day/${dayNumberInt}/?isHalfDay=${isHalfDay}`);
             }}
           >
             <button className="z-10 grow pl-1" type={"submit"}>

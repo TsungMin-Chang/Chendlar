@@ -22,7 +22,9 @@ export default function MonthCell({
   return (
     <div
       className="flex h-full w-full flex-col gap-y-1"
-      onClick={() => router.push(`/day/${cellDayNumber}`)}
+      onClick={() =>
+        router.push(`/day/${cellDayNumber}/?isHalfDay=${isHalfDay}`)
+      }
     >
       <div className="flex justify-center text-sm text-white">
         <div

@@ -12,9 +12,14 @@ import { deleteEvent } from "./actions";
 type EventItemsProps = {
   events: dbAffair[];
   dayNumberInt: number;
+  isHalfDay: boolean;
 };
 
-export default function EventItems({ events, dayNumberInt }: EventItemsProps) {
+export default function EventItems({
+  events,
+  dayNumberInt,
+  isHalfDay,
+}: EventItemsProps) {
   return (
     <>
       {events.map((event) => (
@@ -27,7 +32,7 @@ export default function EventItems({ events, dayNumberInt }: EventItemsProps) {
             <Link
               href={{
                 pathname: `/day/${dayNumberInt}`,
-                query: { editAffairId: event.id },
+                query: { editAffairId: event.id, isHalfDay },
               }}
             >
               <div className="flex flex-row items-center justify-between">
@@ -71,7 +76,7 @@ export default function EventItems({ events, dayNumberInt }: EventItemsProps) {
                 event.time2,
               );
               revalidatePath(`/day/${dayNumberInt}`);
-              redirect(`/day/${dayNumberInt}`);
+              redirect(`/day/${dayNumberInt}/?isHalfDay=${isHalfDay}`);
             }}
           >
             <button className="z-10 grow pl-1" type={"submit"}>
