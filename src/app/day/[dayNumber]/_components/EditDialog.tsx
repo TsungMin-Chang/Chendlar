@@ -154,9 +154,14 @@ export default function EditDialog({
     } catch (error) {
       alert("Error: Failed to update!");
     } finally {
-      onRefresh();
-      handleClose();
-      setLoading(false);
+      try {
+        onRefresh(); // client-side refresh
+        handleClose(); // close EditDialog by server-side refresh
+      } catch (error) {
+        alert("FAIL: client-side refresh or close EditDialog");
+      } finally {
+        setLoading(false);
+      }
     }
   };
   const handleClose = () => {

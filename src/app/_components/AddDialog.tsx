@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { useRouter, usePathname } from "next/navigation";
+
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
@@ -18,6 +20,7 @@ import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import dayjs from "dayjs";
 
+import useDateContext from "@/hooks/useDateContext";
 import useDay from "@/hooks/useDay";
 import useRefreshContext from "@/hooks/useRefreshContext";
 
@@ -34,8 +37,11 @@ type AddDialogProps = {
 };
 
 export default function AddDialog({ open, onClose }: AddDialogProps) {
-  const { postAffair, loading } = useDay();
+  const { postAffair, loading, setLoading } = useDay();
   const { onRefresh } = useRefreshContext();
+  const { isHalfDay, date } = useDateContext();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const steps = ["", ""];
   const [activeStep, setActiveStep] = useState(0);
@@ -106,15 +112,39 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
         color,
         type,
         time1: timeData.time1,
-        time2: timeData.time2,
+        time2:
+          type === "todo"
+            ? new Date(
+                timeData.time2.getTime() -
+                  new Date(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate(),
+                    0,
+                    0,
+                    0,
+                  ).getTime() +
+                  timeData.time1.getTime(),
+              )
+            : timeData.time2,
         isDone,
       };
       await postAffair(data);
     } catch (error) {
       alert("Error: Failed to create!");
     } finally {
-      onRefresh();
-      handleClose();
+      try {
+        onRefresh();
+        handleClose();
+      } catch (error) {
+        alert("FAIL: client-side refresh or close AddDialog");
+      } finally {
+        setLoading(false);
+        if (pathname.slice(1, 4) === "day") {
+          router.push(pathname + `/?isHalfDay=${isHalfDay}`);
+          router.refresh();
+        }
+      }
     }
   };
   const handleClose = () => {
