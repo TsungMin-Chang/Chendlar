@@ -24,9 +24,9 @@ export default function SideBar({
   const pathname = usePathname();
 
   useEffect(() => {
-    if (pathname.slice(1,4) === "day") {
-      router.push(pathname + `/?isHalfDay=${isHalfDay}`)
-      router.refresh(); 
+    if (pathname.slice(1, 4) === "day") {
+      router.push(pathname + `/?isHalfDay=${isHalfDay}`);
+      router.refresh();
     }
   }, [isHalfDay]);
 
@@ -132,6 +132,9 @@ export default function SideBar({
           className="focus:shadow-outline flex w-full max-w-xs items-center justify-center rounded-lg border-2 border-zinc-400 bg-[#473520] py-3 font-bold text-zinc-200 shadow-sm transition-all hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:outline-none"
         >
           Week
+        </button>
+        <button className="focus:shadow-outline flex w-full max-w-xs items-center justify-center rounded-lg border-2 border-zinc-400 bg-[#473520] py-3 font-bold text-zinc-200 shadow-sm transition-all hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:outline-none">
+          List
         </button>
       </div>
     </Drawer>

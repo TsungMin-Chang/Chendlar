@@ -37,11 +37,12 @@ export default function MonthCell({
         cellAffairs.map((affair, i) => (
           <>
             {/* invisible div for padding */}
-            {cellAffairs[i].type === "event" &&
+            {i < 5 &&
+              affair.type === "event" &&
               Array(
                 i === 0
-                  ? cellAffairs[i].order
-                  : cellAffairs[i].order - cellAffairs[i - 1].order - 1,
+                  ? affair.order
+                  : affair.order - cellAffairs[i - 1].order - 1,
               )
                 .fill(0)
                 .map((_, j) => (
@@ -56,23 +57,27 @@ export default function MonthCell({
             {/* visible div */}
             <div
               key={"inner" + i.toString() + affair.id}
-              className={`max-h-4 truncate rounded-sm pl-1 text-xs bg-[${affair.color}]`}
+              className={`flex max-h-4 items-center truncate rounded-sm pl-1 text-xs bg-[${affair.color}]`}
             >
               {/* todo */}
               {i < 5 && affair.type === "todo" && (
-                <div className="flex flex-row">
+                <>
                   {affair.isDone ? (
-                    <AiFillHeart color="brown" size={14} />
+                    <span>
+                      <AiFillHeart color="brown" size={14} />
+                    </span>
                   ) : (
                     <span>
                       {isHalfDay && new Date(affair.time2).getHours() > 12
                         ? new Date(affair.time2).getHours() - 12
                         : new Date(affair.time2).getHours()}
-                      :{new Date(affair.time2).getMinutes().toString()[0]}
+                      {new Date(affair.time2).getMinutes() === 0
+                        ? "."
+                        : ":" + new Date(affair.time2).getMinutes().toString()}
                     </span>
                   )}
                   <span className="pl-0.5">{affair.title}</span>
-                </div>
+                </>
               )}
 
               {/* event */}

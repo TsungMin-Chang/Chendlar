@@ -66,8 +66,8 @@ export default function TodoItems({
                   .toString()
                   .padStart(2, "0")}{" "}
                 {isHalfDay &&
-                  (new Date(todo.time2).getHours() > 12 ? "pm" : "am")}{" "}
-                {todo.title}
+                  (new Date(todo.time2).getHours() > 12 ? "PM" : "AM")}
+                <span className="pl-2">{todo.title}</span>
               </div>
             </Link>
           </div>

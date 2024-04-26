@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { Icon } from "@iconify/react";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import AppBar from "@mui/material/AppBar";
@@ -13,10 +14,13 @@ import Typography from "@mui/material/Typography";
 import useDateContext from "@/hooks/useDateContext";
 import { months } from "@/lib/utils";
 
+import EmotionDialog from "./EmotionDialog";
 import SideBar from "./SideBar";
 
 export default function NavBar() {
   const [openSideBar, setOpenSideBar] = useState(false);
+  const [openEmotionDialog, setOpenEmotionDialog] = useState(false);
+  const [emotion, setEmotion] = useState(0);
   const { date } = useDateContext();
   const currentYear = new Date().getFullYear();
   return (
@@ -44,13 +48,51 @@ export default function NavBar() {
               </Typography>
             )}
             <div className="flex grow"></div>
-            <AccountCircle sx={{ fontSize: 32 }} />
+            <span onClick={() => setOpenEmotionDialog(true)}>
+              {emotion === 0 && <AccountCircle sx={{ fontSize: 32 }} />}
+              {emotion === 1 && (
+                <Icon
+                  icon="fluent-emoji-flat:slightly-smiling-face"
+                  style={{ fontSize: "32px" }}
+                />
+              )}
+              {emotion === 2 && (
+                <Icon
+                  icon="fluent-emoji-flat:frowning-face"
+                  style={{ fontSize: "32px" }}
+                />
+              )}
+              {emotion === 3 && (
+                <Icon
+                  icon="fluent-emoji-flat:angry-face"
+                  style={{ fontSize: "32px" }}
+                />
+              )}
+              {emotion === 4 && (
+                <Icon
+                  icon="fluent-emoji-flat:face-with-open-mouth"
+                  style={{ fontSize: "32px" }}
+                />
+              )}
+              {emotion === 5 && (
+                <Icon
+                  icon="fluent-emoji-flat:face-with-head-bandage"
+                  style={{ fontSize: "32px" }}
+                />
+              )}
+            </span>
           </Toolbar>
         </AppBar>
       </Box>
       <SideBar
         openSideBar={openSideBar}
         onCloseSideBar={() => setOpenSideBar(false)}
+      />
+      <EmotionDialog
+        open={openEmotionDialog}
+        onClose={() => setOpenEmotionDialog(false)}
+        emotion={emotion}
+        setEmotion={setEmotion}
       />
     </div>
   );
