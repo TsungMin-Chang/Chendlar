@@ -156,12 +156,12 @@ export default function EditDialog({
     } finally {
       onRefresh();
       handleClose();
+      setLoading(false);
     }
   };
   const handleClose = () => {
     router.push(`/day/${dayNumber}/?isHalfDay=${isHalfDay}`);
     router.refresh();
-    setLoading(false);
   };
 
   return (

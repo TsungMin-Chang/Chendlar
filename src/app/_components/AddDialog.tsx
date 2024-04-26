@@ -34,7 +34,7 @@ type AddDialogProps = {
 };
 
 export default function AddDialog({ open, onClose }: AddDialogProps) {
-  const { postAffair, loading, setLoading } = useDay();
+  const { postAffair, loading } = useDay();
   const { onRefresh } = useRefreshContext();
 
   const steps = ["", ""];
@@ -126,7 +126,6 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
     setIsOneDay(false);
     setIsDone(false);
     onClose();
-    setLoading(false);
   };
 
   return (

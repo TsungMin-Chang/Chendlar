@@ -1,14 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RiAddCircleFill } from "react-icons/ri";
 
 import IconButton from "@mui/material/IconButton";
 
+import useDay from "@/hooks/useDay";
+
 import AddDialog from "./AddDialog";
 
 export default function AddButton() {
+  const { setLoading } = useDay();
   const [openDialog, setOpenDialog] = useState(false);
+  useEffect(() => {
+    if (!openDialog) {
+      setLoading(false);
+    }
+  }, [openDialog]);
   return (
     <>
       <IconButton
