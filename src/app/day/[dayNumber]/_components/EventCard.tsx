@@ -9,17 +9,17 @@ import type { dbAffair } from "@/lib/types";
 
 import { deleteEvent } from "./actions";
 
-type EventItemsProps = {
+type EventCardProps = {
   events: dbAffair[];
   dayNumberInt: number;
   isHalfDay: boolean;
 };
 
-export default function EventItems({
+export default function EventCard({
   events,
   dayNumberInt,
   isHalfDay,
-}: EventItemsProps) {
+}: EventCardProps) {
   return (
     <>
       {events.map((event) => (

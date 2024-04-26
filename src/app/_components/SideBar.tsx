@@ -44,6 +44,12 @@ export default function SideBar({
     onCloseSideBar();
   };
 
+  const handleToMemo = () => {
+    router.push("/memo");
+    router.refresh();
+    onCloseSideBar();
+  };
+
   // Material UI
   const IOSSwitch = styled((props: SwitchProps) => (
     <Switch
@@ -133,8 +139,11 @@ export default function SideBar({
         >
           Week
         </button>
-        <button className="focus:shadow-outline flex w-full max-w-xs items-center justify-center rounded-lg border-2 border-zinc-400 bg-[#473520] py-3 font-bold text-zinc-200 shadow-sm transition-all hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:outline-none">
-          List
+        <button
+          onClick={() => handleToMemo()}
+          className="focus:shadow-outline flex w-full max-w-xs items-center justify-center rounded-lg border-2 border-zinc-400 bg-[#473520] py-3 font-bold text-zinc-200 shadow-sm transition-all hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:outline-none"
+        >
+          Memo
         </button>
       </div>
     </Drawer>

@@ -25,7 +25,6 @@ export default function AddDialog({
       <DialogTitle sx={{ fontWeight: "bold", fontSize: 22 }}>
         Emotion
       </DialogTitle>
-
       <DialogContent className="flex w-[300px] flex-col gap-y-2">
         <div className="mt-2 grid grid-cols-5 gap-2 p-2">
           <button

@@ -11,17 +11,17 @@ import type { dbAffair } from "@/lib/types";
 
 import { heartTodo, deleteTodo } from "./actions";
 
-type TodoItemsProps = {
+type TodoCardProps = {
   todos: dbAffair[];
   dayNumberInt: number;
   isHalfDay: boolean;
 };
 
-export default function TodoItems({
+export default function TodoCard({
   todos,
   dayNumberInt,
   isHalfDay,
-}: TodoItemsProps) {
+}: TodoCardProps) {
   return (
     <>
       {todos.map((todo) => (

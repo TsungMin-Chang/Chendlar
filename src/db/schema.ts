@@ -40,3 +40,22 @@ export const affairsTable = pgTable(
     monthNumberIndex: index("month_number_index").on(table.monthNumber),
   }),
 );
+
+// export const memosTable = pgTable(
+//   "memos",
+//   {
+//     id: uuid("id").defaultRandom().primaryKey(),
+//     userId: uuid("user_id")
+//       .notNull()
+//       .references(() => usersTable.id, {
+//         onDelete: "cascade",
+//       }),
+//     title: varchar("title", { length: 20 }).notNull(),
+//     description: varchar("title", { length: 100 }),
+//   },
+//   (table) => ({
+//     dayNumberIndex: index("day_number_index").on(table.dayNumber),
+//     weekNumberIndex: index("week_number_index").on(table.weekNumber),
+//     monthNumberIndex: index("month_number_index").on(table.monthNumber),
+//   }),
+// );

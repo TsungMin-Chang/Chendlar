@@ -30,3 +30,14 @@ export type resData = {
     [dayNumber: number]: dbAffair[];
   };
 };
+
+export type DbMemo = {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+};
+
+export type Memo = {
+  [catName: string]: DbMemo[];
+};

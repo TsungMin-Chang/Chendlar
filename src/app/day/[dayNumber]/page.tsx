@@ -8,8 +8,8 @@ import { affairsTable } from "@/db/schema";
 import { getDateFromDayNumber } from "@/lib/utils";
 
 import EditDialog from "./_components/EditDialog";
-import EventItems from "./_components/EventItems";
-import TodoItems from "./_components/TodoItems";
+import EventCard from "./_components/EventCard";
+import TodoCard from "./_components/TodoCard";
 
 type DayPageProps = {
   params: {
@@ -124,7 +124,7 @@ export default async function DayPage({
           {todos.length > 0 && (
             <div className="border-1 flex flex-col gap-y-2 rounded-lg border-black bg-[#634d3f] p-4 pb-6 pt-3">
               <div className="pb-1 text-lg font-bold text-zinc-200">To do</div>
-              <TodoItems
+              <TodoCard
                 todos={todos}
                 dayNumberInt={dayNumberInt}
                 isHalfDay={isHalfDay === "true"}
@@ -136,7 +136,7 @@ export default async function DayPage({
           {events.length > 0 && (
             <div className="border-1 flex flex-col gap-y-2 rounded-lg border-black bg-[#634d3f] p-4 pb-6 pt-3">
               <div className="pb-1 text-lg font-bold text-zinc-200">Event</div>
-              <EventItems
+              <EventCard
                 events={events}
                 dayNumberInt={dayNumberInt}
                 isHalfDay={isHalfDay === "true"}
