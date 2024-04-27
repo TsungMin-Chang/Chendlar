@@ -1,15 +1,10 @@
 "use client";
 
-import { useState } from "react";
-
-import { Icon } from "@iconify/react";
-
 import type { Memo } from "@/lib/types";
 
 import CategoryCard from "./_components/CategoryCard";
 
 export default function MemoPage() {
-  const [isEditing, setIsEditing] = useState(false);
   // const userId = "89eb1010-ca1e-414a-a3f2-3b35a994c4a6";
 
   const memoDummy: Memo = {
@@ -44,15 +39,7 @@ export default function MemoPage() {
       >
         <div className="flex flex-col gap-y-6">
           {/* Memo  && Edit Btn*/}
-          <div className="flex flex-row justify-between">
-            <div className="ml-2 text-lg font-bold text-zinc-200">Memo</div>
-            <button
-              className="pr-2"
-              onClick={() => setIsEditing((prev) => !prev)}
-            >
-              <Icon icon="fluent-emoji:pencil" style={{ fontSize: "28px" }} />
-            </button>
-          </div>
+          <div className="ml-2 text-lg font-bold text-zinc-200">Memo</div>
 
           {/* Category Card */}
           {Object.keys(memoDummy).map((catName) => (
@@ -60,7 +47,6 @@ export default function MemoPage() {
               key={catName}
               catName={catName}
               memos={memoDummy[catName]}
-              isEditing={isEditing}
             />
           ))}
         </div>
