@@ -1,36 +1,30 @@
 "use client";
 
-import type { Memo } from "@/lib/types";
+import { useState, useEffect } from "react";
+import { GiPencil } from "react-icons/gi";
+import { TiDelete } from "react-icons/ti";
+
+import IconButton from "@mui/material/IconButton";
+
+import useCard from "@/hooks/useCard";
+import type { DbCards } from "@/lib/types";
 
 import CategoryCard from "./_components/CategoryCard";
 
 export default function MemoPage() {
-  // const userId = "89eb1010-ca1e-414a-a3f2-3b35a994c4a6";
+  const [isEditing, setIsEditing] = useState(false);
+  const [cardsData, setCardsData] = useState<DbCards>({});
+  const [refreshCards, setRefreshCards] = useState(false);
+  const { getCards, postCard, deleteCard } = useCard();
 
-  const memoDummy: Memo = {
-    General: [
-      { id: "1", title: "1", description: "123", category: "General" },
-      { id: "2", title: "2", description: "1234", category: "General" },
-      {
-        id: "3",
-        title: "3",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendissmalesuada lacus ex, sit amet blandit leo lobortis eget.",
-        category: "General",
-      },
-    ],
-    NextProject: [
-      { id: "1", title: "1", description: "123", category: "NextProject" },
-      { id: "2", title: "2", description: "1234", category: "NextProject" },
-      {
-        id: "3",
-        title: "3",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit Suspendissmalesuada lacus ex sit amet blandit leo lobortis eget.",
-        category: "NextProject",
-      },
-    ],
-  };
+  useEffect(() => {
+    async function fetchData() {
+      const resData = await getCards();
+      setCardsData(resData.data);
+    }
+    fetchData();
+  }, [refreshCards]);
+
   return (
     <>
       <div
@@ -38,17 +32,56 @@ export default function MemoPage() {
         style={{ height: "94vh" }}
       >
         <div className="flex flex-col gap-y-6">
-          {/* Memo  && Edit Btn*/}
-          <div className="ml-2 text-lg font-bold text-zinc-200">Memo</div>
+          {/* Memo && Edit-Cards Button*/}
+          <div className="flex flex-row justify-between">
+            <div className="ml-2 text-lg font-bold text-zinc-200">Memo</div>
+            <button
+              className="pr-2"
+              onClick={() => setIsEditing((prev) => !prev)}
+            >
+              <GiPencil size={28} color="orange" />
+            </button>
+          </div>
 
-          {/* Category Card */}
-          {Object.keys(memoDummy).map((catName) => (
-            <CategoryCard
-              key={catName}
-              catName={catName}
-              memos={memoDummy[catName]}
-            />
+          {/* TODO: put General Card here */}
+
+          {Object.keys(cardsData).map((cardName) => (
+            <div key={cardName} className="relative">
+              {/* Delete-Card Button */}
+              {isEditing && (
+                <div className="z-3 absolute -right-4 -top-4">
+                  <IconButton
+                    onClick={async () => {
+                      await deleteCard(cardName);
+                      setRefreshCards((prev) => !prev);
+                    }}
+                  >
+                    <TiDelete size={28} color="red" />
+                  </IconButton>
+                </div>
+              )}
+
+              {/* Card */}
+              <CategoryCard 
+                cardName={cardName} 
+                memos={cardsData[cardName]} 
+                onRefreshCards={() => setRefreshCards((prev) => !prev)}
+              />
+            </div>
           ))}
+
+          {/* Add-Card Button */}
+          {isEditing && (
+            <button
+              onClick={async () => {
+                await postCard();
+                setRefreshCards((prev) => !prev);
+              }}
+              className="rounded-lg border-2 border-zinc-400 bg-[#634d3f] p-2 font-semibold text-white transition-all duration-300"
+            >
+              + Category
+            </button>
+          )}
         </div>
       </div>
     </>

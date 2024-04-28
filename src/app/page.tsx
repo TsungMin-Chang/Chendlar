@@ -28,7 +28,7 @@ export default function Home() {
     async function fetchData() {
       const reqData = {
         monthNumber: currentMonthNumber,
-        userId: "89eb1010-ca1e-414a-a3f2-3b35a994c4a6",
+        userId: "aea86071-f215-416a-908d-589eac59814a",
       };
       const resData = await getMonths(reqData);
       setMonthsData(resData.data);

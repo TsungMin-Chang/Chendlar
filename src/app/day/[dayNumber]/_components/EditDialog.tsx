@@ -142,7 +142,7 @@ export default function EditDialog({
         prevOrder: affairOrder,
         prevTime1: affairTime1,
         prevTime2: affairTime2,
-        userId: "89eb1010-ca1e-414a-a3f2-3b35a994c4a6",
+        userId: "aea86071-f215-416a-908d-589eac59814a",
         title,
         color,
         type,

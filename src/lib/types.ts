@@ -33,11 +33,11 @@ export type resData = {
 
 export type DbMemo = {
   id: string;
+  cardName: string;
   title: string;
   description: string;
-  category: string;
 };
 
-export type Memo = {
-  [catName: string]: DbMemo[];
+export type DbCards = {
+  [cardName: string]: DbMemo[];
 };

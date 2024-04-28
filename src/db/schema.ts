@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   uuid,
   varchar,
@@ -35,27 +36,44 @@ export const affairsTable = pgTable(
     dayNumber: integer("day_number").notNull(),
   },
   (table) => ({
+    // TODO: double check index
     dayNumberIndex: index("day_number_index").on(table.dayNumber),
     weekNumberIndex: index("week_number_index").on(table.weekNumber),
     monthNumberIndex: index("month_number_index").on(table.monthNumber),
   }),
 );
 
-// export const memosTable = pgTable(
-//   "memos",
-//   {
-//     id: uuid("id").defaultRandom().primaryKey(),
-//     userId: uuid("user_id")
-//       .notNull()
-//       .references(() => usersTable.id, {
-//         onDelete: "cascade",
-//       }),
-//     title: varchar("title", { length: 20 }).notNull(),
-//     description: varchar("title", { length: 100 }),
-//   },
-//   (table) => ({
-//     dayNumberIndex: index("day_number_index").on(table.dayNumber),
-//     weekNumberIndex: index("week_number_index").on(table.weekNumber),
-//     monthNumberIndex: index("month_number_index").on(table.monthNumber),
-//   }),
-// );
+export const cardsTable = pgTable("cards", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => usersTable.id, {
+      onDelete: "cascade",
+    }),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  name: varchar("name", { length: 32 }).notNull().unique(),
+});
+
+export const memosTable = pgTable(
+  "memos",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => usersTable.id, {
+        onDelete: "cascade",
+      }),
+    cardName: varchar("card_name", { length: 32 })
+      .notNull()
+      .references(() => cardsTable.name, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    createdAt: timestamp("created_at").default(sql`now()`),
+    title: varchar("title", { length: 32 }).notNull(),
+    description: varchar("description", { length: 128 }).notNull(),
+  },
+  (table) => ({
+    cardNameIndex: index("card_name_index").on(table.cardName),
+  }),
+);

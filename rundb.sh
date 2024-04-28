@@ -1,3 +1,4 @@
+# podman volume rm --force pg-data
 # podman volume create pg-data
 podman run -d -it --replace \
   --name chendlar \

@@ -14,7 +14,7 @@ export const getWeeksRequestSchema = z.object({
 });
 export type GetWeeksRequest = z.infer<typeof getWeeksRequestSchema>;
 
-// POST
+// POST Affair
 export const postAffairRequestSchema = z.object({
   userId: z.string().uuid(),
   title: z.string().max(20),
@@ -26,7 +26,7 @@ export const postAffairRequestSchema = z.object({
 });
 export type PostAffairRequest = z.infer<typeof postAffairRequestSchema>;
 
-// UPDATE
+// UPDATE Affair
 export const updateAffairRequestSchema = postAffairRequestSchema.extend({
   affairId: z.string().uuid(),
   prevType: z.string().max(8),
@@ -36,3 +36,17 @@ export const updateAffairRequestSchema = postAffairRequestSchema.extend({
   prevTime2: z.date(),
 });
 export type UpdateAffairRequest = z.infer<typeof updateAffairRequestSchema>;
+
+// POST Card
+export const postCardRequestSchema = z.object({
+  userId: z.string().uuid(),
+  name: z.string().max(32),
+});
+export type PostCardRequest = z.infer<typeof postCardRequestSchema>;
+
+// Update Card
+export const updateCardRequestSchema = z.object({
+  name: z.string().max(32),
+  prevName: z.string().max(32),
+});
+export type UpdateCardRequest = z.infer<typeof updateCardRequestSchema>;

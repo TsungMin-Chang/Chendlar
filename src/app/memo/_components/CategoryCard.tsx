@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { GiPencil } from "react-icons/gi";
 import { TiDelete } from "react-icons/ti";
 
-import { Icon } from "@iconify/react";
+import useCard from "@/hooks/useCard";
+
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
@@ -12,46 +14,64 @@ import TextField from "@mui/material/TextField";
 import type { DbMemo } from "@/lib/types";
 
 type CategoryCardProps = {
-  catName: string;
+  cardName: string;
   memos: DbMemo[];
+  onRefreshCards : () => void;
 };
 
-export default function CategoryCard({ catName, memos }: CategoryCardProps) {
-  const [isEditing, setIsEditing] = useState(false);
+export default function CategoryCard({ cardName, memos, onRefreshCards }: CategoryCardProps) {
+  const { updateCard } = useCard();
+
+  const [isEditing, setIsEditing] = useState(cardName.slice(0, 9) === "initialDB");
   const [expandingMemoIds, setExpandingMemoIds] = useState<string[]>([]);
   const [updatingMemo, setUpdatingMemo] = useState<DbMemo[]>(memos ?? []);
-  const [updatingCatName, setUpdatingCatName] = useState(catName ?? "");
+  const [updatingCardName, setUpdatingCardName] = useState(cardName ?? "");
 
-  console.log(updatingMemo);
+  const handlePencilBtn = async () => {
+    setIsEditing((prev) => !prev);
+    if (updatingCardName !== cardName) {
+      const data = {prevName: cardName, name: updatingCardName};
+      await updateCard(data);
+      onRefreshCards();
+    }
+  }
 
   return (
     <div
-      key={catName}
+      key={cardName}
       className="border-1 flex flex-col gap-y-2 rounded-lg border-black bg-[#634d3f] p-4 pb-6 pt-3"
     >
       <div className="flex flex-row justify-between">
+        {/* Card Name */}
         {isEditing ? (
           <ClickAwayListener onClickAway={() => {}} className="grow">
             <Input
-              defaultValue={updatingCatName}
-              onChange={(e) => setUpdatingCatName(e.target.value)}
+              defaultValue={
+                updatingCardName.slice(0, 9) === "initialDB"
+                  ? ""
+                  : updatingCardName
+              }
+              onChange={(e) => setUpdatingCardName(e.target.value)}
               className="w-full pl-1 text-lg font-bold text-zinc-200 "
               placeholder="Category"
             />
           </ClickAwayListener>
         ) : (
-          <div className="pb-1 text-lg font-bold text-zinc-200">{catName}</div>
+          <div className="pb-1 text-lg font-bold text-zinc-200">
+            {cardName.slice(0, 9) === "initialDB" ? "" : cardName}
+          </div>
         )}
 
-        <button className="pr-2" onClick={() => setIsEditing((prev) => !prev)}>
-          <Icon icon="fluent-emoji:pencil" style={{ fontSize: "28px" }} />
+        {/* Edit Button */}
+        <button className="pr-2" onClick={() => handlePencilBtn()}>
+          <GiPencil size={28} color="pink" />
         </button>
       </div>
 
       {memos.map((memo, i) => (
         <div key={memo.id} className="flex flex-col">
           <div className="flex flex-row items-center rounded-full bg-[#473520] p-2">
-            {/* delete btn */}
+            {/* delete button */}
             {isEditing && (
               <div className="flex">
                 <button className="z-10 grow pl-1">
@@ -81,7 +101,7 @@ export default function CategoryCard({ catName, memos }: CategoryCardProps) {
               )}
             </div>
 
-            {/* expand btn */}
+            {/* expand button */}
             <div className="flex">
               <button
                 className="z-10 grow pl-1"
@@ -126,6 +146,16 @@ export default function CategoryCard({ catName, memos }: CategoryCardProps) {
           )}
         </div>
       ))}
+
+      {/* Add Memo Button */}
+      {isEditing && (
+        <button
+          // onClick={handleClick}
+          className="rounded-lg border-2 border-zinc-400 bg-[#473520] p-2 font-semibold text-white transition-all duration-300"
+        >
+          + Memo
+        </button>
+      )}
     </div>
   );
 }
