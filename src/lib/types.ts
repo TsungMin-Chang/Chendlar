@@ -11,7 +11,7 @@ export type DbEvent = {
   eventTime2: Date;
 };
 
-export type dbAffair = {
+export type DbAffair = {
   id: string;
   title: string;
   color: string;
@@ -25,9 +25,9 @@ export type dbAffair = {
   dayNumber: number;
 };
 
-export type resData = {
+export type ResData = {
   [monthOrWeekNumber: number]: {
-    [dayNumber: number]: dbAffair[];
+    [dayNumber: number]: DbAffair[];
   };
 };
 

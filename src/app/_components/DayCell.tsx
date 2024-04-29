@@ -3,13 +3,13 @@ import { AiFillHeart } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 
 import useDateContext from "@/hooks/useDateContext";
-import type { dbAffair } from "@/lib/types";
+import type { DbAffair } from "@/lib/types";
 import { getDayNumber } from "@/lib/utils";
 
 type MonthCellProps = {
   cellDisplayDate: number;
   cellDayNumber: number;
-  cellAffairs: dbAffair[] | null;
+  cellAffairs: DbAffair[] | null;
 };
 
 export default function MonthCell({

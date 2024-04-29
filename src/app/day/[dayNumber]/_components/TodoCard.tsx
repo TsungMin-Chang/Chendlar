@@ -7,12 +7,12 @@ import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import type { dbAffair } from "@/lib/types";
+import type { DbAffair } from "@/lib/types";
 
 import { heartTodo, deleteTodo } from "./actions";
 
 type TodoCardProps = {
-  todos: dbAffair[];
+  todos: DbAffair[];
   dayNumberInt: number;
   isHalfDay: boolean;
 };

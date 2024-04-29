@@ -1,12 +1,12 @@
 import { useRouter } from "next/navigation";
 
-import type { dbAffair } from "@/lib/types";
+import type { DbAffair } from "@/lib/types";
 import { days } from "@/lib/utils";
 
 type DayRowProps = {
   rowDisplayDate: Date;
   rowDayNumber: number;
-  rowDbAffairs: dbAffair[] | null;
+  rowDbAffairs: DbAffair[] | null;
 };
 
 export default function DayRow({
@@ -16,7 +16,7 @@ export default function DayRow({
 }: DayRowProps) {
   const router = useRouter();
 
-  const rowAffairs: { [order: number]: dbAffair } = {};
+  const rowAffairs: { [order: number]: DbAffair } = {};
   if (rowDbAffairs) {
     rowDbAffairs.map((dbAffair, i) => {
       // Event

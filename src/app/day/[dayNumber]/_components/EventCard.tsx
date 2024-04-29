@@ -5,12 +5,12 @@ import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import type { dbAffair } from "@/lib/types";
+import type { DbAffair } from "@/lib/types";
 
 import { deleteEvent } from "./actions";
 
 type EventCardProps = {
-  events: dbAffair[];
+  events: DbAffair[];
   dayNumberInt: number;
   isHalfDay: boolean;
 };

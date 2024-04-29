@@ -1,4 +1,4 @@
-import type { dbAffair } from "@/lib/types";
+import type { DbAffair } from "@/lib/types";
 import { getDayNumber } from "@/lib/utils";
 
 import DayRow from "./DayRow";
@@ -6,7 +6,7 @@ import DayRow from "./DayRow";
 type WeekCellsProps = {
   firstDayOfWeek: Date;
   weekData: {
-    [dayNumber: number]: dbAffair[];
+    [dayNumber: number]: DbAffair[];
   } | null;
 };
 

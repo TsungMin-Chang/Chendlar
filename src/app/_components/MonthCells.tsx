@@ -1,4 +1,4 @@
-import type { dbAffair } from "@/lib/types";
+import type { DbAffair } from "@/lib/types";
 import { getDayNumber } from "@/lib/utils";
 
 import MonthCell from "./DayCell";
@@ -7,7 +7,7 @@ type MonthCellsProps = {
   firstDayOfMonth: Date;
   lastDayOfMonth: Date;
   monthData: {
-    [dayNumber: number]: dbAffair[];
+    [dayNumber: number]: DbAffair[];
   } | null;
 };
 

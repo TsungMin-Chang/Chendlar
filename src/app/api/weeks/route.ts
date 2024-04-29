@@ -4,7 +4,7 @@ import { and, eq, asc, between } from "drizzle-orm";
 
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
-import type { dbAffair, resData } from "@/lib/types";
+import type { DbAffair, ResData } from "@/lib/types";
 import { getWeeksRequestSchema } from "@/validators/crudTypes";
 import type { GetWeeksRequest } from "@/validators/crudTypes";
 
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
   const { userId, weekNumber } = data as GetWeeksRequest;
 
   try {
-    const dbAffairs: dbAffair[] = await db
+    const dbAffairs: DbAffair[] = await db
       .select({
         id: affairsTable.id,
         title: affairsTable.title,
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       .orderBy(asc(affairsTable.order), asc(affairsTable.time2))
       .execute();
 
-    const data: resData = {
+    const data: ResData = {
       [weekNumber - 1]: {},
       [weekNumber]: {},
       [weekNumber + 1]: {},
