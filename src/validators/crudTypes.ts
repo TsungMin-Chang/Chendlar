@@ -50,3 +50,20 @@ export const updateCardRequestSchema = z.object({
   prevName: z.string().max(32),
 });
 export type UpdateCardRequest = z.infer<typeof updateCardRequestSchema>;
+
+// POST Memos
+export const NewMemo = z.object({
+  userId: z.string().uuid(),
+  title: z.string().max(32),
+  description: z.string().max(128),
+  cardName: z.string().max(32),
+});
+export const postMemosRequestSchema = z.array(NewMemo);
+export type PostMemosRequest = z.infer<typeof postMemosRequestSchema>;
+
+// Update Memos
+export const DbMemo = NewMemo.omit({ userId: true }).extend({
+  id: z.string().uuid(),
+});
+export const updateMemosRequestSchema = z.array(DbMemo);
+export type UpdateMemosRequest = z.infer<typeof updateMemosRequestSchema>;

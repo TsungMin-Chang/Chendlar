@@ -23,7 +23,7 @@ export default function MemoPage() {
       setCardsData(resData.data);
     }
     fetchData();
-  }, [refreshCards]);
+  }, [refreshCards, getCards]);
 
   return (
     <div
@@ -31,7 +31,7 @@ export default function MemoPage() {
       style={{ height: "94vh" }}
     >
       <div className="flex flex-col gap-y-6">
-        {/* Memo && Edit-Cards Button*/}
+        {/* Memo && Orange-Edit Button*/}
         <div className="flex flex-row justify-between">
           <div className="ml-2 text-lg font-bold text-zinc-200">Memo</div>
           <button
@@ -48,7 +48,7 @@ export default function MemoPage() {
           <div key={cardName} className="relative">
             {/* Delete-Card Button */}
             {isEditing && (
-              <div className="z-3 absolute -right-4 -top-4">
+              <div className="absolute -right-4 -top-4 z-50">
                 <IconButton
                   onClick={async () => {
                     await deleteCard(cardName);

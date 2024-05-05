@@ -37,6 +37,7 @@ export type DbMemo = {
   title: string;
   description: string;
 };
+export type NewMemo = Omit<DbMemo, "id">;
 
 export type DbCards = {
   [cardName: string]: DbMemo[];

@@ -13,33 +13,29 @@ import type { DbMemo } from "@/lib/types";
 type MemoProps = {
   memo: DbMemo;
   index: number;
-  isEditing: boolean;
-  updatingDbMemos?: DbMemo[];
-  setUpdatingDbMemos?: Dispatch<SetStateAction<DbMemo[]>>;
-  addedNewMemos?: DbMemo[];
-  setAddedNewMemos?: Dispatch<SetStateAction<DbMemo[]>>;
-  expandingMemoIds: string[];
-  setExpandingMemoIds: Dispatch<SetStateAction<string[]>>;
+  isCardEditing: boolean;
+  setWorkingMemoArray: Dispatch<SetStateAction<DbMemo[]>>;
+  isExpanded: boolean;
+  setIsExpanded: () => void;
+  deleteAction: () => void;
 };
 
 export default function Memo({
   memo,
   index,
-  isEditing,
-  updatingDbMemos,
-  setUpdatingDbMemos,
-  addedNewMemos,
-  setAddedNewMemos,
-  expandingMemoIds,
-  setExpandingMemoIds,
+  isCardEditing,
+  setWorkingMemoArray,
+  isExpanded,
+  setIsExpanded,
+  deleteAction,
 }: MemoProps) {
   return (
     <div key={memo.id} className="flex flex-col">
       <div className="flex flex-row items-center rounded-full bg-[#473520] p-2">
         {/* delete memo button */}
-        {isEditing && (
+        {isCardEditing && (
           <div className="flex">
-            <button className="z-10 grow pl-1">
+            <button className="z-10 grow pl-1" onClick={deleteAction}>
               <TiDelete color="brown" size={22} />
             </button>
           </div>
@@ -47,13 +43,13 @@ export default function Memo({
 
         {/* memo title */}
         <div className="flex grow pl-2">
-          {/* editing update-memo-array */}
-          {updatingDbMemos && setUpdatingDbMemos && isEditing && (
+          {/* editing */}
+          {isCardEditing ? (
             <ClickAwayListener onClickAway={() => {}} className="grow">
               <Input
-                defaultValue={updatingDbMemos[index].title}
+                defaultValue={memo.title}
                 onChange={(e) =>
-                  setUpdatingDbMemos((prev) => {
+                  setWorkingMemoArray((prev) => {
                     prev[index].title = e.target.value;
                     return prev;
                   })
@@ -62,44 +58,15 @@ export default function Memo({
                 placeholder="Title"
               />
             </ClickAwayListener>
-          )}
-
-          {/* editing add-memo-array */}
-          {addedNewMemos && setAddedNewMemos && isEditing && (
-            <ClickAwayListener onClickAway={() => {}} className="grow">
-              <Input
-                defaultValue={addedNewMemos[index].title}
-                onChange={(e) =>
-                  setAddedNewMemos((prev) => {
-                    prev[index].title = e.target.value;
-                    return prev;
-                  })
-                }
-                className="w-full pl-1 text-zinc-200"
-                placeholder="Title"
-              />
-            </ClickAwayListener>
-          )}
-
-          {/* not editing */}
-          {!isEditing && (
+          ) : (
             <div className="w-full text-zinc-200">{memo.title}</div>
           )}
         </div>
 
         {/* expand button */}
         <div className="flex">
-          <button
-            className="z-10 grow pl-1"
-            onClick={() => {
-              expandingMemoIds.includes(memo.id)
-                ? setExpandingMemoIds((prev) => {
-                    return prev.filter((ele) => ele !== memo.id);
-                  })
-                : setExpandingMemoIds((prev) => [...prev, memo.id]);
-            }}
-          >
-            {expandingMemoIds.includes(memo.id) ? (
+          <button className="z-10 grow pl-1" onClick={setIsExpanded}>
+            {isExpanded ? (
               <ExpandLessIcon sx={{ color: "rgb(228 228 231)" }} />
             ) : (
               <ExpandMoreIcon sx={{ color: "rgb(228 228 231)" }} />
@@ -109,18 +76,15 @@ export default function Memo({
       </div>
 
       {/* memo description */}
-
-      {/* editing update-memo-array */}
-      {updatingDbMemos &&
-        setUpdatingDbMemos &&
-        expandingMemoIds.includes(memo.id) &&
-        isEditing && (
+      {/* editing */}
+      {isExpanded &&
+        (isCardEditing ? (
           <FormControl>
             <TextField
               className="mt-2"
-              defaultValue={updatingDbMemos[index].description}
+              defaultValue={memo.description}
               onChange={(e) =>
-                setUpdatingDbMemos((prev) => {
+                setWorkingMemoArray((prev) => {
                   prev[index].description = e.target.value;
                   return prev;
                 })
@@ -131,35 +95,9 @@ export default function Memo({
               rows={2}
             />
           </FormControl>
-        )}
-
-      {/* editing add-memo-array */}
-      {addedNewMemos &&
-        setAddedNewMemos &&
-        expandingMemoIds.includes(memo.id) &&
-        isEditing && (
-          <FormControl>
-            <TextField
-              className="mt-2"
-              defaultValue={addedNewMemos[index].description}
-              onChange={(e) =>
-                setAddedNewMemos((prev) => {
-                  prev[index].description = e.target.value;
-                  return prev;
-                })
-              }
-              label="Description"
-              variant="outlined"
-              multiline
-              rows={2}
-            />
-          </FormControl>
-        )}
-
-      {/* not editing */}
-      {expandingMemoIds.includes(memo.id) && !isEditing && (
-        <div className="p-1 px-3">{memo.description}</div>
-      )}
+        ) : (
+          <div className="p-1 px-3">{memo.description}</div>
+        ))}
     </div>
   );
 }

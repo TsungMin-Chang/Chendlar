@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GiPencil } from "react-icons/gi";
 
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Input from "@mui/material/Input";
 
 import useCard from "@/hooks/useCard";
+import useMyMemo from "@/hooks/useMyMemo";
 import type { DbMemo } from "@/lib/types";
 
 import MemoItem from "./MemoItem";
@@ -21,23 +22,58 @@ export default function CategoryCard({
   onRefreshCards,
 }: CategoryCardProps) {
   const { updateCard } = useCard();
+  const { postMemos, updateMemos, deleteMemo } = useMyMemo();
+  const [refreshCard, setRefreshCard] = useState(0);
 
-  const [isEditing, setIsEditing] = useState(
+  useEffect(() => {
+    onRefreshCards();
+  }, [refreshCard]);
+
+  const [isCardEditing, setIsCardEditing] = useState(
     cardName.slice(0, 9) === "initialDB",
   );
+  const [expandingMemoIds, setExpandingMemoIds] = useState<string[]>([]);
 
   const [updatingCardName, setUpdatingCardName] = useState(cardName ?? "");
-
   const [updatingDbMemos, setUpdatingDbMemos] = useState<DbMemo[]>(memos ?? []);
-  const [expandingMemoIds, setExpandingMemoIds] = useState<string[]>([]);
   const [addedNewMemos, setAddedNewMemos] = useState<DbMemo[]>([]);
+  const [deletedMemoIds, setDeletedMemoIds] = useState<string[]>([]);
 
-  const handlePencilBtn = async () => {
-    setIsEditing((prev) => !prev);
-    if (updatingCardName !== cardName) {
-      const data = { prevName: cardName, name: updatingCardName };
-      await updateCard(data);
-      onRefreshCards();
+  const handlePinkPencilBtn = async () => {
+    setIsCardEditing((prev) => !prev);
+    if (isCardEditing) {
+      if (updatingCardName !== cardName) {
+        const data = { prevName: cardName, name: updatingCardName };
+        await updateCard(data);
+      }
+      if (addedNewMemos.length > 0) {
+        const newMemos = [];
+        for (let i = 0; i < addedNewMemos.length; i++) {
+          newMemos.push({
+            userId: "aea86071-f215-416a-908d-589eac59814a",
+            title: addedNewMemos[i].title,
+            description: addedNewMemos[i].description,
+            cardName: addedNewMemos[i].cardName,
+          });
+        }
+        await postMemos(newMemos);
+      }
+      if (updatingDbMemos.length > 0) {
+        const changedMemos = [];
+        for (let i = 0; i < updatingDbMemos.length; i++) {
+          if (
+            updatingDbMemos[i].title !== memos[i].title ||
+            updatingDbMemos[i].description !== memos[i].description
+          ) {
+            changedMemos.push(updatingDbMemos[i]);
+          }
+        }
+        await updateMemos(changedMemos);
+      }
+      if (deletedMemoIds.length > 0) {
+        await deleteMemo(deletedMemoIds);
+      }
+      setRefreshCard((prev) => prev + 1);
     }
   };
 
@@ -48,7 +84,7 @@ export default function CategoryCard({
     >
       <div className="flex flex-row justify-between">
         {/* Card Name */}
-        {isEditing ? (
+        {isCardEditing ? (
           <ClickAwayListener onClickAway={() => {}} className="grow">
             <Input
               defaultValue={
@@ -67,40 +103,59 @@ export default function CategoryCard({
           </div>
         )}
 
-        {/* Edit Button */}
-        <button className="pr-2" onClick={() => handlePencilBtn()}>
+        {/* Pink-Edit Button */}
+        <button className="pr-2" onClick={() => handlePinkPencilBtn()}>
           <GiPencil size={28} color="pink" />
         </button>
       </div>
 
-      {memos.map((memo, i) => (
-        <MemoItem
-          key={i}
-          memo={memo}
-          index={i}
-          isEditing={isEditing}
-          updatingDbMemos={updatingDbMemos}
-          setUpdatingDbMemos={setUpdatingDbMemos}
-          expandingMemoIds={expandingMemoIds}
-          setExpandingMemoIds={setExpandingMemoIds}
-        />
-      ))}
+      {updatingDbMemos.map((memo, i) => {
+        if (!deletedMemoIds.includes(memo.id)) {
+          return (
+            <MemoItem
+              key={i}
+              memo={memo}
+              index={i}
+              isCardEditing={isCardEditing}
+              setWorkingMemoArray={setUpdatingDbMemos}
+              isExpanded={expandingMemoIds.includes(memo.id)}
+              setIsExpanded={() => {
+                expandingMemoIds.includes(memo.id)
+                  ? setExpandingMemoIds((prev) =>
+                      prev.filter((ele) => ele !== memo.id),
+                    )
+                  : setExpandingMemoIds((prev) => [...prev, memo.id]);
+              }}
+              deleteAction={() =>
+                setDeletedMemoIds((prev) => [...prev, memo.id])
+              }
+            />
+          );
+        }
+        return null;
+      })}
 
       {addedNewMemos.map((memo, i) => (
         <MemoItem
           key={i}
           memo={memo}
           index={i}
-          isEditing={isEditing}
-          addedNewMemos={addedNewMemos}
-          setAddedNewMemos={setAddedNewMemos}
-          expandingMemoIds={expandingMemoIds}
-          setExpandingMemoIds={setExpandingMemoIds}
+          isCardEditing={isCardEditing}
+          setWorkingMemoArray={setAddedNewMemos}
+          isExpanded={expandingMemoIds.includes(memo.id)}
+          setIsExpanded={() => {
+            expandingMemoIds.includes(memo.id)
+              ? setExpandingMemoIds((prev) =>
+                  prev.filter((ele) => ele !== memo.id),
+                )
+              : setExpandingMemoIds((prev) => [...prev, memo.id]);
+          }}
+          deleteAction={() => setAddedNewMemos((prev) => prev.splice(i, 1))}
         />
       ))}
 
-      {/* Add Memo Button */}
-      {isEditing && (
+      {/* Add-Memo Button */}
+      {isCardEditing && (
         <button
           className="rounded-lg border-2 border-zinc-400 bg-[#473520] p-2 font-semibold text-white transition-all duration-300"
           onClick={() =>
