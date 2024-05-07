@@ -70,7 +70,7 @@ export default function NavBar() {
               )}
               {emotion === 4 && (
                 <Icon
-                  icon="fluent-emoji-flat:face-with-open-mouth"
+                  icon="fluent-emoji-flat:smiling-face"
                   style={{ fontSize: "32px" }}
                 />
               )}

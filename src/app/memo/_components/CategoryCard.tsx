@@ -43,8 +43,11 @@ export default function CategoryCard({
   }, [cardName, memos]);
 
   const handlePinkPencilBtn = async () => {
-    setIsEditingCard((prev) => !prev);
     if (isEditingCard) {
+      if (updatingCardName.slice(0, 9) === "initialDB") {
+        alert("Please input your category name.");
+        return;
+      }
       if (updatingCardName !== cardName) {
         const data = { prevName: cardName, name: updatingCardName };
         await updateCard(data);
@@ -82,6 +85,7 @@ export default function CategoryCard({
       }
       onRefreshCards();
     }
+    setIsEditingCard((prev) => !prev);
   };
 
   const handleExpandingMemo = (memoId: string) => {
@@ -90,10 +94,6 @@ export default function CategoryCard({
       : setExpandingMemoIds((prev) => [...prev, memoId]);
   };
 
-  if (cardName === "Next Project"){
-    console.log(updatingDbMemos);
-  }
-
   return (
     <div
       key={cardName}
@@ -101,7 +101,7 @@ export default function CategoryCard({
     >
       <div className="flex flex-row justify-between">
         {/* Card Name */}
-        {isEditingCard ? (
+        {isEditingCard && cardName !== "General" ? (
           <ClickAwayListener onClickAway={() => {}} className="grow">
             <Input
               defaultValue={
@@ -139,7 +139,9 @@ export default function CategoryCard({
               setWorkingMemoArray={setUpdatingDbMemos}
               isExpanded={expandingMemoIds.includes(memo.id)}
               setIsExpanded={() => handleExpandingMemo(memo.id)}
-              deleteAction={() => setDeletedMemoIds(prev => [...prev, memo.id])}
+              deleteAction={() =>
+                setDeletedMemoIds((prev) => [...prev, memo.id])
+              }
             />
           );
         }

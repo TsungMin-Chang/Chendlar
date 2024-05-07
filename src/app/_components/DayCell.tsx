@@ -21,6 +21,7 @@ export default function MonthCell({
   const { isHalfDay } = useDateContext();
   return (
     <div
+      key={cellDayNumber.toString()}
       className="flex h-full w-full flex-col gap-y-1"
       onClick={() =>
         router.push(`/day/${cellDayNumber}/?isHalfDay=${isHalfDay}`)

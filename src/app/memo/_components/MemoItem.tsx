@@ -50,8 +50,8 @@ export default function Memo({
                 onChange={(e) =>
                   setWorkingMemoArray((prev) =>
                     prev.map((item, i) =>
-                      i === index ? { ...item, title: e.target.value } : item
-                    )
+                      i === index ? { ...item, title: e.target.value } : item,
+                    ),
                   )
                 }
                 className="w-full pl-1 text-zinc-200"
@@ -85,8 +85,10 @@ export default function Memo({
               onChange={(e) =>
                 setWorkingMemoArray((prev) =>
                   prev.map((item, i) =>
-                    i === index ? { ...item, description: e.target.value } : item
-                  )
+                    i === index
+                      ? { ...item, description: e.target.value }
+                      : item,
+                  ),
                 )
               }
               label="Description"

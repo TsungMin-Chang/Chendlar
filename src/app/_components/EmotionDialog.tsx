@@ -59,7 +59,7 @@ export default function AddDialog({
             onClick={() => setEmotion(4)}
           >
             <Icon
-              icon="fluent-emoji:smiling-face-with-heart-eyes"
+              icon="fluent-emoji-flat:smiling-face"
               style={{ fontSize: "36px" }}
             />
           </button>

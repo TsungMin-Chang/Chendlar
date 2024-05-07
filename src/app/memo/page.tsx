@@ -7,25 +7,27 @@ import { TiDelete } from "react-icons/ti";
 import IconButton from "@mui/material/IconButton";
 
 import useCard from "@/hooks/useCard";
-import type { DbCards } from "@/lib/types";
+import type { DbCards, DbMemo } from "@/lib/types";
 
 import CategoryCard from "./_components/CategoryCard";
 
 export default function MemoPage() {
   const [isEditingCards, setIsEditingCards] = useState(false);
   const [cardsData, setCardsData] = useState<DbCards>({});
+  const [generalCardData, setGeneralCardData] = useState<DbMemo[]>();
   const [refreshCards, setRefreshCards] = useState(false);
   const { getCards, postCard, deleteCard } = useCard();
 
   useEffect(() => {
     async function fetchData() {
       const resData = await getCards();
+      setGeneralCardData(resData.data["General"]);
+      delete resData.data["General"];
       setCardsData(resData.data);
     }
     fetchData();
   }, [refreshCards, getCards]);
 
-  
   return (
     <div
       className="flex flex-col gap-y-5 bg-[#442B0D] px-10 py-5"
@@ -43,7 +45,14 @@ export default function MemoPage() {
           </button>
         </div>
 
-        {/* TODO: put General Card here */}
+        {/* General Card */}
+        {generalCardData !== undefined && (
+          <CategoryCard
+            cardName={"General"}
+            memos={JSON.parse(JSON.stringify(generalCardData))}
+            onRefreshCards={() => setRefreshCards((prev) => !prev)}
+          />
+        )}
 
         {Object.keys(cardsData).map((cardName) => (
           <div key={cardName} className="relative">
