@@ -23,13 +23,8 @@ export default function CategoryCard({
 }: CategoryCardProps) {
   const { updateCard } = useCard();
   const { postMemos, updateMemos, deleteMemo } = useMyMemo();
-  const [refreshCard, setRefreshCard] = useState(0);
 
-  useEffect(() => {
-    onRefreshCards();
-  }, [refreshCard]);
-
-  const [isCardEditing, setIsCardEditing] = useState(
+  const [isEditingCard, setIsEditingCard] = useState(
     cardName.slice(0, 9) === "initialDB",
   );
   const [expandingMemoIds, setExpandingMemoIds] = useState<string[]>([]);
@@ -39,9 +34,17 @@ export default function CategoryCard({
   const [addedNewMemos, setAddedNewMemos] = useState<DbMemo[]>([]);
   const [deletedMemoIds, setDeletedMemoIds] = useState<string[]>([]);
 
+  useEffect(() => {
+    setIsEditingCard(cardName.slice(0, 9) === "initialDB");
+    setUpdatingCardName(cardName);
+    setUpdatingDbMemos(memos);
+    setAddedNewMemos([]);
+    setDeletedMemoIds([]);
+  }, [cardName, memos]);
+
   const handlePinkPencilBtn = async () => {
-    setIsCardEditing((prev) => !prev);
-    if (isCardEditing) {
+    setIsEditingCard((prev) => !prev);
+    if (isEditingCard) {
       if (updatingCardName !== cardName) {
         const data = { prevName: cardName, name: updatingCardName };
         await updateCard(data);
@@ -51,9 +54,9 @@ export default function CategoryCard({
         for (let i = 0; i < addedNewMemos.length; i++) {
           newMemos.push({
             userId: "aea86071-f215-416a-908d-589eac59814a",
+            cardName: addedNewMemos[i].cardName,
             title: addedNewMemos[i].title,
             description: addedNewMemos[i].description,
-            cardName: addedNewMemos[i].cardName,
           });
         }
         await postMemos(newMemos);
@@ -62,20 +65,34 @@ export default function CategoryCard({
         const changedMemos = [];
         for (let i = 0; i < updatingDbMemos.length; i++) {
           if (
-            updatingDbMemos[i].title !== memos[i].title ||
-            updatingDbMemos[i].description !== memos[i].description
+            !deletedMemoIds.includes(updatingDbMemos[i].id) &&
+            updatingDbMemos[i].id === memos[i].id &&
+            (updatingDbMemos[i].title !== memos[i].title ||
+              updatingDbMemos[i].description !== memos[i].description)
           ) {
             changedMemos.push(updatingDbMemos[i]);
           }
         }
-        await updateMemos(changedMemos);
+        if (changedMemos.length > 0) {
+          await updateMemos(changedMemos);
+        }
       }
       if (deletedMemoIds.length > 0) {
         await deleteMemo(deletedMemoIds);
       }
-      setRefreshCard((prev) => prev + 1);
+      onRefreshCards();
     }
   };
+
+  const handleExpandingMemo = (memoId: string) => {
+    expandingMemoIds.includes(memoId)
+      ? setExpandingMemoIds((prev) => prev.filter((ele) => ele !== memoId))
+      : setExpandingMemoIds((prev) => [...prev, memoId]);
+  };
+
+  if (cardName === "Next Project"){
+    console.log(updatingDbMemos);
+  }
 
   return (
     <div
@@ -84,7 +101,7 @@ export default function CategoryCard({
     >
       <div className="flex flex-row justify-between">
         {/* Card Name */}
-        {isCardEditing ? (
+        {isEditingCard ? (
           <ClickAwayListener onClickAway={() => {}} className="grow">
             <Input
               defaultValue={
@@ -99,7 +116,9 @@ export default function CategoryCard({
           </ClickAwayListener>
         ) : (
           <div className="pb-1 text-lg font-bold text-zinc-200">
-            {cardName.slice(0, 9) === "initialDB" ? "" : cardName}
+            {updatingCardName.slice(0, 9) === "initialDB"
+              ? ""
+              : updatingCardName}
           </div>
         )}
 
@@ -116,19 +135,11 @@ export default function CategoryCard({
               key={i}
               memo={memo}
               index={i}
-              isCardEditing={isCardEditing}
+              isEditingCard={isEditingCard}
               setWorkingMemoArray={setUpdatingDbMemos}
               isExpanded={expandingMemoIds.includes(memo.id)}
-              setIsExpanded={() => {
-                expandingMemoIds.includes(memo.id)
-                  ? setExpandingMemoIds((prev) =>
-                      prev.filter((ele) => ele !== memo.id),
-                    )
-                  : setExpandingMemoIds((prev) => [...prev, memo.id]);
-              }}
-              deleteAction={() =>
-                setDeletedMemoIds((prev) => [...prev, memo.id])
-              }
+              setIsExpanded={() => handleExpandingMemo(memo.id)}
+              deleteAction={() => setDeletedMemoIds(prev => [...prev, memo.id])}
             />
           );
         }
@@ -140,22 +151,16 @@ export default function CategoryCard({
           key={i}
           memo={memo}
           index={i}
-          isCardEditing={isCardEditing}
+          isEditingCard={isEditingCard}
           setWorkingMemoArray={setAddedNewMemos}
           isExpanded={expandingMemoIds.includes(memo.id)}
-          setIsExpanded={() => {
-            expandingMemoIds.includes(memo.id)
-              ? setExpandingMemoIds((prev) =>
-                  prev.filter((ele) => ele !== memo.id),
-                )
-              : setExpandingMemoIds((prev) => [...prev, memo.id]);
-          }}
+          setIsExpanded={() => handleExpandingMemo(memo.id)}
           deleteAction={() => setAddedNewMemos((prev) => prev.splice(i, 1))}
         />
       ))}
 
       {/* Add-Memo Button */}
-      {isCardEditing && (
+      {isEditingCard && (
         <button
           className="rounded-lg border-2 border-zinc-400 bg-[#473520] p-2 font-semibold text-white transition-all duration-300"
           onClick={() =>
@@ -163,9 +168,9 @@ export default function CategoryCard({
               ...prev,
               {
                 id: new Date().getTime().toString(),
+                cardName,
                 title: "",
                 description: "",
-                cardName,
               },
             ])
           }

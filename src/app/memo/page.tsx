@@ -12,7 +12,7 @@ import type { DbCards } from "@/lib/types";
 import CategoryCard from "./_components/CategoryCard";
 
 export default function MemoPage() {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditingCards, setIsEditingCards] = useState(false);
   const [cardsData, setCardsData] = useState<DbCards>({});
   const [refreshCards, setRefreshCards] = useState(false);
   const { getCards, postCard, deleteCard } = useCard();
@@ -25,6 +25,7 @@ export default function MemoPage() {
     fetchData();
   }, [refreshCards, getCards]);
 
+  
   return (
     <div
       className="flex flex-col gap-y-5 bg-[#442B0D] px-10 py-5"
@@ -36,7 +37,7 @@ export default function MemoPage() {
           <div className="ml-2 text-lg font-bold text-zinc-200">Memo</div>
           <button
             className="pr-2"
-            onClick={() => setIsEditing((prev) => !prev)}
+            onClick={() => setIsEditingCards((prev) => !prev)}
           >
             <GiPencil size={28} color="orange" />
           </button>
@@ -47,7 +48,7 @@ export default function MemoPage() {
         {Object.keys(cardsData).map((cardName) => (
           <div key={cardName} className="relative">
             {/* Delete-Card Button */}
-            {isEditing && (
+            {isEditingCards && (
               <div className="absolute -right-4 -top-4 z-50">
                 <IconButton
                   onClick={async () => {
@@ -63,14 +64,14 @@ export default function MemoPage() {
             {/* Card */}
             <CategoryCard
               cardName={cardName}
-              memos={cardsData[cardName]}
+              memos={JSON.parse(JSON.stringify(cardsData[cardName]))}
               onRefreshCards={() => setRefreshCards((prev) => !prev)}
             />
           </div>
         ))}
 
         {/* Add-Card Button */}
-        {isEditing && (
+        {isEditingCards && (
           <button
             onClick={async () => {
               await postCard();

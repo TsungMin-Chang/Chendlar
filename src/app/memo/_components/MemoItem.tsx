@@ -13,7 +13,7 @@ import type { DbMemo } from "@/lib/types";
 type MemoProps = {
   memo: DbMemo;
   index: number;
-  isCardEditing: boolean;
+  isEditingCard: boolean;
   setWorkingMemoArray: Dispatch<SetStateAction<DbMemo[]>>;
   isExpanded: boolean;
   setIsExpanded: () => void;
@@ -23,7 +23,7 @@ type MemoProps = {
 export default function Memo({
   memo,
   index,
-  isCardEditing,
+  isEditingCard,
   setWorkingMemoArray,
   isExpanded,
   setIsExpanded,
@@ -33,7 +33,7 @@ export default function Memo({
     <div key={memo.id} className="flex flex-col">
       <div className="flex flex-row items-center rounded-full bg-[#473520] p-2">
         {/* delete memo button */}
-        {isCardEditing && (
+        {isEditingCard && (
           <div className="flex">
             <button className="z-10 grow pl-1" onClick={deleteAction}>
               <TiDelete color="brown" size={22} />
@@ -43,16 +43,16 @@ export default function Memo({
 
         {/* memo title */}
         <div className="flex grow pl-2">
-          {/* editing */}
-          {isCardEditing ? (
+          {isEditingCard ? (
             <ClickAwayListener onClickAway={() => {}} className="grow">
               <Input
                 defaultValue={memo.title}
                 onChange={(e) =>
-                  setWorkingMemoArray((prev) => {
-                    prev[index].title = e.target.value;
-                    return prev;
-                  })
+                  setWorkingMemoArray((prev) =>
+                    prev.map((item, i) =>
+                      i === index ? { ...item, title: e.target.value } : item
+                    )
+                  )
                 }
                 className="w-full pl-1 text-zinc-200"
                 placeholder="Title"
@@ -76,18 +76,18 @@ export default function Memo({
       </div>
 
       {/* memo description */}
-      {/* editing */}
       {isExpanded &&
-        (isCardEditing ? (
+        (isEditingCard ? (
           <FormControl>
             <TextField
               className="mt-2"
               defaultValue={memo.description}
               onChange={(e) =>
-                setWorkingMemoArray((prev) => {
-                  prev[index].description = e.target.value;
-                  return prev;
-                })
+                setWorkingMemoArray((prev) =>
+                  prev.map((item, i) =>
+                    i === index ? { ...item, description: e.target.value } : item
+                  )
+                )
               }
               label="Description"
               variant="outlined"
