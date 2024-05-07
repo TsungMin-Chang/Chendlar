@@ -1,7 +1,7 @@
 import type { DbAffair } from "@/lib/types";
 import { getDayNumber } from "@/lib/utils";
 
-import MonthCell from "./DayCell";
+import DayCell from "./DayCell";
 
 type MonthCellsProps = {
   firstDayOfMonth: Date;
@@ -31,7 +31,8 @@ export default function MonthCells({
           >
             {i >= firstDayOfMonth.getDay() &&
               i < firstDayOfMonth.getDay() + lastDayOfMonth.getDate() && (
-                <MonthCell
+                <DayCell
+                  key={i + 1 - offset}
                   cellDisplayDate={i + 1 - offset}
                   cellDayNumber={getDayNumber(
                     new Date(year, month, i + 1 - offset),

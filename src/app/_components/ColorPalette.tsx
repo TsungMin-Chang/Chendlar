@@ -9,16 +9,16 @@ export default function ColorPlatter({ color, setColor }: ColorPlatterProps) {
   return (
     <>
       <button
-        className={`h-6 w-6 rounded-full bg-[#FFC85D] ${color === "#FFC85D" && "outline"}`}
-        onClick={() => setColor("#FFC85D")}
+        className={`h-6 w-6 rounded-full bg-[#fabe4e] ${color === "#fabe4e" && "outline"}`}
+        onClick={() => setColor("#fabe4e")}
       />
       <button
-        className={`h-6 w-6 rounded-full bg-[#F3935D] ${color === "#F3935D" && "outline"}`}
-        onClick={() => setColor("#F3935D")}
+        className={`h-6 w-6 rounded-full bg-[#C3C3C3] ${color === "#C3C3C3" && "outline"}`}
+        onClick={() => setColor("#C3C3C3")}
       />
       <button
-        className={`h-6 w-6 rounded-full bg-[#F1922A] ${color === "#F1922A" && "outline"}`}
-        onClick={() => setColor("#F1922A")}
+        className={`h-6 w-6 rounded-full bg-[#EFABD8] ${color === "#EFABD8" && "outline"}`}
+        onClick={() => setColor("#EFABD8")}
       />
       <button
         className={`h-6 w-6 rounded-full bg-[#FF8E9C] ${color === "#FF8E9C" && "outline"}`}
@@ -29,12 +29,8 @@ export default function ColorPlatter({ color, setColor }: ColorPlatterProps) {
         onClick={() => setColor("#FE6E6E")}
       />
       <button
-        className={`h-6 w-6 rounded-full bg-[#C3C3C3] ${color === "#C3C3C3" && "outline"}`}
-        onClick={() => setColor("#C3C3C3")}
-      />
-      <button
-        className={`h-6 w-6 rounded-full bg-[#EFABD8] ${color === "#EFABD8" && "outline"}`}
-        onClick={() => setColor("#EFABD8")}
+        className={`h-6 w-6 rounded-full bg-[#c1a7e5] ${color === "#c1a7e5" && "outline"}`}
+        onClick={() => setColor("#c1a7e5")}
       />
       <button
         className={`h-6 w-6 rounded-full bg-[#C47FE4] ${color === "#C47FE4" && "outline"}`}
@@ -47,6 +43,10 @@ export default function ColorPlatter({ color, setColor }: ColorPlatterProps) {
       <button
         className={`h-6 w-6 rounded-full bg-[#6997F0] ${color === "#6997F0" && "outline"}`}
         onClick={() => setColor("#6997F0")}
+      />
+      <button
+        className={`h-6 w-6 rounded-full bg-[#7683dd] ${color === "#7683dd" && "outline"}`}
+        onClick={() => setColor("#7683dd")}
       />
     </>
   );

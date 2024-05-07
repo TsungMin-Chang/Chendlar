@@ -27,7 +27,10 @@ export default function MonthCell({
         router.push(`/day/${cellDayNumber}/?isHalfDay=${isHalfDay}`)
       }
     >
-      <div className="flex justify-center text-sm text-white">
+      <div
+        key={cellDayNumber.toString()}
+        className="flex justify-center text-sm text-white"
+      >
         <div
           className={`${cellDayNumber === getDayNumber(new Date()) && "flex h-5 w-5 items-center justify-center rounded-full bg-[#7b5f3fbd] text-xs"}`}
         >
