@@ -37,13 +37,6 @@ export default function SideBar({
     onCloseSideBar();
   };
 
-  const handleToWeek = () => {
-    setDate(new Date());
-    router.push("/week");
-    router.refresh();
-    onCloseSideBar();
-  };
-
   const handleToMemo = () => {
     router.push("/memo");
     router.refresh();
@@ -132,12 +125,6 @@ export default function SideBar({
           className="focus:shadow-outline flex w-full max-w-xs items-center justify-center rounded-lg border-2 border-zinc-400 bg-[#473520] py-3 font-bold text-zinc-200 shadow-sm transition-all hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:outline-none"
         >
           Month
-        </button>
-        <button
-          onClick={() => handleToWeek()}
-          className="focus:shadow-outline flex w-full max-w-xs items-center justify-center rounded-lg border-2 border-zinc-400 bg-[#473520] py-3 font-bold text-zinc-200 shadow-sm transition-all hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:outline-none"
-        >
-          Week
         </button>
         <button
           onClick={() => handleToMemo()}

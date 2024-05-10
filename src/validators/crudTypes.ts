@@ -7,17 +7,10 @@ export const getMonthsRequestSchema = z.object({
 });
 export type GetMonthsRequest = z.infer<typeof getMonthsRequestSchema>;
 
-// GET weeks
-export const getWeeksRequestSchema = z.object({
-  weekNumber: z.number(),
-  userId: z.string().uuid(),
-});
-export type GetWeeksRequest = z.infer<typeof getWeeksRequestSchema>;
-
 // POST Affair
 export const postAffairRequestSchema = z.object({
   userId: z.string().uuid(),
-  title: z.string().max(20),
+  title: z.string().max(64),
   color: z.string().max(8),
   type: z.string().max(8),
   time1: z.date(),
@@ -30,7 +23,7 @@ export type PostAffairRequest = z.infer<typeof postAffairRequestSchema>;
 export const updateAffairRequestSchema = postAffairRequestSchema.extend({
   affairId: z.string().uuid(),
   prevType: z.string().max(8),
-  prevTitle: z.string().max(20),
+  prevTitle: z.string().max(64),
   prevOrder: z.number(),
   prevTime1: z.date(),
   prevTime2: z.date(),
@@ -54,9 +47,9 @@ export type UpdateCardRequest = z.infer<typeof updateCardRequestSchema>;
 // POST Memos
 export const NewMemo = z.object({
   userId: z.string().uuid(),
-  title: z.string().max(32),
-  description: z.string().max(128),
   cardName: z.string().max(32),
+  title: z.string().max(64),
+  description: z.string().max(128),
 });
 export const postMemosRequestSchema = z.array(NewMemo);
 export type PostMemosRequest = z.infer<typeof postMemosRequestSchema>;

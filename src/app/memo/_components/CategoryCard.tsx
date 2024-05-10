@@ -43,6 +43,7 @@ export default function CategoryCard({
   }, [cardName, memos]);
 
   const handlePinkPencilBtn = async () => {
+    // TODO: Create Card and then Create Memos
     if (isEditingCard) {
       if (updatingCardName.slice(0, 9) === "initialDB") {
         alert("Please input your category name.");
@@ -56,7 +57,7 @@ export default function CategoryCard({
         const newMemos = [];
         for (let i = 0; i < addedNewMemos.length; i++) {
           newMemos.push({
-            userId: "aea86071-f215-416a-908d-589eac59814a",
+            userId: "55a0ef11-c9c8-471d-adeb-29b87d3d6bdc",
             cardName: addedNewMemos[i].cardName,
             title: addedNewMemos[i].title,
             description: addedNewMemos[i].description,

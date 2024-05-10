@@ -9,10 +9,12 @@ import {
   index,
 } from "drizzle-orm/pg-core";
 
+// TODO: all table index
+
 export const usersTable = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey(),
-  username: varchar("username", { length: 32 }).notNull(),
-  password: varchar("password", { length: 32 }).notNull(),
+  username: varchar("username", { length: 64 }).notNull(),
+  password: varchar("password", { length: 64 }).notNull(),
 });
 
 export const affairsTable = pgTable(
@@ -24,7 +26,7 @@ export const affairsTable = pgTable(
       .references(() => usersTable.id, {
         onDelete: "cascade",
       }),
-    title: varchar("title", { length: 20 }).notNull(),
+    title: varchar("title", { length: 64 }).notNull(),
     color: varchar("color", { length: 8 }).notNull(),
     type: varchar("type", { length: 8 }).notNull(),
     time1: timestamp("time1", { mode: "date" }).notNull(),
@@ -36,7 +38,6 @@ export const affairsTable = pgTable(
     dayNumber: integer("day_number").notNull(),
   },
   (table) => ({
-    // TODO: double check index
     dayNumberIndex: index("day_number_index").on(table.dayNumber),
     weekNumberIndex: index("week_number_index").on(table.weekNumber),
     monthNumberIndex: index("month_number_index").on(table.monthNumber),
@@ -70,7 +71,7 @@ export const memosTable = pgTable(
         onUpdate: "cascade",
       }),
     createdAt: timestamp("created_at").default(sql`now()`),
-    title: varchar("title", { length: 32 }).notNull(),
+    title: varchar("title", { length: 64 }).notNull(),
     description: varchar("description", { length: 128 }).notNull(),
   },
   (table) => ({

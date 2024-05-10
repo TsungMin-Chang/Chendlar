@@ -24,10 +24,10 @@ export default function NavBar() {
   const { date } = useDateContext();
   const currentYear = new Date().getFullYear();
   return (
-    <div style={{ height: "6.5vh" }}>
+    <div style={{ height: "6vh" }}>
       <Box className="flex-none" sx={{ flexGrow: 1 }}>
         <AppBar position="static">
-          <Toolbar className="bg-[#53391B]">
+          <Toolbar className="bg-[#52381a]">
             <IconButton
               size="large"
               edge="start"

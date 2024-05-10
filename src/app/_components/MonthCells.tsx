@@ -27,7 +27,7 @@ export default function MonthCells({
         .map((_, i) => (
           <div
             key={"outterBox" + i.toString()}
-            className="overflow-hidden border border-[#5a524f]"
+            className="overflow-y-hidden border border-[#5a524f]"
           >
             {i >= firstDayOfMonth.getDay() &&
               i < firstDayOfMonth.getDay() + lastDayOfMonth.getDate() && (
@@ -47,6 +47,7 @@ export default function MonthCells({
                         ]
                       : null
                   }
+                  lastDayOfMonthDayNumber={getDayNumber(lastDayOfMonth)}
                 />
               )}
           </div>

@@ -7,7 +7,7 @@ import "react-slideshow-image/dist/styles.css";
 import useDateContext from "@/hooks/useDateContext";
 import useMonth from "@/hooks/useMonth";
 import useRefreshContext from "@/hooks/useRefreshContext";
-import type { resData } from "@/lib/types";
+import type { ResData } from "@/lib/types";
 import { getMonthNumber, days } from "@/lib/utils";
 
 import MonthCells from "./_components/MonthCells";
@@ -18,7 +18,7 @@ export default function Home() {
   const { date, setDate } = useDateContext();
   const { refresh } = useRefreshContext();
   const [slideDate, setSlideDate] = useState(date);
-  const [monthsData, setMonthsData] = useState<resData | null>(null);
+  const [monthsData, setMonthsData] = useState<ResData | null>(null);
 
   const currentMonthNumber = useMemo(
     () => getMonthNumber(slideDate),
@@ -28,7 +28,7 @@ export default function Home() {
     async function fetchData() {
       const reqData = {
         monthNumber: currentMonthNumber,
-        userId: "aea86071-f215-416a-908d-589eac59814a",
+        userId: "55a0ef11-c9c8-471d-adeb-29b87d3d6bdc",
       };
       const resData = await getMonths(reqData);
       setMonthsData(resData.data);

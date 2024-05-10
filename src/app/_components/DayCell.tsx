@@ -1,24 +1,48 @@
+import { useRef } from "react";
 import { AiFillHeart } from "react-icons/ai";
 
 import { useRouter } from "next/navigation";
 
 import useDateContext from "@/hooks/useDateContext";
 import type { DbAffair } from "@/lib/types";
-import { getDayNumber } from "@/lib/utils";
+import { getDayNumber, getDateFromDayNumber } from "@/lib/utils";
 
 type MonthCellProps = {
   cellDisplayDate: number;
   cellDayNumber: number;
   cellAffairs: DbAffair[] | null;
+  lastDayOfMonthDayNumber: number;
 };
 
 export default function MonthCell({
   cellDisplayDate,
   cellDayNumber,
   cellAffairs,
+  lastDayOfMonthDayNumber,
 }: MonthCellProps) {
   const router = useRouter();
   const { isHalfDay } = useDateContext();
+  let maxEventOrder = -1;
+  let eventNumber = 0;
+  if (cellAffairs) {
+    for (const affair of cellAffairs) {
+      if (affair.type === "event") {
+        eventNumber++;
+        if (affair.order > maxEventOrder) {
+          maxEventOrder = affair.order;
+        }
+      }
+    }
+  }
+  const screenWidthCSS = useRef([
+    "12vw", // 1/7 screen width
+    "26vw", // 2/7 screen width
+    "40vw", // 3/7 screen width
+    "54vw", // 4/7 screen width
+    "69vw", // 5/7 screen width
+    "83vw", // 6/7 screen width
+    "98vw", // 7/7 screen width
+  ]);
   return (
     <div
       key={cellDayNumber.toString()}
@@ -27,12 +51,13 @@ export default function MonthCell({
         router.push(`/day/${cellDayNumber}/?isHalfDay=${isHalfDay}`)
       }
     >
+      {/* #8b6f5d */}
       <div
         key={cellDayNumber.toString()}
         className="flex justify-center text-sm text-white"
       >
         <div
-          className={`${cellDayNumber === getDayNumber(new Date()) && "flex h-5 w-5 items-center justify-center rounded-full bg-[#7b5f3fbd] text-xs"}`}
+          className={`${cellDayNumber === getDayNumber(new Date()) && "flex h-5 w-5 items-center justify-center rounded-full bg-[#8d705e] text-xs"}`}
         >
           {cellDisplayDate}
         </div>
@@ -52,49 +77,93 @@ export default function MonthCell({
                 .map((_, j) => (
                   <div
                     key={"empty" + j.toString()}
-                    className="invisible max-h-4 text-xs"
+                    className="invisible max-h-3.5 text-xs"
                   >
                     empty
                   </div>
                 ))}
 
-            {/* visible div */}
+            {/* content div */}
             <div
               key={"inner" + i.toString() + affair.id}
-              className={`flex max-h-4 items-center truncate rounded-sm pl-1 text-xs bg-[${affair.color}]`}
+              className={`flex max-h-3.5 text-nowrap rounded-sm bg-[${affair.color}]`}
             >
-              {/* todo */}
-              {i < 5 && affair.type === "todo" && (
-                <>
-                  {affair.isDone ? (
-                    <span>
-                      <AiFillHeart color="brown" size={14} />
+              {/* Todo */}
+              {affair.type === "todo" &&
+                i + 1 - eventNumber + maxEventOrder + 1 <= 5 && (
+                  <>
+                    {affair.isDone ? (
+                      <span className="items-center pl-1">
+                        <AiFillHeart color="brown" size={14} />
+                      </span>
+                    ) : (
+                      <span className="items-center pl-1">
+                        {isHalfDay && new Date(affair.time2).getHours() > 12
+                          ? new Date(affair.time2).getHours() - 12
+                          : new Date(affair.time2).getHours()}
+                        {new Date(affair.time2).getMinutes() === 0
+                          ? "."
+                          : ":" +
+                            new Date(affair.time2).getMinutes().toString()}
+                      </span>
+                    )}
+                    <span className="items-center pl-0.5 text-xs">
+                      {affair.title}
                     </span>
-                  ) : (
-                    <span>
-                      {isHalfDay && new Date(affair.time2).getHours() > 12
-                        ? new Date(affair.time2).getHours() - 12
-                        : new Date(affair.time2).getHours()}
-                      {new Date(affair.time2).getMinutes() === 0
-                        ? "."
-                        : ":" + new Date(affair.time2).getMinutes().toString()}
-                    </span>
-                  )}
-                  <span className="pl-0.5">{affair.title}</span>
-                </>
-              )}
+                  </>
+                )}
 
-              {/* event */}
-              {i < 5 &&
-                affair.type === "event" &&
-                getDayNumber(affair.time1) === cellDayNumber && (
-                  <span>{affair.title}</span>
+              {/* Event */}
+              {/* visible starting day/Month 1st */}
+              {affair.type === "event" &&
+                affair.order < 5 &&
+                (cellDayNumber === getDayNumber(affair.time1) ||
+                  cellDisplayDate === 1) && (
+                  <span
+                    className={`absolute flex max-h-3.5 items-center text-nowrap rounded-sm pl-1 text-xs bg-[${affair.color}]`}
+                    style={{
+                      width:
+                        screenWidthCSS.current[
+                          Math.min(
+                            getDayNumber(affair.time2) - cellDayNumber,
+                            6,
+                            lastDayOfMonthDayNumber - cellDayNumber,
+                          )
+                        ],
+                    }}
+                  >
+                    {affair.title}
+                  </span>
                 )}
-              {i < 5 &&
-                affair.type === "event" &&
-                getDayNumber(affair.time1) !== cellDayNumber && (
-                  <span>{"... ..."}</span>
+
+              {/* visible non-starting Sunday */}
+              {affair.type === "event" &&
+                affair.order < 5 &&
+                getDateFromDayNumber(cellDayNumber).getDay() === 0 &&
+                cellDayNumber > getDayNumber(affair.time1) &&
+                cellDayNumber <= getDayNumber(affair.time2) &&
+                cellDisplayDate !== 1 && (
+                  <span
+                    className={`absolute flex max-h-3.5 rounded-sm text-xs text-transparent bg-[${affair.color}]`}
+                    style={{
+                      width:
+                        screenWidthCSS.current[
+                          Math.min(
+                            getDayNumber(affair.time2) - cellDayNumber,
+                            6,
+                            lastDayOfMonthDayNumber - cellDayNumber,
+                          )
+                        ],
+                    }}
+                  >
+                    {"blank"}
+                  </span>
                 )}
+
+              {/* blocked dummy block */}
+              {affair.type === "event" && affair.order < 5 && (
+                <span className="text-xs text-transparent">{"dummy"}</span>
+              )}
             </div>
           </>
         ))}

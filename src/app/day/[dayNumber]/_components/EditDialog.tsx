@@ -142,7 +142,7 @@ export default function EditDialog({
         prevOrder: affairOrder,
         prevTime1: affairTime1,
         prevTime2: affairTime2,
-        userId: "aea86071-f215-416a-908d-589eac59814a",
+        userId: "55a0ef11-c9c8-471d-adeb-29b87d3d6bdc",
         title,
         color,
         type,
@@ -213,7 +213,7 @@ export default function EditDialog({
               {type === "todo" && (
                 <>
                   <MobileDatePicker
-                    label="Date - dd"
+                    label="Date"
                     value={
                       !timeData.time1 ? timeData.time1 : dayjs(timeData.time1)
                     }
@@ -225,7 +225,7 @@ export default function EditDialog({
                     }
                   />
                   <MobileTimePicker
-                    label="Time - hh:mm"
+                    label="Time"
                     value={
                       !timeData.time2 ? timeData.time2 : dayjs(timeData.time2)
                     }
@@ -248,7 +248,7 @@ export default function EditDialog({
               {type === "event" && (
                 <>
                   <MobileDatePicker
-                    label="From - dd"
+                    label="From"
                     value={
                       !timeData.time1 ? timeData.time1 : dayjs(timeData.time1)
                     }
@@ -270,7 +270,7 @@ export default function EditDialog({
                     }}
                   />
                   <MobileDatePicker
-                    label="To - dd"
+                    label="To"
                     value={
                       !timeData.time2 ? timeData.time2 : dayjs(timeData.time2)
                     }

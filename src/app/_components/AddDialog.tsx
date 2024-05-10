@@ -107,7 +107,7 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
 
     try {
       const data = {
-        userId: "aea86071-f215-416a-908d-589eac59814a",
+        userId: "55a0ef11-c9c8-471d-adeb-29b87d3d6bdc",
         title,
         color,
         type,
@@ -202,7 +202,7 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
               {type === "todo" && (
                 <>
                   <MobileDatePicker
-                    label="Date - dd"
+                    label="Date"
                     value={
                       !timeData.time1 ? timeData.time1 : dayjs(timeData.time1)
                     }
@@ -214,7 +214,7 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
                     }
                   />
                   <MobileTimePicker
-                    label="Time - hh:mm"
+                    label="Time"
                     value={
                       !timeData.time2 ? timeData.time2 : dayjs(timeData.time2)
                     }
@@ -237,7 +237,7 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
               {type === "event" && (
                 <>
                   <MobileDatePicker
-                    label="From - dd"
+                    label="From"
                     value={
                       !timeData.time1 ? timeData.time1 : dayjs(timeData.time1)
                     }
@@ -259,7 +259,7 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
                     }}
                   />
                   <MobileDatePicker
-                    label="To - dd"
+                    label="To"
                     value={
                       !timeData.time2 ? timeData.time2 : dayjs(timeData.time2)
                     }
