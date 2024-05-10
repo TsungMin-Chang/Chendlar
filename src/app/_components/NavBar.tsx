@@ -27,7 +27,7 @@ export default function NavBar() {
     <div style={{ height: "6vh" }}>
       <Box className="flex-none" sx={{ flexGrow: 1 }}>
         <AppBar position="static">
-          <Toolbar className="bg-[#52381a]">
+          <Toolbar className="bg-[#53391B]">
             <IconButton
               size="large"
               edge="start"
