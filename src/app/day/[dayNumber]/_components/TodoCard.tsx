@@ -57,16 +57,18 @@ export default function TodoCard({
               }}
             >
               <div className="justify-self-start text-zinc-200">
-                {isHalfDay && new Date(todo.time2).getHours() > 12
-                  ? new Date(todo.time2).getHours() - 12
-                  : new Date(todo.time2).getHours()}
-                {":"}
-                {new Date(todo.time2)
-                  .getMinutes()
-                  .toString()
-                  .padStart(2, "0")}{" "}
-                {isHalfDay &&
-                  (new Date(todo.time2).getHours() > 12 ? "PM" : "AM")}
+                <span className="text-nowrap">
+                  {isHalfDay && new Date(todo.time2).getHours() > 12
+                    ? new Date(todo.time2).getHours() - 12
+                    : new Date(todo.time2).getHours()}
+                  {":"}
+                  {new Date(todo.time2)
+                    .getMinutes()
+                    .toString()
+                    .padStart(2, "0")}{" "}
+                  {isHalfDay &&
+                    (new Date(todo.time2).getHours() >= 12 ? "PM" : "AM")}
+                </span>
                 <span className="pl-2">{todo.title}</span>
               </div>
             </Link>

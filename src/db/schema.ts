@@ -9,8 +9,6 @@ import {
   index,
 } from "drizzle-orm/pg-core";
 
-// TODO: all table index
-
 export const usersTable = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey(),
   username: varchar("username", { length: 64 }).notNull(),
@@ -38,9 +36,12 @@ export const affairsTable = pgTable(
     dayNumber: integer("day_number").notNull(),
   },
   (table) => ({
-    dayNumberIndex: index("day_number_index").on(table.dayNumber),
-    weekNumberIndex: index("week_number_index").on(table.weekNumber),
     monthNumberIndex: index("month_number_index").on(table.monthNumber),
+    dayNumberIndex: index("day_number_index").on(table.dayNumber),
+    typeAndOrderIndex: index("type_and_order_index").on(
+      table.type,
+      table.order,
+    ),
   }),
 );
 

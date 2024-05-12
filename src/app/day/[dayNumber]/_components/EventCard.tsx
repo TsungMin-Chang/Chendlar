@@ -1,4 +1,5 @@
 // this is a server side component
+// TODO: long format
 import { TiDelete } from "react-icons/ti";
 
 import { revalidatePath } from "next/cache";
@@ -37,7 +38,7 @@ export default function EventCard({
             >
               <div className="flex flex-row items-center justify-between">
                 <div className="pl-2 text-zinc-200">{event.title}</div>
-                <div className="flex items-center pr-2 text-sm text-zinc-200">
+                <div className="flex items-center text-nowrap pr-2 text-sm text-zinc-200">
                   {event.time1.getFullYear === new Date().getFullYear
                     ? event.time1.toLocaleDateString("en-GB", {
                         month: "short",
