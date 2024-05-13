@@ -13,6 +13,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Chendlar",
   description: "This is Friends' Chandler's calendar.",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({

@@ -12,7 +12,7 @@ export default function AddButton() {
   return (
     <>
       <IconButton
-        className="absolute bottom-2 right-0 z-50"
+        className="absolute bottom-5 right-0 z-50"
         onClick={() => setOpenDialog(true)}
       >
         <RiAddCircleFill size={65} color="rgba(175, 164, 147, 0.8)" />
