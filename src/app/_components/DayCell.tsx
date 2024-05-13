@@ -120,7 +120,7 @@ export default function MonthCell({
                 (cellDayNumber === getDayNumber(affair.time1) ||
                   cellDisplayDate === 1) && (
                   <span
-                    className={`absolute flex max-h-3.5 items-center text-nowrap truncate rounded-sm pl-1 text-xs bg-[${affair.color}]`}
+                    className={`absolute flex max-h-3.5 items-center truncate text-nowrap rounded-sm pl-1 text-xs bg-[${affair.color}]`}
                     style={{
                       width:
                         screenWidthCSS.current[

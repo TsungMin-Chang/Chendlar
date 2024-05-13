@@ -30,7 +30,7 @@ export default function MemoPage() {
 
   return (
     <div
-      className="flex flex-col gap-y-5 overflow-y-auto bg-[#442B0D] px-10 py-5"
+      className="flex h-full w-full flex-col gap-y-5 overflow-y-auto bg-[#442B0D] px-10 py-5"
       style={{ height: "94vh" }}
     >
       <div className="flex flex-col gap-y-6">
