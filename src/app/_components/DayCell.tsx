@@ -86,7 +86,7 @@ export default function MonthCell({
             {/* content div */}
             <div
               key={"inner" + i.toString() + affair.id}
-              className={`flex max-h-3.5 text-nowrap rounded-sm bg-[${affair.color}]`}
+              className={`flex max-h-3.5 text-nowrap rounded-sm bg-[${affair.color}] ${affair.type === "todo" && "truncate"}`}
             >
               {/* Todo */}
               {affair.type === "todo" &&
@@ -97,7 +97,7 @@ export default function MonthCell({
                         <AiFillHeart color="brown" size={14} />
                       </span>
                     ) : (
-                      <span className="items-center pl-1">
+                      <span className="items-center pl-1 text-xs">
                         {isHalfDay && new Date(affair.time2).getHours() > 12
                           ? new Date(affair.time2).getHours() - 12
                           : new Date(affair.time2).getHours()}
@@ -120,7 +120,7 @@ export default function MonthCell({
                 (cellDayNumber === getDayNumber(affair.time1) ||
                   cellDisplayDate === 1) && (
                   <span
-                    className={`absolute flex max-h-3.5 items-center text-nowrap rounded-sm pl-1 text-xs bg-[${affair.color}]`}
+                    className={`absolute flex max-h-3.5 items-center text-nowrap truncate rounded-sm pl-1 text-xs bg-[${affair.color}]`}
                     style={{
                       width:
                         screenWidthCSS.current[

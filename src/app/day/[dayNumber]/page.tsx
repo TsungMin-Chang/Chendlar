@@ -26,7 +26,7 @@ export default async function DayPage({
   searchParams: { editAffairId, isHalfDay },
 }: DayPageProps) {
   const dayNumberInt = parseInt(dayNumber);
-  const userId = "aea86071-f215-416a-908d-589eac59814a";
+  const userId = "55a0ef11-c9c8-471d-adeb-29b87d3d6bdc";
   const todate = getDateFromDayNumber(dayNumberInt);
 
   const todos = await db
