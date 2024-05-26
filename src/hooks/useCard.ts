@@ -49,10 +49,11 @@ export default function useCard() {
   }, []);
 
   const deleteCard = useCallback(async (cardName: string) => {
-    console.log(cardName);
+    const utf8Bytes = new TextEncoder().encode(cardName);
+    const base64EncodedString = btoa(String.fromCharCode(...utf8Bytes));
     const res = await fetch(`/api/cards`, {
       method: "DELETE",
-      headers: { cardName },
+      headers: { cardName: base64EncodedString },
     });
     if (!res.ok) {
       const body = await res.json();

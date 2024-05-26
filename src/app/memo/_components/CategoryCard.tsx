@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { GiPencil } from "react-icons/gi";
 
 import ClickAwayListener from "@mui/material/ClickAwayListener";
@@ -16,11 +16,7 @@ type CategoryCardProps = {
   onRefreshCards: () => void;
 };
 
-export default function CategoryCard({
-  cardName,
-  memos,
-  onRefreshCards,
-}: CategoryCardProps) {
+function CategoryCard({ cardName, memos, onRefreshCards }: CategoryCardProps) {
   const { updateCard } = useCard();
   const { postMemos, updateMemos, deleteMemo } = useMyMemo();
 
@@ -183,3 +179,5 @@ export default function CategoryCard({
     </div>
   );
 }
+
+export default React.memo(CategoryCard);

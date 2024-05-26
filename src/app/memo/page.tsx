@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { GiPencil } from "react-icons/gi";
 import { TiDelete } from "react-icons/ti";
 
@@ -28,6 +28,23 @@ export default function MemoPage() {
     fetchData();
   }, [refreshCards, getCards]);
 
+  const handleOrangePencilBtn = () => {
+    for (const cardName of Object.keys(cardsData)) {
+      if (cardName.slice(0, 9) === "initialDB") {
+        alert(
+          "Please first save your changes by pressing the Pink Pencil Button.",
+        );
+        return;
+      }
+    }
+    setIsEditingCards((prev) => !prev);
+  };
+
+  const onRefreshCards = useCallback(
+    () => setRefreshCards((prev) => !prev),
+    [],
+  );
+
   return (
     <div
       className="flex h-full w-full flex-col gap-y-5 overflow-y-auto bg-[#442B0D] px-10 py-5"
@@ -37,10 +54,7 @@ export default function MemoPage() {
         {/* Memo && Orange-Edit Button*/}
         <div className="flex flex-row justify-between">
           <div className="ml-2 text-lg font-bold text-zinc-200">Memo</div>
-          <button
-            className="pr-2"
-            onClick={() => setIsEditingCards((prev) => !prev)}
-          >
+          <button className="pr-2" onClick={handleOrangePencilBtn}>
             <GiPencil size={28} color="orange" />
           </button>
         </div>
@@ -50,7 +64,7 @@ export default function MemoPage() {
           <CategoryCard
             cardName={"General"}
             memos={JSON.parse(JSON.stringify(generalCardData))}
-            onRefreshCards={() => setRefreshCards((prev) => !prev)}
+            onRefreshCards={onRefreshCards}
           />
         )}
 
@@ -74,7 +88,7 @@ export default function MemoPage() {
             <CategoryCard
               cardName={cardName}
               memos={JSON.parse(JSON.stringify(cardsData[cardName]))}
-              onRefreshCards={() => setRefreshCards((prev) => !prev)}
+              onRefreshCards={onRefreshCards}
             />
           </div>
         ))}
