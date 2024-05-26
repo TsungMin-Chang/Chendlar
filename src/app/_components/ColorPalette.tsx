@@ -41,8 +41,8 @@ export default function ColorPlatter({ color, setColor }: ColorPlatterProps) {
         onClick={() => setColor("#9C7FF0")}
       />
       <button
-        className={`h-6 w-6 rounded-full bg-[#6997F0] ${color === "#6997F0" && "outline"}`}
-        onClick={() => setColor("#6997F0")}
+        className={`h-6 w-6 rounded-full bg-[#6c98f0] ${color === "#6c98f0" && "outline"}`}
+        onClick={() => setColor("#6c98f0")}
       />
       <button
         className={`h-6 w-6 rounded-full bg-[#7683dd] ${color === "#7683dd" && "outline"}`}

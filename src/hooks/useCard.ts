@@ -49,6 +49,7 @@ export default function useCard() {
   }, []);
 
   const deleteCard = useCallback(async (cardName: string) => {
+    console.log(cardName);
     const res = await fetch(`/api/cards`, {
       method: "DELETE",
       headers: { cardName },

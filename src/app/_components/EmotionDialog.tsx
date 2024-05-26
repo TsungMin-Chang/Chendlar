@@ -14,6 +14,14 @@ type EmotionDialogProps = {
   setEmotion: Dispatch<SetStateAction<number>>;
 };
 
+export const iconOptions = [
+  "fluent-emoji-flat:slightly-smiling-face",
+  "fluent-emoji-flat:neutral-face",
+  "fluent-emoji-flat:face-with-head-bandage",
+  "fluent-emoji-flat:smiling-face",
+  "fluent-emoji-flat:angry-face",
+];
+
 export default function AddDialog({
   open,
   onClose,
@@ -27,51 +35,17 @@ export default function AddDialog({
       </DialogTitle>
       <DialogContent className="flex w-[300px] flex-col gap-y-2">
         <div className="mt-2 grid grid-cols-5 gap-2 p-2">
-          <button
-            className={`flex h-10 w-10 items-center justify-center rounded-full ${emotion === 1 && "outline"}`}
-            onClick={() => setEmotion(1)}
-          >
-            <Icon
-              icon="fluent-emoji-flat:slightly-smiling-face"
-              style={{ fontSize: "36px" }}
-            />
-          </button>
-          <button
-            className={`flex h-10 w-10 items-center justify-center rounded-full ${emotion === 2 && "outline"}`}
-            onClick={() => setEmotion(2)}
-          >
-            <Icon
-              icon="fluent-emoji-flat:frowning-face"
-              style={{ fontSize: "36px" }}
-            />
-          </button>
-          <button
-            className={`flex h-10 w-10 items-center justify-center rounded-full ${emotion === 3 && "outline"}`}
-            onClick={() => setEmotion(3)}
-          >
-            <Icon
-              icon="fluent-emoji-flat:angry-face"
-              style={{ fontSize: "36px" }}
-            />
-          </button>
-          <button
-            className={`flex h-10 w-10 items-center justify-center rounded-full ${emotion === 4 && "outline"}`}
-            onClick={() => setEmotion(4)}
-          >
-            <Icon
-              icon="fluent-emoji-flat:smiling-face"
-              style={{ fontSize: "36px" }}
-            />
-          </button>
-          <button
-            className={`flex h-10 w-10 items-center justify-center rounded-full ${emotion === 5 && "outline"}`}
-            onClick={() => setEmotion(5)}
-          >
-            <Icon
-              icon="fluent-emoji-flat:face-with-head-bandage"
-              style={{ fontSize: "36px" }}
-            />
-          </button>
+          {Array(5)
+            .fill(0)
+            .map((_, i) => (
+              <button
+                key={"emotion" + i}
+                className={`flex h-10 w-10 items-center justify-center rounded-full ${emotion === i + 1 && "outline"}`}
+                onClick={() => setEmotion(i + 1)}
+              >
+                <Icon icon={iconOptions[i]} style={{ fontSize: "36px" }} />
+              </button>
+            ))}
         </div>
       </DialogContent>
       <DialogActions>

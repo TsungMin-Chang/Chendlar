@@ -1,8 +1,8 @@
 {
   "name": "Chendlar",
   "short_name": "Chendlar",
-  "theme_color": "#FFFFFF",
-  "background_color": "#FFFFFF",
+  "theme_color": "#53391B",
+  "background_color": "#53391B",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

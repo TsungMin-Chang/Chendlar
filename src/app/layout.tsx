@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} relative flex h-screen w-screen flex-col overflow-hidden`}
+        className={`${inter.className} flex h-screen w-screen flex-col overflow-hidden`}
       >
         <DateProvider>
           <RefreshProvider>

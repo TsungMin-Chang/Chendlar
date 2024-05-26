@@ -51,13 +51,12 @@ export default function MonthCell({
         router.push(`/day/${cellDayNumber}/?isHalfDay=${isHalfDay}`)
       }
     >
-      {/* #8b6f5d */}
       <div
         key={cellDayNumber.toString()}
         className="flex justify-center text-sm text-white"
       >
         <div
-          className={`${cellDayNumber === getDayNumber(new Date()) && "flex h-5 w-5 items-center justify-center rounded-full bg-[#8d705e] text-xs"}`}
+          className={`${cellDayNumber === getDayNumber(new Date()) && "flex h-5 w-5 items-center justify-center rounded-full bg-[#927868f9] text-xs"}`}
         >
           {cellDisplayDate}
         </div>

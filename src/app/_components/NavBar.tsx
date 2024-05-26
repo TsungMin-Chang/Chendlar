@@ -15,6 +15,7 @@ import useDateContext from "@/hooks/useDateContext";
 import { months } from "@/lib/utils";
 
 import EmotionDialog from "./EmotionDialog";
+import { iconOptions } from "./EmotionDialog";
 import SideBar from "./SideBar";
 
 export default function NavBar() {
@@ -49,34 +50,11 @@ export default function NavBar() {
             )}
             <div className="flex grow"></div>
             <span onClick={() => setOpenEmotionDialog(true)}>
-              {emotion === 0 && <AccountCircle sx={{ fontSize: 32 }} />}
-              {emotion === 1 && (
+              {emotion === 0 ? (
+                <AccountCircle sx={{ fontSize: 32 }} />
+              ) : (
                 <Icon
-                  icon="fluent-emoji-flat:slightly-smiling-face"
-                  style={{ fontSize: "32px" }}
-                />
-              )}
-              {emotion === 2 && (
-                <Icon
-                  icon="fluent-emoji-flat:frowning-face"
-                  style={{ fontSize: "32px" }}
-                />
-              )}
-              {emotion === 3 && (
-                <Icon
-                  icon="fluent-emoji-flat:angry-face"
-                  style={{ fontSize: "32px" }}
-                />
-              )}
-              {emotion === 4 && (
-                <Icon
-                  icon="fluent-emoji-flat:smiling-face"
-                  style={{ fontSize: "32px" }}
-                />
-              )}
-              {emotion === 5 && (
-                <Icon
-                  icon="fluent-emoji-flat:face-with-head-bandage"
+                  icon={iconOptions[emotion - 1]}
                   style={{ fontSize: "32px" }}
                 />
               )}

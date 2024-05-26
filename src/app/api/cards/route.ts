@@ -108,6 +108,7 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   const cardName = request.headers.get("cardName");
+  console.log(cardName);
   if (!cardName) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
