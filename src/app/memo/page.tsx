@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-// import { IoMdAddCircle } from "react-icons/io";
 import { RiAddCircleFill } from "react-icons/ri";
 
 import useCard from "@/hooks/useCard";
@@ -33,18 +32,18 @@ export default function MemoPage() {
 
   return (
     <div
-      className="flex h-full w-full flex-col gap-y-5 overflow-y-auto bg-[#442B0D] px-10 py-5"
+      className="flex h-full w-full flex-col gap-y-5 overflow-y-auto  bg-[#442B0D] px-10 py-5"
       style={{ height: "94vh" }}
     >
       <div className="flex flex-col gap-y-6">
-        {/* Memo && Orange-Edit Button*/}
+        {/* Memo && Pink-Add Button*/}
         <div className="flex flex-row justify-between">
           <div className="ml-2 text-lg font-bold text-zinc-200">Memo</div>
           <button
             className="pr-2"
             onClick={() => setIsEditingCards((prev) => !prev)}
           >
-            <RiAddCircleFill size={28} color="rgb(228, 228, 231)" />
+            <RiAddCircleFill size={28} color="rgb(212 186 186 / 90%)" />
           </button>
         </div>
 
