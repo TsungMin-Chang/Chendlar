@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { GiPencil } from "react-icons/gi";
+import { TiDelete } from "react-icons/ti";
 
 import ClickAwayListener from "@mui/material/ClickAwayListener";
+import IconButton from "@mui/material/IconButton";
 import Input from "@mui/material/Input";
 
 import useCard from "@/hooks/useCard";
@@ -17,22 +19,26 @@ type CategoryCardProps = {
 };
 
 function CategoryCard({ cardName, memos, onRefreshCards }: CategoryCardProps) {
-  const { updateCard } = useCard();
+  const { updateCard, deleteCard } = useCard();
   const { postMemos, updateMemos, deleteMemo } = useMyMemo();
 
+  // Card
   const [isEditingCard, setIsEditingCard] = useState(
     cardName.slice(0, 9) === "initialDB",
   );
-  const [expandingMemoIds, setExpandingMemoIds] = useState<string[]>([]);
-
   const [updatingCardName, setUpdatingCardName] = useState(cardName ?? "");
+
+  // Memo
+  const [expandingMemoIds, setExpandingMemoIds] = useState<string[]>([]);
   const [updatingDbMemos, setUpdatingDbMemos] = useState<DbMemo[]>(memos ?? []);
   const [addedNewMemos, setAddedNewMemos] = useState<DbMemo[]>([]);
   const [deletedMemoIds, setDeletedMemoIds] = useState<string[]>([]);
 
   useEffect(() => {
     setIsEditingCard(cardName.slice(0, 9) === "initialDB");
-    setUpdatingCardName(cardName);
+    if (cardName.slice(0, 9) !== "initialDB" && cardName !== updatingCardName) {
+      setUpdatingCardName(cardName);
+    }
     setUpdatingDbMemos(memos);
     setAddedNewMemos([]);
     setDeletedMemoIds([]);
@@ -91,91 +97,103 @@ function CategoryCard({ cardName, memos, onRefreshCards }: CategoryCardProps) {
   };
 
   return (
-    <div
-      key={cardName}
-      className="border-1 flex flex-col gap-y-2 rounded-lg border-black bg-[#634d3f] p-4 pb-6 pt-3"
-    >
-      <div className="flex flex-row justify-between">
-        {/* Card Name */}
-        {isEditingCard && cardName !== "General" ? (
-          <ClickAwayListener onClickAway={() => {}} className="grow">
-            <Input
-              defaultValue={
-                updatingCardName.slice(0, 9) === "initialDB"
-                  ? ""
-                  : updatingCardName
-              }
-              onChange={(e) => setUpdatingCardName(e.target.value)}
-              className="w-full pl-1 text-lg font-bold text-zinc-200 "
-              placeholder="Category"
-            />
-          </ClickAwayListener>
-        ) : (
-          <div className="pb-1 text-lg font-bold text-zinc-200">
-            {updatingCardName.slice(0, 9) === "initialDB"
-              ? ""
-              : updatingCardName}
-          </div>
-        )}
-
-        {/* Pink-Edit Button */}
-        <button className="pr-2" onClick={() => handlePinkPencilBtn()}>
-          <GiPencil size={28} color="pink" />
-        </button>
-      </div>
-
-      {updatingDbMemos.map((memo, i) => {
-        if (!deletedMemoIds.includes(memo.id)) {
-          return (
-            <MemoItem
-              key={i}
-              memo={memo}
-              index={i}
-              isEditingCard={isEditingCard}
-              setWorkingMemoArray={setUpdatingDbMemos}
-              isExpanded={expandingMemoIds.includes(memo.id)}
-              setIsExpanded={() => handleExpandingMemo(memo.id)}
-              deleteAction={() =>
-                setDeletedMemoIds((prev) => [...prev, memo.id])
-              }
-            />
-          );
-        }
-        return null;
-      })}
-
-      {addedNewMemos.map((memo, i) => (
-        <MemoItem
-          key={i}
-          memo={memo}
-          index={i}
-          isEditingCard={isEditingCard}
-          setWorkingMemoArray={setAddedNewMemos}
-          isExpanded={expandingMemoIds.includes(memo.id)}
-          setIsExpanded={() => handleExpandingMemo(memo.id)}
-          deleteAction={() => setAddedNewMemos((prev) => prev.splice(i, 1))}
-        />
-      ))}
-
-      {/* Add-Memo Button */}
-      {isEditingCard && (
-        <button
-          className="rounded-lg border-2 border-zinc-400 bg-[#473520] p-2 font-semibold text-white transition-all duration-300"
-          onClick={() =>
-            setAddedNewMemos((prev) => [
-              ...prev,
-              {
-                id: new Date().getTime().toString(),
-                cardName,
-                title: "",
-                description: "",
-              },
-            ])
-          }
-        >
-          + Memo
-        </button>
+    <div key={cardName} className="relative">
+      {/* Delete-Card Button */}
+      {isEditingCard && cardName !== "General" && (
+        <div className="absolute -right-4 -top-4 z-50">
+          <IconButton
+            onClick={async () => {
+              await deleteCard(cardName);
+              onRefreshCards();
+            }}
+          >
+            <TiDelete size={28} color="red" />
+          </IconButton>
+        </div>
       )}
+      <div className="border-1 flex flex-col gap-y-2 rounded-lg border-black bg-[#634d3f] p-4 pb-6 pt-3">
+        <div className="flex flex-row justify-between">
+          {/* Card Name */}
+          {isEditingCard && cardName !== "General" ? (
+            <ClickAwayListener onClickAway={() => {}} className="grow">
+              <Input
+                defaultValue={
+                  updatingCardName.slice(0, 9) === "initialDB"
+                    ? ""
+                    : updatingCardName
+                }
+                onChange={(e) => setUpdatingCardName(e.target.value)}
+                className="w-full pl-1 text-lg font-bold text-zinc-200 "
+                placeholder="Category"
+              />
+            </ClickAwayListener>
+          ) : (
+            <div className="pb-1 text-lg font-bold text-zinc-200">
+              {updatingCardName.slice(0, 9) === "initialDB"
+                ? ""
+                : updatingCardName}
+            </div>
+          )}
+
+          {/* Pink-Edit Button */}
+          <button className="pr-2" onClick={() => handlePinkPencilBtn()}>
+            <GiPencil size={28} color="pink" />
+          </button>
+        </div>
+
+        {updatingDbMemos.map((memo, i) => {
+          if (!deletedMemoIds.includes(memo.id)) {
+            return (
+              <MemoItem
+                key={i}
+                memo={memo}
+                index={i}
+                isEditingCard={isEditingCard}
+                setWorkingMemoArray={setUpdatingDbMemos}
+                isExpanded={expandingMemoIds.includes(memo.id)}
+                setIsExpanded={() => handleExpandingMemo(memo.id)}
+                deleteAction={() =>
+                  setDeletedMemoIds((prev) => [...prev, memo.id])
+                }
+              />
+            );
+          }
+          return null;
+        })}
+
+        {addedNewMemos.map((memo, i) => (
+          <MemoItem
+            key={i}
+            memo={memo}
+            index={i}
+            isEditingCard={isEditingCard}
+            setWorkingMemoArray={setAddedNewMemos}
+            isExpanded={expandingMemoIds.includes(memo.id)}
+            setIsExpanded={() => handleExpandingMemo(memo.id)}
+            deleteAction={() => setAddedNewMemos((prev) => prev.splice(i, 1))}
+          />
+        ))}
+
+        {/* Add-Memo Button */}
+        {isEditingCard && (
+          <button
+            className="rounded-lg border-2 border-zinc-400 bg-[#473520] p-2 font-semibold text-white transition-all duration-300"
+            onClick={() =>
+              setAddedNewMemos((prev) => [
+                ...prev,
+                {
+                  id: new Date().getTime().toString(),
+                  cardName,
+                  title: "",
+                  description: "",
+                },
+              ])
+            }
+          >
+            + Memo
+          </button>
+        )}
+      </div>
     </div>
   );
 }

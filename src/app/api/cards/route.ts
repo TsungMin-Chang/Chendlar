@@ -112,11 +112,14 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  const decodedBuffer = Buffer.from(cardName, 'base64');
-  const cardNameRealString = decodedBuffer.toString('utf8');
+  const decodedBuffer = Buffer.from(cardName, "base64");
+  const cardNameRealString = decodedBuffer.toString("utf8");
 
   try {
-    await db.delete(cardsTable).where(eq(cardsTable.name, cardNameRealString)).execute();
+    await db
+      .delete(cardsTable)
+      .where(eq(cardsTable.name, cardNameRealString))
+      .execute();
     return NextResponse.json("OK", { status: 200 });
   } catch (error) {
     return NextResponse.json(

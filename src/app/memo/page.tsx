@@ -1,10 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { GiPencil } from "react-icons/gi";
-import { TiDelete } from "react-icons/ti";
-
-import IconButton from "@mui/material/IconButton";
+// import { IoMdAddCircle } from "react-icons/io";
+import { RiAddCircleFill } from "react-icons/ri";
 
 import useCard from "@/hooks/useCard";
 import type { DbCards, DbMemo } from "@/lib/types";
@@ -16,7 +14,7 @@ export default function MemoPage() {
   const [cardsData, setCardsData] = useState<DbCards>({});
   const [generalCardData, setGeneralCardData] = useState<DbMemo[]>();
   const [refreshCards, setRefreshCards] = useState(false);
-  const { getCards, postCard, deleteCard } = useCard();
+  const { getCards, postCard } = useCard();
 
   useEffect(() => {
     async function fetchData() {
@@ -27,18 +25,6 @@ export default function MemoPage() {
     }
     fetchData();
   }, [refreshCards, getCards]);
-
-  const handleOrangePencilBtn = () => {
-    for (const cardName of Object.keys(cardsData)) {
-      if (cardName.slice(0, 9) === "initialDB") {
-        alert(
-          "Please first save your changes by pressing the Pink Pencil Button.",
-        );
-        return;
-      }
-    }
-    setIsEditingCards((prev) => !prev);
-  };
 
   const onRefreshCards = useCallback(
     () => setRefreshCards((prev) => !prev),
@@ -54,8 +40,11 @@ export default function MemoPage() {
         {/* Memo && Orange-Edit Button*/}
         <div className="flex flex-row justify-between">
           <div className="ml-2 text-lg font-bold text-zinc-200">Memo</div>
-          <button className="pr-2" onClick={handleOrangePencilBtn}>
-            <GiPencil size={28} color="orange" />
+          <button
+            className="pr-2"
+            onClick={() => setIsEditingCards((prev) => !prev)}
+          >
+            <RiAddCircleFill size={28} color="rgb(228, 228, 231)" />
           </button>
         </div>
 
@@ -68,29 +57,14 @@ export default function MemoPage() {
           />
         )}
 
+        {/* Card */}
         {Object.keys(cardsData).map((cardName) => (
-          <div key={cardName} className="relative">
-            {/* Delete-Card Button */}
-            {isEditingCards && (
-              <div className="absolute -right-4 -top-4 z-50">
-                <IconButton
-                  onClick={async () => {
-                    await deleteCard(cardName);
-                    setRefreshCards((prev) => !prev);
-                  }}
-                >
-                  <TiDelete size={28} color="red" />
-                </IconButton>
-              </div>
-            )}
-
-            {/* Card */}
-            <CategoryCard
-              cardName={cardName}
-              memos={JSON.parse(JSON.stringify(cardsData[cardName]))}
-              onRefreshCards={onRefreshCards}
-            />
-          </div>
+          <CategoryCard
+            key={cardName}
+            cardName={cardName}
+            memos={JSON.parse(JSON.stringify(cardsData[cardName]))}
+            onRefreshCards={onRefreshCards}
+          />
         ))}
 
         {/* Add-Card Button */}

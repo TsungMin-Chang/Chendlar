@@ -20,6 +20,7 @@ export default function MonthCell({
   cellAffairs,
   lastDayOfMonthDayNumber,
 }: MonthCellProps) {
+  const today = new Date();
   const router = useRouter();
   const { isHalfDay } = useDateContext();
   let maxEventOrder = -1;
@@ -56,7 +57,7 @@ export default function MonthCell({
         className="flex justify-center text-sm text-white"
       >
         <div
-          className={`${cellDayNumber === getDayNumber(new Date()) && "flex h-5 w-5 items-center justify-center rounded-full bg-[#927868f9] text-xs"}`}
+          className={`${cellDayNumber === getDayNumber(today) && "flex h-5 w-5 items-center justify-center rounded-full bg-[#927868f9] text-xs"}`}
         >
           {cellDisplayDate}
         </div>
