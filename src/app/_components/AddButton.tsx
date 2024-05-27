@@ -12,7 +12,7 @@ export default function AddButton() {
   return (
     <div className="fixed bottom-5 right-0 z-50 flex">
       <IconButton onClick={() => setOpenDialog(true)}>
-        <RiAddCircleFill size={65} color="rgba(175, 164, 147, 0.7)" />
+        <RiAddCircleFill size={65} color="rgba(175, 164, 147, 0.67)" />
       </IconButton>
       <AddDialog open={openDialog} onClose={() => setOpenDialog(false)} />
     </div>
