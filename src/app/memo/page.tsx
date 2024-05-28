@@ -9,21 +9,32 @@ import type { DbCards, DbMemo } from "@/lib/types";
 import CategoryCard from "./_components/CategoryCard";
 
 export default function MemoPage() {
+  const { getCards, postCard } = useCard();
   const [isEditingCards, setIsEditingCards] = useState(false);
   const [cardsData, setCardsData] = useState<DbCards>({});
   const [generalCardData, setGeneralCardData] = useState<DbMemo[]>();
+  const [cardsName, setCardsName] = useState<string[]>([]);
   const [refreshCards, setRefreshCards] = useState(false);
-  const { getCards, postCard } = useCard();
 
   useEffect(() => {
     async function fetchData() {
       const resData = await getCards();
+      setCardsName(Object.keys(resData.data));
       setGeneralCardData(resData.data["General"]);
       delete resData.data["General"];
       setCardsData(resData.data);
     }
     fetchData();
   }, [refreshCards, getCards]);
+
+  useEffect(() => {
+    if (isEditingCards) {
+      const elem = document.getElementById("Add_Card_Button");
+      if(elem){
+        elem.scrollIntoView();
+      }
+    }
+  }, [isEditingCards])
 
   const onRefreshCards = useCallback(
     () => setRefreshCards((prev) => !prev),
@@ -41,7 +52,7 @@ export default function MemoPage() {
           <div className="ml-2 text-lg font-bold text-zinc-200">Memo</div>
           <button
             className="pr-2"
-            onClick={() => setIsEditingCards((prev) => !prev)}
+            onClick={() => {setIsEditingCards((prev) => !prev)}}
           >
             <RiAddCircleFill size={28} color="rgb(212 186 186 / 90%)" />
           </button>
@@ -52,6 +63,7 @@ export default function MemoPage() {
           <CategoryCard
             cardName={"General"}
             memos={JSON.parse(JSON.stringify(generalCardData))}
+            cardsName={cardsName}
             onRefreshCards={onRefreshCards}
           />
         )}
@@ -62,6 +74,7 @@ export default function MemoPage() {
             key={cardName}
             cardName={cardName}
             memos={JSON.parse(JSON.stringify(cardsData[cardName]))}
+            cardsName={cardsName}
             onRefreshCards={onRefreshCards}
           />
         ))}
@@ -69,6 +82,7 @@ export default function MemoPage() {
         {/* Add-Card Button */}
         {isEditingCards && (
           <button
+            id="Add_Card_Button"
             onClick={async () => {
               await postCard();
               setRefreshCards((prev) => !prev);

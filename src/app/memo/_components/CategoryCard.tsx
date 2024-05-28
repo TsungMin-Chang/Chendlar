@@ -15,10 +15,16 @@ import MemoItem from "./MemoItem";
 type CategoryCardProps = {
   cardName: string;
   memos: DbMemo[];
+  cardsName: string[];
   onRefreshCards: () => void;
 };
 
-function CategoryCard({ cardName, memos, onRefreshCards }: CategoryCardProps) {
+function CategoryCard({
+  cardName,
+  memos,
+  cardsName,
+  onRefreshCards,
+}: CategoryCardProps) {
   const { updateCard, deleteCard } = useCard();
   const { postMemos, updateMemos, deleteMemo } = useMyMemo();
 
@@ -35,10 +41,6 @@ function CategoryCard({ cardName, memos, onRefreshCards }: CategoryCardProps) {
   const [deletedMemoIds, setDeletedMemoIds] = useState<string[]>([]);
 
   useEffect(() => {
-    setIsEditingCard(cardName.slice(0, 9) === "initialDB");
-    if (cardName.slice(0, 9) !== "initialDB" && cardName !== updatingCardName) {
-      setUpdatingCardName(cardName);
-    }
     setUpdatingDbMemos(memos);
     setAddedNewMemos([]);
     setDeletedMemoIds([]);
@@ -51,6 +53,10 @@ function CategoryCard({ cardName, memos, onRefreshCards }: CategoryCardProps) {
         return;
       }
       if (updatingCardName !== cardName) {
+        if (cardsName.includes(updatingCardName)) {
+          alert("This name has been used. Please choose another one.");
+          return;
+        }
         const data = { prevName: cardName, name: updatingCardName };
         await updateCard(data);
       }
