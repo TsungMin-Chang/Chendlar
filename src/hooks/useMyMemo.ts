@@ -34,7 +34,7 @@ export default function useMyMemo() {
     return;
   }, []);
 
-  const deleteMemo = useCallback(async (deletedIdArray: string[]) => {
+  const deleteMemos = useCallback(async (deletedIdArray: string[]) => {
     const deletedIdArrayToString = deletedIdArray.join();
     const res = await fetch(`/api/memos`, {
       method: "DELETE",
@@ -50,6 +50,6 @@ export default function useMyMemo() {
   return {
     postMemos,
     updateMemos,
-    deleteMemo,
+    deleteMemos,
   };
 }

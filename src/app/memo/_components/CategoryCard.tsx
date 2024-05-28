@@ -26,7 +26,7 @@ function CategoryCard({
   onRefreshCards,
 }: CategoryCardProps) {
   const { updateCard, deleteCard } = useCard();
-  const { postMemos, updateMemos, deleteMemo } = useMyMemo();
+  const { postMemos, updateMemos, deleteMemos } = useMyMemo();
 
   // Card
   const [isEditingCard, setIsEditingCard] = useState(
@@ -89,7 +89,7 @@ function CategoryCard({
         }
       }
       if (deletedMemoIds.length > 0) {
-        await deleteMemo(deletedMemoIds);
+        await deleteMemos(deletedMemoIds);
       }
       onRefreshCards();
     }
