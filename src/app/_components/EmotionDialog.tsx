@@ -29,7 +29,7 @@ export default function AddDialog({
   setEmotion,
 }: EmotionDialogProps) {
   return (
-    <Dialog id="dia" open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose}>
       <DialogTitle sx={{ fontWeight: "bold", fontSize: 22 }}>
         Emotion
       </DialogTitle>

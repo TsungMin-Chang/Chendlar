@@ -159,7 +159,7 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
   };
 
   return (
-    <Dialog id="dia" open={open} onClose={handleClose}>
+    <Dialog open={open} onClose={handleClose}>
       <DialogTitle sx={{ fontWeight: "bold", fontSize: 22 }}>New</DialogTitle>
       {activeStep === 0 && (
         <DialogContent className="flex w-[300px] flex-col gap-y-2">
