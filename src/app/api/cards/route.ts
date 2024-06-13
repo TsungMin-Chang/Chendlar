@@ -1,10 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, desc } from "drizzle-orm";
 
 import { db } from "@/db";
 import { cardsTable, memosTable } from "@/db/schema";
-import type { DbMemo, DbCards } from "@/lib/types";
+import type { DbMemo } from "@/lib/types";
 import type {
   PostCardRequest,
   UpdateCardRequest,
@@ -26,10 +26,11 @@ export async function GET(request: NextRequest) {
       })
       .from(cardsTable)
       .where(eq(cardsTable.userId, userId))
-      .orderBy(asc(cardsTable.createdAt))
+      .orderBy(desc(cardsTable.createdAt))
       .execute();
 
-    const data: DbCards = {};
+    const data: DbMemo[][] = [];
+    const dbCardsName: string[] = [];
     for (let i = 0; i < dbCards.length; i++) {
       const key: string = dbCards[i].name;
       const value: DbMemo[] = await db
@@ -43,9 +44,10 @@ export async function GET(request: NextRequest) {
         .where(eq(memosTable.cardName, key))
         .orderBy(asc(memosTable.createdAt))
         .execute();
-      data[key] = value;
+      dbCardsName.push(key);
+      data.push(value);
     }
-    return NextResponse.json({ data }, { status: 200 });
+    return NextResponse.json({ dbCardsName, data }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { error: "Something went wrong in db" },

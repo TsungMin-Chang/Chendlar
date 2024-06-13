@@ -21,12 +21,13 @@ export default function ColorPlatter({ color, setColor }: ColorPlatterProps) {
         onClick={() => setColor("#EFABD8")}
       />
       <button
-        className={`h-6 w-6 rounded-full bg-[#FF8E9C] ${color === "#FF8E9C" && "outline"}`}
-        onClick={() => setColor("#FF8E9C")}
+        className={`h-6 w-6 rounded-full bg-[#f88895] ${color === "#f88895" && "outline"}`}
+        onClick={() => setColor("#f88895")}
       />
       <button
-        className={`h-6 w-6 rounded-full bg-[#FE6E6E] ${color === "#FE6E6E" && "outline"}`}
-        onClick={() => setColor("#FE6E6E")}
+        className={`h-6 w-6 rounded-full bg-[#f2667b] ${color === "#f2667b" && "outline"}`}
+        onClick={() => setColor("#f2667b")}
+        // eb687c
       />
       <button
         className={`h-6 w-6 rounded-full bg-[#c1a7e5] ${color === "#c1a7e5" && "outline"}`}

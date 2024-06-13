@@ -98,7 +98,7 @@ export default function Memo({
             />
           </FormControl>
         ) : (
-          <div className="p-1 px-3">{memo.description}</div>
+          <div className="whitespace-pre-wrap p-1 px-3">{memo.description}</div>
         ))}
     </div>
   );

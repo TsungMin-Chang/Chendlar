@@ -57,7 +57,7 @@ export default function MonthCell({
         className="flex justify-center text-sm text-white"
       >
         <div
-          className={`${cellDayNumber === getDayNumber(todayDate) && "flex h-5 w-5 items-center justify-center rounded-full bg-[#927868f9] text-xs"}`}
+          className={`${cellDayNumber === getDayNumber(todayDate) && "flex h-5 w-5 items-center justify-center rounded-full bg-[#927868f9] text-xs text-pink-100"}`}
         >
           {cellDisplayDate}
         </div>

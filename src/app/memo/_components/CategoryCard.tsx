@@ -176,7 +176,13 @@ function CategoryCard({
             setWorkingMemoArray={setAddedNewMemos}
             isExpanded={expandingMemoIds.includes(memo.id)}
             setIsExpanded={() => handleExpandingMemo(memo.id)}
-            deleteAction={() => setAddedNewMemos((prev) => prev.splice(i, 1))}
+            deleteAction={() =>
+              setAddedNewMemos((prev) => {
+                const newMemos = [...prev];
+                newMemos.splice(i, 1);
+                return newMemos;
+              })
+            }
           />
         ))}
 
