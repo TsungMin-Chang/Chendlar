@@ -13,8 +13,35 @@ export const heartTodo = async (todoId: string, todoIsDone: boolean) => {
   return;
 };
 
-export const deleteTodo = async (todoId: string) => {
-  await db.delete(affairsTable).where(eq(affairsTable.id, todoId)).execute();
+const handleDeleteFromGoogleCalendar = async (
+  googleEventId: string,
+  accessToken: string,
+) => {
+  await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/primary/events/${googleEventId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    },
+  );
+};
+
+export const deleteTodo = async (todoId: string, accessToken: string) => {
+  const [{ googleEventId }] = await db
+    .select({
+      googleEventId: affairsTable.googleEventId,
+    })
+    .from(affairsTable)
+    .where(eq(affairsTable.id, todoId))
+    .execute();
+  await handleDeleteFromGoogleCalendar(googleEventId, accessToken);
+  await db
+    .delete(affairsTable)
+    .where(eq(affairsTable.googleEventId, googleEventId))
+    .execute();
   return;
 };
 
@@ -23,6 +50,7 @@ export const deleteEvent = async (
   deleteEventOrder: number,
   deleteEventTime1: Date,
   deleteEventTime2: Date,
+  accessToken: string,
 ) => {
   // step 1: get dbEvents whose order needs to be updated
   let minTime1 = new Date(deleteEventTime1);
@@ -73,15 +101,24 @@ export const deleteEvent = async (
   }
 
   // step 2: delete event
-  await db
-    .delete(affairsTable)
+  const [{ googleEventId }] = await db
+    .select({
+      googleEventId: affairsTable.googleEventId,
+    })
+    .from(affairsTable)
     .where(
       and(
         eq(affairsTable.title, deleteEventTitle),
         eq(affairsTable.time1, new Date(deleteEventTime1)),
         eq(affairsTable.time2, new Date(deleteEventTime2)),
       ),
-    );
+    )
+    .execute();
+  await handleDeleteFromGoogleCalendar(googleEventId, accessToken);
+  await db
+    .delete(affairsTable)
+    .where(eq(affairsTable.googleEventId, googleEventId))
+    .execute();
 
   // step 3: update dbEvents
   for (let i = 0; i < dbEvents.length; i++) {

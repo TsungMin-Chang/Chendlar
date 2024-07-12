@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { AiFillHeart } from "react-icons/ai";
 
 import { useRouter } from "next/navigation";
@@ -22,6 +22,14 @@ export default function MonthCell({
 }: MonthCellProps) {
   const router = useRouter();
   const { isHalfDay } = useDateContext();
+
+  const [accessToken, setAccessToken] = useState<string | null>("");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setAccessToken(window.localStorage.getItem("accessToken"));
+    }
+  }, []);
+
   const todayDate = new Date();
   let maxEventOrder = -1;
   let eventNumber = 0;
@@ -49,7 +57,9 @@ export default function MonthCell({
       key={cellDayNumber.toString()}
       className="flex h-full w-full flex-col gap-y-1"
       onClick={() =>
-        router.push(`/day/${cellDayNumber}/?isHalfDay=${isHalfDay}`)
+        router.push(
+          `/day/${cellDayNumber}/?isHalfDay=${isHalfDay}&accessToken=${accessToken}`,
+        )
       }
     >
       <div
@@ -57,7 +67,7 @@ export default function MonthCell({
         className="flex justify-center text-sm text-white"
       >
         <div
-          className={`${cellDayNumber === getDayNumber(todayDate) && "flex h-5 w-5 items-center justify-center rounded-full bg-[#927868f9] text-xs text-pink-100"}`}
+          className={`${cellDayNumber === getDayNumber(todayDate) && "flex h-5 w-5 items-center justify-center rounded-full bg-[#927868f9] text-xs text-violet-100"}`}
         >
           {cellDisplayDate}
         </div>

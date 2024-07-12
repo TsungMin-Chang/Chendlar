@@ -59,6 +59,7 @@ export default function EditDialog({
   const { updateAffair, loading, setLoading } = useDay();
   const router = useRouter();
   const { onRefresh } = useRefreshContext();
+  const accessToken = window.localStorage.getItem("accessToken");
 
   const steps = ["", ""];
   const [activeStep, setActiveStep] = useState(0);
@@ -134,6 +135,22 @@ export default function EditDialog({
       return;
     }
 
+    if (!accessToken) {
+      alert("No Access Token!");
+      return;
+    }
+
+    const alteredTime2 =
+      type === "todo"
+        ? new Date(
+            timeData.time1.getFullYear(),
+            timeData.time1.getMonth(),
+            timeData.time1.getDate(),
+            timeData.time2.getHours(),
+            timeData.time2.getMinutes(),
+          )
+        : timeData.time2;
+
     try {
       const data = {
         affairId,
@@ -147,10 +164,10 @@ export default function EditDialog({
         color,
         type,
         time1: timeData.time1,
-        time2: timeData.time2,
+        time2: alteredTime2,
         isDone,
       };
-      await updateAffair(data);
+      await updateAffair(data, accessToken);
     } catch (error) {
       alert("Error: Failed to update!");
     } finally {
@@ -165,7 +182,9 @@ export default function EditDialog({
     }
   };
   const handleClose = () => {
-    router.push(`/day/${dayNumber}/?isHalfDay=${isHalfDay}`);
+    router.push(
+      `/day/${dayNumber}/?isHalfDay=${isHalfDay}&accessToken=${accessToken}`,
+    );
     router.refresh();
   };
 
@@ -191,9 +210,10 @@ export default function EditDialog({
       )}
       {activeStep === steps.length - 1 && (
         <DialogContent className="flex w-[300px] flex-col gap-y-5">
-          <FormControl className="mt-2 flex-1">
-            <InputLabel id="list-type">Type</InputLabel>
+          <FormControl className="flex-1">
+          <InputLabel className="mt-2" id="list-type">Type</InputLabel>
             <Select
+              className="mt-2"
               labelId="list-type"
               label="list-type"
               value={type}

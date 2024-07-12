@@ -36,10 +36,17 @@ type AddDialogProps = {
   onClose: () => void;
 };
 
+type Calendar = {
+  summary: string;
+  colorId: string;
+  start: { dateTime: Date; timeZone: string };
+  end: { dateTime: Date; timeZone: string };
+};
+
 export default function AddDialog({ open, onClose }: AddDialogProps) {
   const { postAffair, loading, setLoading } = useDay();
   const { onRefresh } = useRefreshContext();
-  const { isHalfDay, date } = useDateContext();
+  const { isHalfDay } = useDateContext();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -105,6 +112,30 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
       return;
     }
 
+    const alteredTime2 =
+      type === "todo"
+        ? new Date(
+            timeData.time1.getFullYear(),
+            timeData.time1.getMonth(),
+            timeData.time1.getDate(),
+            timeData.time2.getHours(),
+            timeData.time2.getMinutes(),
+          )
+        : timeData.time2;
+
+    const googleEventId = await handleAddToGoogleCalendar({
+      summary: title,
+      colorId: "11",
+      start: {
+        dateTime: timeData.time1,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
+      end: {
+        dateTime: alteredTime2,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
+    });
+
     try {
       const data = {
         userId: "55a0ef11-c9c8-471d-adeb-29b87d3d6bdc",
@@ -112,22 +143,9 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
         color,
         type,
         time1: timeData.time1,
-        time2:
-          type === "todo"
-            ? new Date(
-                timeData.time2.getTime() -
-                  new Date(
-                    date.getFullYear(),
-                    date.getMonth(),
-                    date.getDate(),
-                    0,
-                    0,
-                    0,
-                  ).getTime() +
-                  timeData.time1.getTime(),
-              )
-            : timeData.time2,
+        time2: alteredTime2,
         isDone,
+        googleEventId,
       };
       await postAffair(data);
     } catch (error) {
@@ -147,6 +165,25 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
       }
     }
   };
+
+  const handleAddToGoogleCalendar = async (googleData: Calendar) => {
+    
+    const accessToken = window.localStorage.getItem("accessToken");
+    const response = await fetch(
+      "https://www.googleapis.com/calendar/v3/calendars/primary/events",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(googleData),
+      },
+    );
+    const data = await response.json();
+    return data.id;
+  };
+
   const handleClose = () => {
     setActiveStep(0);
     setTitle("");
@@ -163,10 +200,10 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
       <DialogTitle sx={{ fontWeight: "bold", fontSize: 22 }}>New</DialogTitle>
       {activeStep === 0 && (
         <DialogContent className="flex w-[300px] flex-col gap-y-2">
-          <FormControl className="p-2">
-            <ClickAwayListener onClickAway={() => {}}>
-              <Input
-                autoFocus
+        <FormControl className="p-2">
+          <ClickAwayListener onClickAway={() => {}}>
+            <Input
+              autoFocus
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Title"
@@ -180,9 +217,10 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
       )}
       {activeStep === steps.length - 1 && (
         <DialogContent className="flex w-[300px] flex-col gap-y-5">
-          <FormControl className="mt-2 flex-1">
-            <InputLabel id="list-type">Type</InputLabel>
+          <FormControl className="flex-1">
+            <InputLabel className="mt-2" id="list-type">Type</InputLabel>
             <Select
+              className="mt-2"
               labelId="list-type"
               label="list-type"
               value={type}

@@ -109,8 +109,12 @@ function CategoryCard({
         <div className="absolute -right-4 -top-4 z-50">
           <IconButton
             onClick={async () => {
-              await deleteCard(cardName);
-              onRefreshCards();
+              if (confirm("Are you sure to delete this Category card?")) {
+                await deleteCard(cardName);
+                onRefreshCards();
+              } else {
+                return;
+              }
             }}
           >
             <TiDelete size={28} color="red" />

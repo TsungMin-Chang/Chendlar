@@ -18,12 +18,13 @@ type DayPageProps = {
   searchParams: {
     editAffairId?: string;
     isHalfDay?: string;
+    accessToken?: string;
   };
 };
 
 export default async function DayPage({
   params: { dayNumber },
-  searchParams: { editAffairId, isHalfDay },
+  searchParams: { editAffairId, isHalfDay, accessToken },
 }: DayPageProps) {
   const dayNumberInt = parseInt(dayNumber);
   const userId = "55a0ef11-c9c8-471d-adeb-29b87d3d6bdc";
@@ -128,6 +129,7 @@ export default async function DayPage({
                 todos={todos}
                 dayNumberInt={dayNumberInt}
                 isHalfDay={isHalfDay === "true"}
+                accessToken={accessToken}
               />
             </div>
           )}
@@ -140,6 +142,7 @@ export default async function DayPage({
                 events={events}
                 dayNumberInt={dayNumberInt}
                 isHalfDay={isHalfDay === "true"}
+                accessToken={accessToken}
               />
             </div>
           )}

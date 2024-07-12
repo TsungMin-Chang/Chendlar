@@ -1,5 +1,4 @@
 // this is a server side component
-// TODO: long format
 import { TiDelete } from "react-icons/ti";
 
 import { revalidatePath } from "next/cache";
@@ -14,12 +13,14 @@ type EventCardProps = {
   events: DbAffair[];
   dayNumberInt: number;
   isHalfDay: boolean;
+  accessToken?: string;
 };
 
 export default function EventCard({
   events,
   dayNumberInt,
   isHalfDay,
+  accessToken,
 }: EventCardProps) {
   return (
     <>
@@ -70,14 +71,18 @@ export default function EventCard({
             className="flex"
             action={async () => {
               "use server";
+              if (!accessToken) return;
               await deleteEvent(
                 event.title,
                 event.order,
                 event.time1,
                 event.time2,
+                accessToken,
               );
               revalidatePath(`/day/${dayNumberInt}`);
-              redirect(`/day/${dayNumberInt}/?isHalfDay=${isHalfDay}`);
+              redirect(
+                `/day/${dayNumberInt}/?isHalfDay=${isHalfDay}&accessToken=${accessToken}`,
+              );
             }}
           >
             <button className="z-10 grow pl-1" type={"submit"}>

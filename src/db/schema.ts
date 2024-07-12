@@ -34,6 +34,7 @@ export const affairsTable = pgTable(
     monthNumber: integer("month_number").notNull(),
     weekNumber: integer("week_number").notNull(),
     dayNumber: integer("day_number").notNull(),
+    googleEventId: varchar("google_event_id", { length: 32 }).notNull(),
   },
   (table) => ({
     monthNumberIndex: index("month_number_index").on(table.monthNumber),

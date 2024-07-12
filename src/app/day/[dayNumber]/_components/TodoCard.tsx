@@ -15,12 +15,14 @@ type TodoCardProps = {
   todos: DbAffair[];
   dayNumberInt: number;
   isHalfDay: boolean;
+  accessToken?: string;
 };
 
 export default function TodoCard({
   todos,
   dayNumberInt,
   isHalfDay,
+  accessToken,
 }: TodoCardProps) {
   return (
     <>
@@ -79,9 +81,12 @@ export default function TodoCard({
             className="flex"
             action={async () => {
               "use server";
-              await deleteTodo(todo.id);
+              if (!accessToken) return;
+              await deleteTodo(todo.id, accessToken);
               revalidatePath(`/day/${dayNumberInt}`);
-              redirect(`/day/${dayNumberInt}/?isHalfDay=${isHalfDay}`);
+              redirect(
+                `/day/${dayNumberInt}/?isHalfDay=${isHalfDay}&accessToken=${accessToken}`,
+              );
             }}
           >
             <button className="z-10 grow pl-1" type={"submit"}>

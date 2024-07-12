@@ -24,6 +24,24 @@ export default function Home() {
     () => getMonthNumber(slideDate),
     [slideDate],
   );
+
+  // Google Calendar
+  const clientId = process.env.NEXT_PUBLIC_AUTH_GOOGLE_ID;
+  const redirectUri = "https://chendlar.cinatrin.pro/api/auth/callback/google";
+  const responseType = "code";
+  const scope = [
+    "https://www.googleapis.com/auth/calendar.readonly",
+    "https://www.googleapis.com/auth/calendar",
+  ].join(" ");
+  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
+  useEffect(() => {
+    const accessToken = window.localStorage.getItem("accessToken");
+    const link = document.getElementById("google-calendar");
+    if (link && !accessToken) {
+      link.click();
+    }
+  }, []);
+
   useEffect(() => {
     async function fetchData() {
       const reqData = {
@@ -123,6 +141,9 @@ export default function Home() {
             }
           />
         </Slide>
+        <a className="hidden" id="google-calendar" href={url}>
+          Sign in with Google
+        </a>
       </div>
     </>
   );

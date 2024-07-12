@@ -25,7 +25,8 @@ import type {
 } from "@/validators/crudTypes";
 
 async function insertDb(data: PostAffairRequest) {
-  const { userId, title, color, type, time1, time2, isDone } = data;
+  const { userId, title, color, type, time1, time2, isDone, googleEventId } =
+    data;
 
   if (type === "todo") {
     // todo is given very large order and will later be sorted by time2
@@ -38,6 +39,7 @@ async function insertDb(data: PostAffairRequest) {
           color,
           type,
           isDone,
+          googleEventId,
           time1: new Date(time1),
           time2: new Date(time2),
           order: 100,
@@ -187,7 +189,7 @@ async function insertDb(data: PostAffairRequest) {
   }
 }
 
-async function deleteDb(data: UpdateAffairRequest) {
+async function deleteDb(data: UpdateAffairRequest, accessToken: string) {
   const {
     affairId,
     prevType,
@@ -199,7 +201,7 @@ async function deleteDb(data: UpdateAffairRequest) {
 
   if (prevType === "todo") {
     try {
-      await deleteTodo(affairId);
+      await deleteTodo(affairId, accessToken);
     } catch (error) {
       return false;
     }
@@ -213,6 +215,7 @@ async function deleteDb(data: UpdateAffairRequest) {
         deleteEventOrder,
         deleteEventTime1,
         deleteEventTime2,
+        accessToken,
       );
     } catch (error) {
       return false;
@@ -307,6 +310,11 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  const accessToken = request.headers.get("accessToken");
+  if (!accessToken) {
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  }
+
   const data = await request.json();
   try {
     updateAffairRequestSchema.safeParse(data);
@@ -321,7 +329,7 @@ export async function PUT(request: NextRequest) {
   }
 
   // regular update - step 1: deleteDb function
-  const deleteRes = await deleteDb(data);
+  const deleteRes = await deleteDb(data, accessToken);
   if (!deleteRes) {
     return NextResponse.json(
       { error: "Something went wrong in db" },
