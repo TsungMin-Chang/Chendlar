@@ -1,7 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 
 // Google Calendar
-
 export async function GET(request: NextRequest) {
   // Get the code
   const { searchParams } = new URL(request.url);
@@ -20,8 +19,9 @@ export async function GET(request: NextRequest) {
 
   const data = await response.json();
   const accessToken = data.access_token;
+  const expiresInSecond = data.expires_in;
 
   return NextResponse.redirect(
-    `https://chendlar.cinatrin.pro/callback?token=${accessToken}`,
+    `https://chendlar.cinatrin.pro/callback?token=${accessToken}&expiresInSecond=${expiresInSecond}`,
   );
 }

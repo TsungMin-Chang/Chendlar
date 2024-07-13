@@ -35,10 +35,12 @@ export default function Home() {
   ].join(" ");
   const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
   useEffect(() => {
-    const accessToken = window.localStorage.getItem("accessToken");
-    const link = document.getElementById("google-calendar");
-    if (link && !accessToken) {
-      link.click();
+    if (typeof window !== "undefined") {
+      const expireTime = window.localStorage.getItem("expireTime");
+      const link = document.getElementById("google-calendar");
+      if (link && (!expireTime || Number(expireTime) < new Date().getTime())) {
+        link.click();
+      }
     }
   }, []);
 

@@ -121,11 +121,18 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
             timeData.time2.getHours(),
             timeData.time2.getMinutes(),
           )
-        : timeData.time2;
+        : new Date(
+            timeData.time2.getFullYear(),
+            timeData.time2.getMonth(),
+            timeData.time2.getDate(),
+            23,
+            59,
+          );
 
+    // Google Calendar
     const googleEventId = await handleAddToGoogleCalendar({
       summary: title,
-      colorId: "11",
+      colorId: "4",
       start: {
         dateTime: timeData.time1,
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -167,7 +174,6 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
   };
 
   const handleAddToGoogleCalendar = async (googleData: Calendar) => {
-    
     const accessToken = window.localStorage.getItem("accessToken");
     const response = await fetch(
       "https://www.googleapis.com/calendar/v3/calendars/primary/events",
@@ -200,10 +206,10 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
       <DialogTitle sx={{ fontWeight: "bold", fontSize: 22 }}>New</DialogTitle>
       {activeStep === 0 && (
         <DialogContent className="flex w-[300px] flex-col gap-y-2">
-        <FormControl className="p-2">
-          <ClickAwayListener onClickAway={() => {}}>
-            <Input
-              autoFocus
+          <FormControl className="p-2">
+            <ClickAwayListener onClickAway={() => {}}>
+              <Input
+                autoFocus
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Title"
@@ -218,7 +224,9 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
       {activeStep === steps.length - 1 && (
         <DialogContent className="flex w-[300px] flex-col gap-y-5">
           <FormControl className="flex-1">
-            <InputLabel className="mt-2" id="list-type">Type</InputLabel>
+            <InputLabel className="mt-2" id="list-type">
+              Type
+            </InputLabel>
             <Select
               className="mt-2"
               labelId="list-type"

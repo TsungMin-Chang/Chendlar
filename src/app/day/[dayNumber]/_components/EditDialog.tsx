@@ -149,7 +149,13 @@ export default function EditDialog({
             timeData.time2.getHours(),
             timeData.time2.getMinutes(),
           )
-        : timeData.time2;
+        : new Date(
+            timeData.time2.getFullYear(),
+            timeData.time2.getMonth(),
+            timeData.time2.getDate(),
+            23,
+            59,
+          );
 
     try {
       const data = {
@@ -211,7 +217,9 @@ export default function EditDialog({
       {activeStep === steps.length - 1 && (
         <DialogContent className="flex w-[300px] flex-col gap-y-5">
           <FormControl className="flex-1">
-          <InputLabel className="mt-2" id="list-type">Type</InputLabel>
+            <InputLabel className="mt-2" id="list-type">
+              Type
+            </InputLabel>
             <Select
               className="mt-2"
               labelId="list-type"

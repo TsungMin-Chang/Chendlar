@@ -13,6 +13,7 @@ export const heartTodo = async (todoId: string, todoIsDone: boolean) => {
   return;
 };
 
+// Google Calendar
 const handleDeleteFromGoogleCalendar = async (
   googleEventId: string,
   accessToken: string,
