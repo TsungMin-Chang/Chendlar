@@ -36,17 +36,11 @@ type AddDialogProps = {
   onClose: () => void;
 };
 
-type Calendar = {
-  summary: string;
-  colorId: string;
-  start: { dateTime: Date; timeZone: string };
-  end: { dateTime: Date; timeZone: string };
-};
-
 export default function AddDialog({ open, onClose }: AddDialogProps) {
   const { postAffair, loading, setLoading } = useDay();
   const { onRefresh } = useRefreshContext();
   const { isHalfDay } = useDateContext();
+
   const router = useRouter();
   const pathname = usePathname();
 
@@ -129,20 +123,6 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
             59,
           );
 
-    // Google Calendar
-    const googleEventId = await handleAddToGoogleCalendar({
-      summary: title,
-      colorId: "4",
-      start: {
-        dateTime: timeData.time1,
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-      end: {
-        dateTime: alteredTime2,
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-    });
-
     try {
       const data = {
         userId: "55a0ef11-c9c8-471d-adeb-29b87d3d6bdc",
@@ -152,9 +132,9 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
         time1: timeData.time1,
         time2: alteredTime2,
         isDone,
-        googleEventId,
       };
-      await postAffair(data);
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      await postAffair(data, timeZone);
     } catch (error) {
       alert("Error: Failed to create!");
     } finally {
@@ -171,23 +151,6 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
         }
       }
     }
-  };
-
-  const handleAddToGoogleCalendar = async (googleData: Calendar) => {
-    const accessToken = window.localStorage.getItem("accessToken");
-    const response = await fetch(
-      "https://www.googleapis.com/calendar/v3/calendars/primary/events",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(googleData),
-      },
-    );
-    const data = await response.json();
-    return data.id;
   };
 
   const handleClose = () => {

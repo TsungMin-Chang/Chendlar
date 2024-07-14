@@ -8,6 +8,10 @@ import {
 } from "@/app/day/[dayNumber]/_components/actions";
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
+import {
+  handleAddToGoogleCalendar,
+  handleUpdateToGoogleCalendar,
+} from "@/lib/googleCalendarAPIs";
 import type { DbEvent } from "@/lib/types";
 import {
   getWeekNumber,
@@ -24,10 +28,31 @@ import type {
   UpdateAffairRequest,
 } from "@/validators/crudTypes";
 
-async function insertDb(data: PostAffairRequest) {
-  const { userId, title, color, type, time1, time2, isDone, googleEventId } =
-    data;
+async function insertDb(
+  data: PostAffairRequest,
+  accessToken: string,
+  timeZone: string,
+) {
+  const { userId, title, color, type, time1, time2, isDone } = data;
 
+  // Google Calendar
+  const googleEventId = await handleAddToGoogleCalendar(
+    {
+      summary: title,
+      colorId: "4",
+      start: {
+        dateTime: time1,
+        timeZone,
+      },
+      end: {
+        dateTime: time2,
+        timeZone,
+      },
+    },
+    accessToken,
+  );
+
+  //DB
   if (type === "todo") {
     // todo is given very large order and will later be sorted by time2
     try {
@@ -83,6 +108,7 @@ async function insertDb(data: PostAffairRequest) {
           const date = dateArray[i];
           insertDataArray.push({
             ...data,
+            googleEventId,
             time1: new Date(time1),
             time2: new Date(time2),
             order: nextOrder === null ? 0 : nextOrder - 1,
@@ -156,6 +182,7 @@ async function insertDb(data: PostAffairRequest) {
           const date = dateArray[i];
           insertDataArray.push({
             ...data,
+            googleEventId,
             time1: new Date(time1),
             time2: new Date(time2),
             order: 0,
@@ -224,7 +251,11 @@ async function deleteDb(data: UpdateAffairRequest, accessToken: string) {
   }
 }
 
-async function fastUpdate(data: UpdateAffairRequest) {
+async function fastUpdate(
+  data: UpdateAffairRequest,
+  accessToken: string,
+  timeZone: string,
+) {
   const {
     affairId,
     type,
@@ -242,6 +273,31 @@ async function fastUpdate(data: UpdateAffairRequest) {
   // todo
   if (prevType === "todo" && type === "todo") {
     try {
+      // Google Calendar
+      const [{ googleEventId }] = await db
+        .select({ googleEventId: affairsTable.googleEventId })
+        .from(affairsTable)
+        .where(eq(affairsTable.id, affairId))
+        .execute();
+
+      await handleUpdateToGoogleCalendar(
+        {
+          summary: title,
+          colorId: "4",
+          start: {
+            dateTime: time1,
+            timeZone,
+          },
+          end: {
+            dateTime: time2,
+            timeZone,
+          },
+        },
+        accessToken,
+        googleEventId,
+      );
+
+      // DB
       await db
         .update(affairsTable)
         .set({
@@ -270,6 +326,37 @@ async function fastUpdate(data: UpdateAffairRequest) {
     new Date(time2).getTime() === new Date(prevTime2).getTime()
   ) {
     try {
+      // Google Calendar
+      const [{ googleEventId }] = await db
+        .select({ googleEventId: affairsTable.googleEventId })
+        .from(affairsTable)
+        .where(
+          and(
+            eq(affairsTable.title, prevTitle),
+            eq(affairsTable.time1, new Date(prevTime1)),
+            eq(affairsTable.time2, new Date(prevTime2)),
+          ),
+        )
+        .execute();
+
+      await handleUpdateToGoogleCalendar(
+        {
+          summary: title,
+          colorId: "4",
+          start: {
+            dateTime: time1,
+            timeZone,
+          },
+          end: {
+            dateTime: time2,
+            timeZone,
+          },
+        },
+        accessToken,
+        googleEventId,
+      );
+
+      // DB
       await db
         .update(affairsTable)
         .set({ title, color })
@@ -290,6 +377,12 @@ async function fastUpdate(data: UpdateAffairRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const accessToken = request.headers.get("accessToken");
+  const timeZone = request.headers.get("timeZone");
+  if (!accessToken || !timeZone) {
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  }
+
   const data = await request.json();
   try {
     postAffairRequestSchema.safeParse(data);
@@ -298,7 +391,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Call insertDb function
-  const res = await insertDb(data);
+  const res = await insertDb(data, accessToken, timeZone);
   if (res) {
     return NextResponse.json("OK", { status: 200 });
   } else {
@@ -311,7 +404,8 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   const accessToken = request.headers.get("accessToken");
-  if (!accessToken) {
+  const timeZone = request.headers.get("timeZone");
+  if (!accessToken || !timeZone) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
@@ -323,7 +417,7 @@ export async function PUT(request: NextRequest) {
   }
 
   // fast update
-  const fastUpdateRes = await fastUpdate(data);
+  const fastUpdateRes = await fastUpdate(data, accessToken, timeZone);
   if (fastUpdateRes) {
     return NextResponse.json("OK", { status: 200 });
   }
@@ -338,7 +432,7 @@ export async function PUT(request: NextRequest) {
   }
 
   // regular update - step 2: insertDb function
-  const insertRes = await insertDb(data);
+  const insertRes = await insertDb(data, accessToken, timeZone);
   if (insertRes) {
     return NextResponse.json("OK", { status: 200 });
   } else {

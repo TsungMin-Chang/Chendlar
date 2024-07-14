@@ -5,6 +5,7 @@ import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 
 import useDateContext from "@/hooks/useDateContext";
+import useGoogleCalendarContext from "@/hooks/useGoogleCalendarContext";
 import useMonth from "@/hooks/useMonth";
 import useRefreshContext from "@/hooks/useRefreshContext";
 import type { ResData } from "@/lib/types";
@@ -14,9 +15,10 @@ import MonthCells from "./_components/MonthCells";
 
 export default function Home() {
   const { getMonths } = useMonth();
-
   const { date, setDate } = useDateContext();
+  const { isValid } = useGoogleCalendarContext();
   const { refresh } = useRefreshContext();
+
   const [slideDate, setSlideDate] = useState(date);
   const [monthsData, setMonthsData] = useState<ResData | null>(null);
 
@@ -26,23 +28,12 @@ export default function Home() {
   );
 
   // Google Calendar
-  const clientId = process.env.NEXT_PUBLIC_AUTH_GOOGLE_ID;
-  const redirectUri = "https://chendlar.cinatrin.pro/api/auth/callback/google";
-  const responseType = "code";
-  const scope = [
-    "https://www.googleapis.com/auth/calendar.readonly",
-    "https://www.googleapis.com/auth/calendar",
-  ].join(" ");
-  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const expireTime = window.localStorage.getItem("expireTime");
-      const link = document.getElementById("google-calendar");
-      if (link && (!expireTime || Number(expireTime) < new Date().getTime())) {
-        link.click();
-      }
+    const link = document.getElementById("google-calendar");
+    if (link && !isValid) {
+      link.click();
     }
-  }, []);
+  }, [isValid]);
 
   useEffect(() => {
     async function fetchData() {
@@ -143,9 +134,6 @@ export default function Home() {
             }
           />
         </Slide>
-        <a className="hidden" id="google-calendar" href={url}>
-          Sign in with Google
-        </a>
       </div>
     </>
   );

@@ -24,6 +24,7 @@ import dayjs from "dayjs";
 
 import ColorPalette from "@/app/_components/ColorPalette";
 import useDay from "@/hooks/useDay";
+import useGoogleCalendarContext from "@/hooks/useGoogleCalendarContext";
 import useRefreshContext from "@/hooks/useRefreshContext";
 
 type timeProp = {
@@ -59,7 +60,7 @@ export default function EditDialog({
   const { updateAffair, loading, setLoading } = useDay();
   const router = useRouter();
   const { onRefresh } = useRefreshContext();
-  const accessToken = window.localStorage.getItem("accessToken");
+  const { accessToken, expireTime, setIsValid } = useGoogleCalendarContext();
 
   const steps = ["", ""];
   const [activeStep, setActiveStep] = useState(0);
@@ -135,11 +136,6 @@ export default function EditDialog({
       return;
     }
 
-    if (!accessToken) {
-      alert("No Access Token!");
-      return;
-    }
-
     const alteredTime2 =
       type === "todo"
         ? new Date(
@@ -173,7 +169,8 @@ export default function EditDialog({
         time2: alteredTime2,
         isDone,
       };
-      await updateAffair(data, accessToken);
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      await updateAffair(data, timeZone);
     } catch (error) {
       alert("Error: Failed to update!");
     } finally {
@@ -188,6 +185,10 @@ export default function EditDialog({
     }
   };
   const handleClose = () => {
+    if (!expireTime || Number(expireTime) < new Date().getTime()) {
+      setIsValid(false);
+      return;
+    }
     router.push(
       `/day/${dayNumber}/?isHalfDay=${isHalfDay}&accessToken=${accessToken}`,
     );

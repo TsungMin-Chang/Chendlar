@@ -16,21 +16,18 @@ export const postAffairRequestSchema = z.object({
   time1: z.date(),
   time2: z.date(),
   isDone: z.boolean(),
-  googleEventId: z.string().uuid(),
 });
 export type PostAffairRequest = z.infer<typeof postAffairRequestSchema>;
 
 // UPDATE Affair
-export const updateAffairRequestSchema = postAffairRequestSchema
-  .extend({
-    affairId: z.string().uuid(),
-    prevType: z.string().max(8),
-    prevTitle: z.string().max(64),
-    prevOrder: z.number(),
-    prevTime1: z.date(),
-    prevTime2: z.date(),
-  })
-  .omit({ googleEventId: true });
+export const updateAffairRequestSchema = postAffairRequestSchema.extend({
+  affairId: z.string().uuid(),
+  prevType: z.string().max(8),
+  prevTitle: z.string().max(64),
+  prevOrder: z.number(),
+  prevTime1: z.date(),
+  prevTime2: z.date(),
+});
 export type UpdateAffairRequest = z.infer<typeof updateAffairRequestSchema>;
 
 // POST Card

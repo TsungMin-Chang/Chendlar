@@ -109,7 +109,7 @@ function CategoryCard({
         <div className="absolute -right-4 -top-4 z-50">
           <IconButton
             onClick={async () => {
-              if (confirm("Are you sure to delete this Category card?")) {
+              if (confirm("Are you sure to delete this Category?")) {
                 await deleteCard(cardName);
                 onRefreshCards();
               } else {

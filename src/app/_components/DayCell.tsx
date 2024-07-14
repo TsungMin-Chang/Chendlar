@@ -1,9 +1,10 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import { AiFillHeart } from "react-icons/ai";
 
 import { useRouter } from "next/navigation";
 
 import useDateContext from "@/hooks/useDateContext";
+import useGoogleCalendarContext from "@/hooks/useGoogleCalendarContext";
 import type { DbAffair } from "@/lib/types";
 import { getDayNumber, getDateFromDayNumber } from "@/lib/utils";
 
@@ -22,13 +23,7 @@ export default function MonthCell({
 }: MonthCellProps) {
   const router = useRouter();
   const { isHalfDay } = useDateContext();
-
-  const [accessToken, setAccessToken] = useState<string | null>("");
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setAccessToken(window.localStorage.getItem("accessToken"));
-    }
-  }, []);
+  const { accessToken, expireTime, setIsValid } = useGoogleCalendarContext();
 
   const todayDate = new Date();
   let maxEventOrder = -1;
@@ -56,11 +51,16 @@ export default function MonthCell({
     <div
       key={cellDayNumber.toString()}
       className="flex h-full w-full flex-col gap-y-1"
-      onClick={() =>
+      onClick={() => {
+        if (!expireTime || Number(expireTime) < new Date().getTime()) {
+          setIsValid(false);
+          return;
+        }
         router.push(
           `/day/${cellDayNumber}/?isHalfDay=${isHalfDay}&accessToken=${accessToken}`,
-        )
-      }
+        );
+        router.refresh();
+      }}
     >
       <div
         key={cellDayNumber.toString()}

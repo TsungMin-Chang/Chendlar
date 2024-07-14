@@ -28,7 +28,7 @@ export default function SideBar({
       router.push(pathname + `/?isHalfDay=${isHalfDay}`);
       router.refresh();
     }
-  }, [isHalfDay]);
+  }, [isHalfDay, router, pathname]);
 
   const handleToMonth = () => {
     setDate(new Date());

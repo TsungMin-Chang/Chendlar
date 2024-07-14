@@ -2,6 +2,7 @@ import { eq, and, between, gt, lt, max } from "drizzle-orm";
 
 import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
+import { handleDeleteFromGoogleCalendar } from "@/lib/googleCalendarAPIs";
 import type { DbEvent } from "@/lib/types";
 import { getDayNumber } from "@/lib/utils";
 
@@ -11,23 +12,6 @@ export const heartTodo = async (todoId: string, todoIsDone: boolean) => {
     .set({ isDone: !todoIsDone })
     .where(eq(affairsTable.id, todoId));
   return;
-};
-
-// Google Calendar
-const handleDeleteFromGoogleCalendar = async (
-  googleEventId: string,
-  accessToken: string,
-) => {
-  await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/primary/events/${googleEventId}`,
-    {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    },
-  );
 };
 
 export const deleteTodo = async (todoId: string, accessToken: string) => {
@@ -115,7 +99,11 @@ export const deleteEvent = async (
       ),
     )
     .execute();
+
+  // Google Calendar
   await handleDeleteFromGoogleCalendar(googleEventId, accessToken);
+
+  // DB
   await db
     .delete(affairsTable)
     .where(eq(affairsTable.googleEventId, googleEventId))
