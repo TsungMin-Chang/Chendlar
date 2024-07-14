@@ -62,7 +62,7 @@ export default function NavBar() {
             <span onClick={() => setOpenEmotionDialog(true)}>
               {emotion === 0 ? (
                 <Image
-                  src="/chandler_cartoon-removebg-preview.png"
+                  src="/chandler_cartoon-removebg.png"
                   width={40}
                   height={40}
                   alt="chandler cartoon"
