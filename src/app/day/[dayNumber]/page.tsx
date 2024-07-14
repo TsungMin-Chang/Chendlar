@@ -18,7 +18,7 @@ type DayPageProps = {
   searchParams: {
     editAffairId?: string;
     isHalfDay?: string;
-    accessToken?: string;
+    accessToken: string;
   };
 };
 

@@ -13,6 +13,7 @@ function Search() {
   const router = useRouter();
   const { setAccessToken, setExpireTime, setIsValid } =
     useGoogleCalendarContext();
+
   useEffect(() => {
     // Get accessToken, expiresInSecond from searchParams
     const accessToken = searchParams.get("token");

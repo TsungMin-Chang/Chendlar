@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 
+import Image from "next/image";
+
 import { Icon } from "@iconify/react";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -12,6 +13,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 
 import useDateContext from "@/hooks/useDateContext";
+import useGoogleCalendar from "@/hooks/useGoogleCalendarContext";
 import { months } from "@/lib/utils";
 
 import EmotionDialog from "./EmotionDialog";
@@ -23,6 +25,8 @@ export default function NavBar() {
   const [openEmotionDialog, setOpenEmotionDialog] = useState(false);
   const [emotion, setEmotion] = useState(0);
   const { date } = useDateContext();
+  const { expireTime, setIsValid } = useGoogleCalendar();
+
   const currentYear = new Date().getFullYear();
   return (
     <div style={{ height: "6vh" }}>
@@ -35,7 +39,13 @@ export default function NavBar() {
               color="inherit"
               aria-label="menu"
               sx={{ mr: 2 }}
-              onClick={() => setOpenSideBar(true)}
+              onClick={() => {
+                if (!expireTime || Number(expireTime) < new Date().getTime()) {
+                  setIsValid(false);
+                  return;
+                }
+                setOpenSideBar(true);
+              }}
             >
               <MenuIcon />
             </IconButton>
@@ -51,11 +61,16 @@ export default function NavBar() {
             <div className="flex grow"></div>
             <span onClick={() => setOpenEmotionDialog(true)}>
               {emotion === 0 ? (
-                <AccountCircle sx={{ fontSize: 32 }} />
+                <Image
+                  src="/chandler_cartoon-removebg-preview.png"
+                  width={40}
+                  height={40}
+                  alt="chandler cartoon"
+                />
               ) : (
                 <Icon
                   icon={iconOptions[emotion - 1]}
-                  style={{ fontSize: "32px" }}
+                  style={{ fontSize: "30px" }}
                 />
               )}
             </span>

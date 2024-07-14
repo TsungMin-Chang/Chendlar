@@ -11,6 +11,7 @@ import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 
 import useDateContext from "@/hooks/useDateContext";
+import useGoogleCalendar from "@/hooks/useGoogleCalendarContext";
 
 export default function SideBar({
   openSideBar,
@@ -20,15 +21,19 @@ export default function SideBar({
   onCloseSideBar: () => void;
 }) {
   const { setDate, setIsHalfDay, isHalfDay } = useDateContext();
+  const { accessToken } = useGoogleCalendar();
+
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
     if (pathname.slice(1, 4) === "day") {
-      router.push(pathname + `/?isHalfDay=${isHalfDay}`);
+      router.push(
+        pathname + `/?isHalfDay=${isHalfDay}&accessToken=${accessToken}`,
+      );
       router.refresh();
     }
-  }, [isHalfDay, router, pathname]);
+  }, [isHalfDay, router]);
 
   const handleToMonth = () => {
     setDate(new Date());

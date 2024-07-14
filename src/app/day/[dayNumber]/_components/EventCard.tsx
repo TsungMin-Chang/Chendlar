@@ -13,7 +13,7 @@ type EventCardProps = {
   events: DbAffair[];
   dayNumberInt: number;
   isHalfDay: boolean;
-  accessToken?: string;
+  accessToken: string;
 };
 
 export default function EventCard({
@@ -34,7 +34,7 @@ export default function EventCard({
             <Link
               href={{
                 pathname: `/day/${dayNumberInt}`,
-                query: { editAffairId: event.id, isHalfDay },
+                query: { editAffairId: event.id, isHalfDay, accessToken },
               }}
             >
               <div className="flex flex-row items-center justify-between">

@@ -60,7 +60,7 @@ export default function EditDialog({
   const { updateAffair, loading, setLoading } = useDay();
   const router = useRouter();
   const { onRefresh } = useRefreshContext();
-  const { accessToken, expireTime, setIsValid } = useGoogleCalendarContext();
+  const { accessToken } = useGoogleCalendarContext();
 
   const steps = ["", ""];
   const [activeStep, setActiveStep] = useState(0);
@@ -172,23 +172,14 @@ export default function EditDialog({
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       await updateAffair(data, timeZone);
     } catch (error) {
-      alert("Error: Failed to update!");
+      alert("Error: Fail to PUT affair!");
     } finally {
-      try {
-        onRefresh(); // client-side refresh
-        handleClose(); // close EditDialog by server-side refresh
-      } catch (error) {
-        alert("FAIL: client-side refresh or close EditDialog");
-      } finally {
-        setLoading(false);
-      }
+      onRefresh(); // client-side refresh
+      handleClose(); // close EditDialog by server-side refresh
+      setLoading(false);
     }
   };
   const handleClose = () => {
-    if (!expireTime || Number(expireTime) < new Date().getTime()) {
-      setIsValid(false);
-      return;
-    }
     router.push(
       `/day/${dayNumber}/?isHalfDay=${isHalfDay}&accessToken=${accessToken}`,
     );

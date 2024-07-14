@@ -22,6 +22,7 @@ import dayjs from "dayjs";
 
 import useDateContext from "@/hooks/useDateContext";
 import useDay from "@/hooks/useDay";
+import useGoogleCalendar from "@/hooks/useGoogleCalendarContext";
 import useRefreshContext from "@/hooks/useRefreshContext";
 
 import ColorPalette from "./ColorPalette";
@@ -40,6 +41,7 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
   const { postAffair, loading, setLoading } = useDay();
   const { onRefresh } = useRefreshContext();
   const { isHalfDay } = useDateContext();
+  const { accessToken } = useGoogleCalendar();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -136,7 +138,7 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       await postAffair(data, timeZone);
     } catch (error) {
-      alert("Error: Failed to create!");
+      alert("Error: Fail to POST affair!");
     } finally {
       try {
         onRefresh();
@@ -146,7 +148,9 @@ export default function AddDialog({ open, onClose }: AddDialogProps) {
       } finally {
         setLoading(false);
         if (pathname.slice(1, 4) === "day") {
-          router.push(pathname + `/?isHalfDay=${isHalfDay}`);
+          router.push(
+            pathname + `/?isHalfDay=${isHalfDay}&accessToken=${accessToken}`,
+          );
           router.refresh();
         }
       }

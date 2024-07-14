@@ -15,7 +15,7 @@ type TodoCardProps = {
   todos: DbAffair[];
   dayNumberInt: number;
   isHalfDay: boolean;
-  accessToken?: string;
+  accessToken: string;
 };
 
 export default function TodoCard({
@@ -38,7 +38,9 @@ export default function TodoCard({
               "use server";
               await heartTodo(todo.id, todo.isDone);
               revalidatePath(`/day/${dayNumberInt}`);
-              redirect(`/day/${dayNumberInt}/?isHalfDay=${isHalfDay}`);
+              redirect(
+                `/day/${dayNumberInt}/?isHalfDay=${isHalfDay}&accessToken=${accessToken}`,
+              );
             }}
           >
             <button className="z-10 pr-2" type={"submit"}>
@@ -55,7 +57,7 @@ export default function TodoCard({
             <Link
               href={{
                 pathname: `/day/${dayNumberInt}`,
-                query: { editAffairId: todo.id, isHalfDay },
+                query: { editAffairId: todo.id, isHalfDay, accessToken },
               }}
             >
               <div className="justify-self-start text-zinc-200">
