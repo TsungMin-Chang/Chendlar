@@ -13,7 +13,6 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 
 import useDateContext from "@/hooks/useDateContext";
-import useGoogleCalendar from "@/hooks/useGoogleCalendarContext";
 import { months } from "@/lib/utils";
 
 import EmotionDialog from "./EmotionDialog";
@@ -25,7 +24,6 @@ export default function NavBar() {
   const [openEmotionDialog, setOpenEmotionDialog] = useState(false);
   const [emotion, setEmotion] = useState(0);
   const { date } = useDateContext();
-  const { expireTime, setIsValid } = useGoogleCalendar();
 
   const currentYear = new Date().getFullYear();
   return (
@@ -40,10 +38,6 @@ export default function NavBar() {
               aria-label="menu"
               sx={{ mr: 2 }}
               onClick={() => {
-                if (!expireTime || Number(expireTime) < new Date().getTime()) {
-                  setIsValid(false);
-                  return;
-                }
                 setOpenSideBar(true);
               }}
             >
