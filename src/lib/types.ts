@@ -42,3 +42,11 @@ export type NewMemo = Omit<DbMemo, "id">;
 export type DbCards = {
   [cardName: string]: DbMemo[];
 };
+
+export type Spending = {
+  id: string;
+  title: string;
+  createdAt: Date;
+  tw: number;
+  kor: number;
+};

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { RiAddCircleFill } from "react-icons/ri";
+import { FcPlus } from "react-icons/fc";
 
 import useCard from "@/hooks/useCard";
 import type { DbMemo } from "@/lib/types";
@@ -47,7 +47,7 @@ export default function MemoPage() {
               setRefreshCards((prev) => !prev);
             }}
           >
-            <RiAddCircleFill size={28} color="rgb(212 186 186 / 95%)" />
+            <FcPlus size={25} />
           </button>
         </div>
 

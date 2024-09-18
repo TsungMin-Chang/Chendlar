@@ -31,7 +31,7 @@ export default function Memo({
 }: MemoProps) {
   return (
     <div key={memo.id} className={`flex flex-col ${isEditingCard && "gap-2"}`}>
-      <div className="flex flex-row items-center rounded-full bg-[#473520] p-2">
+      <div className="flex flex-row items-center rounded-full bg-[#473520] p-2 pl-3">
         {/* delete memo button */}
         {isEditingCard && (
           <div className="flex">

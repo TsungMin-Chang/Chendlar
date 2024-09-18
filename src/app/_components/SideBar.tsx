@@ -1,5 +1,8 @@
 import * as React from "react";
 import { useEffect } from "react";
+import { FcCalendar } from "react-icons/fc";
+import { FcViewDetails } from "react-icons/fc";
+import { FcCurrencyExchange } from "react-icons/fc";
 
 import { useRouter, usePathname } from "next/navigation";
 
@@ -44,6 +47,12 @@ export default function SideBar({
 
   const handleToMemo = () => {
     router.push("/memo");
+    router.refresh();
+    onCloseSideBar();
+  };
+
+  const handleToCurrency = () => {
+    router.push("/currency");
     router.refresh();
     onCloseSideBar();
   };
@@ -125,17 +134,53 @@ export default function SideBar({
           />
           <p className="text-white">12hr</p>
         </Stack>
+
         <button
           onClick={() => handleToMonth()}
-          className="focus:shadow-outline flex w-full max-w-xs items-center justify-center rounded-lg border-2 border-zinc-400 bg-[#473520] py-3 font-bold text-zinc-200 shadow-sm transition-all hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:outline-none"
+          className={`focus:shadow-outline w-full max-w-xs rounded-full border-2 border-zinc-400 bg-[#473520] py-3 font-bold text-zinc-200 shadow-sm transition-all hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:outline-none`}
         >
-          Month
+          <div className="grid grid-cols-3">
+            <div className="col-start-1 flex items-center justify-end pr-2">
+              <span>
+                <FcCalendar size={20} />
+              </span>
+            </div>
+            <div className="col-start-2 flex items-center justify-start pl-2">
+              <span>Month</span>
+            </div>
+          </div>
         </button>
+
         <button
           onClick={() => handleToMemo()}
-          className="focus:shadow-outline flex w-full max-w-xs items-center justify-center rounded-lg border-2 border-zinc-400 bg-[#473520] py-3 font-bold text-zinc-200 shadow-sm transition-all hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:outline-none"
+          className={`focus:shadow-outline w-full max-w-xs rounded-full border-2 border-zinc-400 bg-[#473520] py-3 font-bold text-zinc-200 shadow-sm transition-all hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:outline-none`}
         >
-          Memo
+          <div className="grid grid-cols-3">
+            <div className="col-start-1 flex items-center justify-end pr-2">
+              <span>
+                <FcViewDetails size={20} />
+              </span>
+            </div>
+            <div className="col-start-2 flex items-center justify-start pl-2">
+              <span>Memo</span>
+            </div>
+          </div>
+        </button>
+
+        <button
+          onClick={() => handleToCurrency()}
+          className={`focus:shadow-outline w-full max-w-xs rounded-full border-2 border-zinc-400 bg-[#473520] py-3 font-bold text-zinc-200 shadow-sm transition-all hover:bg-indigo-200 hover:shadow focus:shadow-sm focus:outline-none`}
+        >
+          <div className="grid grid-cols-3">
+            <div className="col-start-1 flex items-center justify-end pr-2">
+              <span>
+                <FcCurrencyExchange size={20} />
+              </span>
+            </div>
+            <div className="col-start-2 flex items-center justify-start pl-2">
+              <span>Currency</span>
+            </div>
+          </div>
         </button>
       </div>
     </Drawer>

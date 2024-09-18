@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { GiPencil } from "react-icons/gi";
+import { FcSupport } from "react-icons/fc";
 import { TiDelete } from "react-icons/ti";
 
 import ClickAwayListener from "@mui/material/ClickAwayListener";
@@ -145,9 +145,9 @@ function CategoryCard({
             </div>
           )}
 
-          {/* Pink-Edit Button */}
-          <button className="pr-2" onClick={() => handlePinkPencilBtn()}>
-            <GiPencil size={28} color="pink" />
+          {/* Edit Button */}
+          <button onClick={() => handlePinkPencilBtn()}>
+            <FcSupport size={24} />
           </button>
         </div>
 

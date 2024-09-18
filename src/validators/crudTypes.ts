@@ -60,3 +60,17 @@ export const DbMemo = NewMemo.omit({ userId: true }).extend({
 });
 export const updateMemosRequestSchema = z.array(DbMemo);
 export type UpdateMemosRequest = z.infer<typeof updateMemosRequestSchema>;
+
+// POST Spending
+export const postSpendingRequestSchema = z.object({
+  title: z.string().max(64),
+  tw: z.number(),
+  kor: z.number(),
+});
+export type PostSpendingRequest = z.infer<typeof postSpendingRequestSchema>;
+
+// UPDATE Spending
+export const updateSpendingRequestSchema = postSpendingRequestSchema.extend({
+  id: z.string().uuid(),
+});
+export type UpdateSpendingRequest = z.infer<typeof updateSpendingRequestSchema>;

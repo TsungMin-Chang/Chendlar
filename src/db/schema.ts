@@ -80,3 +80,19 @@ export const memosTable = pgTable(
     cardNameIndex: index("card_name_index").on(table.cardName),
   }),
 );
+
+export const spendingsTable = pgTable(
+  "spendings",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    title: varchar("title", { length: 32 }).notNull(),
+    createdAt: timestamp("created_at")
+      .default(sql`now()`)
+      .notNull(),
+    tw: integer("tw").notNull(),
+    kor: integer("kor").notNull(),
+  },
+  (table) => ({
+    createdAtIndex: index("created_at_index").on(table.createdAt),
+  }),
+);
