@@ -16,6 +16,7 @@ export default function CurrencyPage() {
   const [totalKor, setTotalKor] = useState(0);
   const [totalTw, setTotalTw] = useState(0);
   const [spendings, setSpendings] = useState<{ [key: string]: Spending[] }>({});
+  const [inputCountry, setInputcountry] = useState("");
   const [refreshToggle, setRefreshToggle] = useState(false);
 
   useEffect(() => {
@@ -38,6 +39,7 @@ export default function CurrencyPage() {
           <div
             onClick={() => {
               setOpenDialog(true);
+              setInputcountry("kor");
             }}
             className="flex w-1/2 flex-row rounded-lg border border-black bg-zinc-300 px-2 py-3"
           >
@@ -54,6 +56,7 @@ export default function CurrencyPage() {
           <div
             onClick={() => {
               setOpenDialog(true);
+              setInputcountry("tw");
             }}
             className="flex w-1/2 flex-row rounded-lg border border-black bg-zinc-300  px-2 py-3"
           >
@@ -80,6 +83,7 @@ export default function CurrencyPage() {
       </div>
       <SpendingDialog
         open={openDialog}
+        inputCountry={inputCountry}
         onClose={() => setOpenDialog(false)}
         onRefresh={() => setRefreshToggle((prev) => !prev)}
       />

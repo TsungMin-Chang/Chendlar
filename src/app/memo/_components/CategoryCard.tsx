@@ -147,7 +147,7 @@ function CategoryCard({
 
           {/* Edit Button */}
           <button onClick={() => handlePinkPencilBtn()}>
-            <FcSupport size={24} />
+            <FcSupport size={25} />
           </button>
         </div>
 

@@ -57,8 +57,8 @@ export default function NavBar() {
               {emotion === 0 ? (
                 <Image
                   src="/chandler_cartoon-removebg.png"
-                  width={35}
-                  height={35}
+                  width={28}
+                  height={28}
                   alt="chandler cartoon"
                 />
               ) : (

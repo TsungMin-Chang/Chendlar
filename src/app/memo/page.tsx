@@ -40,7 +40,7 @@ export default function MemoPage() {
         <div className="flex flex-row justify-between">
           {/* Memo Wording*/}
           <div className="ml-2 text-lg font-bold text-zinc-200">Memo</div>
-          {/* Pink-Add Card Button*/}
+          {/* Add Card Button*/}
           <button
             onClick={async () => {
               await postCard();

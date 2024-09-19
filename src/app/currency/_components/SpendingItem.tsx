@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 import DeleteDialog from "./DeleteDialog";
-import SpendingDialog from "./SpendingDialog";
 
 type SpendingItemProps = {
   title: string;
@@ -18,7 +17,6 @@ export default function SpendingItem({
   tw,
   onRefresh,
 }: SpendingItemProps) {
-  const [open, setOpen] = useState(false);
   const [openDel, setOpenDel] = useState(false);
 
   const [inputCountry, setInputcountry] = useState("");
@@ -29,7 +27,10 @@ export default function SpendingItem({
           {/* title */}
           <div
             className="flex w-1/2 justify-start rounded-lg bg-[#473520] p-2 pl-4"
-            onClick={() => setOpenDel(true)}
+            onClick={() => {
+              setOpenDel(true);
+              setInputcountry("");
+            }}
           >
             {title}
           </div>
@@ -37,7 +38,7 @@ export default function SpendingItem({
           <div
             className="flex w-1/4 justify-center rounded-lg bg-[#473520] p-2"
             onClick={() => {
-              setOpen(true);
+              setOpenDel(true);
               setInputcountry("kor");
             }}
           >
@@ -47,7 +48,7 @@ export default function SpendingItem({
           <div
             className="flex w-1/4 justify-center rounded-lg bg-[#473520] p-2"
             onClick={() => {
-              setOpen(true);
+              setOpenDel(true);
               setInputcountry("tw");
             }}
           >
@@ -55,20 +56,15 @@ export default function SpendingItem({
           </div>
         </div>
       </div>
-      <SpendingDialog
-        open={open}
-        onClose={() => setOpen(false)}
+      <DeleteDialog
+        open={openDel}
+        onClose={() => setOpenDel(false)}
+        time={(new Date()).getTime()}
         inputCountry={inputCountry}
         dbId={id}
         dbTitle={title}
         dbTw={tw}
         dbKor={kor}
-        onRefresh={onRefresh}
-      />
-      <DeleteDialog
-        open={openDel}
-        onClose={() => setOpenDel(false)}
-        dbId={id}
         onRefresh={onRefresh}
       />
     </>
