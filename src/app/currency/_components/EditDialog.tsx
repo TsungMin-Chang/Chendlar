@@ -13,10 +13,9 @@ import Input from "@mui/material/Input";
 
 import useSpending from "@/hooks/useSpending";
 
-type MoneyDialogProps = {
+type EditDialogProps = {
   open: boolean;
   onClose: () => void;
-  time:number;
   inputCountry: string;
   dbId: string;
   dbTitle: string;
@@ -25,23 +24,23 @@ type MoneyDialogProps = {
   onRefresh: () => void;
 };
 
-export default function MoneyDialog({
+export default function EditDialog({
   open,
   onClose,
-  time,
   inputCountry,
   dbId,
   dbTitle,
   dbKor,
   dbTw,
   onRefresh,
-}: MoneyDialogProps) {
-
+}: EditDialogProps) {
   useEffect(() => {
-    setTitle(dbTitle);
-    setKoreaMoney(dbKor);
-    setTwMoney(dbTw);
-  }, [time]);
+    if (open) {
+      setTitle(dbTitle);
+      setKoreaMoney(dbKor);
+      setTwMoney(dbTw);
+    }
+  }, [open]);
 
   const { updateSpending, deleteSpending } = useSpending();
   const oneTwToKor = useRef(41.5);

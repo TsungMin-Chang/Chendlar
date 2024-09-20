@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import DeleteDialog from "./DeleteDialog";
+import EditDialog from "./EditDialog";
 
 type SpendingItemProps = {
   title: string;
@@ -56,10 +56,9 @@ export default function SpendingItem({
           </div>
         </div>
       </div>
-      <DeleteDialog
+      <EditDialog
         open={openDel}
         onClose={() => setOpenDel(false)}
-        time={(new Date()).getTime()}
         inputCountry={inputCountry}
         dbId={id}
         dbTitle={title}

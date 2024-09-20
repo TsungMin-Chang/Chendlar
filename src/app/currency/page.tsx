@@ -7,8 +7,8 @@ import { Icon } from "@iconify/react";
 import useSpending from "@/hooks/useSpending";
 import type { Spending } from "@/lib/types";
 
+import AddDialog from "./_components/AddDialog";
 import DayCard from "./_components/DayCard";
-import SpendingDialog from "./_components/SpendingDialog";
 
 export default function CurrencyPage() {
   const { getSpendings } = useSpending();
@@ -16,6 +16,9 @@ export default function CurrencyPage() {
   const [totalKor, setTotalKor] = useState(0);
   const [totalTw, setTotalTw] = useState(0);
   const [spendings, setSpendings] = useState<{ [key: string]: Spending[] }>({});
+  const [eachDayTotal, setEachDayTotal] = useState<{
+    [day: string]: { [country: string]: number };
+  }>({});
   const [inputCountry, setInputcountry] = useState("");
   const [refreshToggle, setRefreshToggle] = useState(false);
 
@@ -25,6 +28,7 @@ export default function CurrencyPage() {
       setTotalTw(resData.totalTw);
       setTotalKor(resData.totalKor);
       setSpendings(resData.data);
+      setEachDayTotal(resData.eachDayTotal);
     }
     fetchData();
   }, [refreshToggle]);
@@ -32,7 +36,7 @@ export default function CurrencyPage() {
   return (
     <>
       <div
-        className="flex h-full w-full flex-col gap-y-5 overflow-y-auto  bg-[#442B0D] px-10 py-5"
+        className="flex h-full w-full flex-col gap-y-6 overflow-y-auto  bg-[#442B0D] px-10 py-5"
         style={{ height: "94vh" }}
       >
         <div className="flex w-full flex-row gap-x-2">
@@ -77,11 +81,13 @@ export default function CurrencyPage() {
             key={i}
             date={new Date(date)}
             spendings={spendings[date]}
+            totalKor={eachDayTotal[date]["kor"]}
+            totalTw={eachDayTotal[date]["tw"]}
             onRefresh={() => setRefreshToggle((prev) => !prev)}
           />
         ))}
       </div>
-      <SpendingDialog
+      <AddDialog
         open={openDialog}
         inputCountry={inputCountry}
         onClose={() => setOpenDialog(false)}

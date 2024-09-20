@@ -12,19 +12,19 @@ import Input from "@mui/material/Input";
 
 import useSpending from "@/hooks/useSpending";
 
-type MoneyDialogProps = {
+type AddDialogProps = {
   open: boolean;
   onClose: () => void;
   inputCountry: string;
   onRefresh: () => void;
 };
 
-export default function MoneyDialog({
+export default function AddDialog({
   open,
   onClose,
   inputCountry,
   onRefresh,
-}: MoneyDialogProps) {
+}: AddDialogProps) {
   const oneTwToKor = useRef(41.5);
   const [title, setTitle] = useState("");
   const [twMoney, setTwMoney] = useState(0);

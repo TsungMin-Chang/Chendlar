@@ -42,7 +42,6 @@ export async function GET() {
       .execute();
 
     const data: { [key: string]: Spending[] } = {};
-
     for (const spending of dbSpendings) {
       const day = new Date(spending.createdAt).toDateString();
       if (!Object.keys(data).includes(day)) {
@@ -51,8 +50,18 @@ export async function GET() {
         data[day].push(spending);
       }
     }
+
+    const eachDayTotal: { [day: string]: { [country: string]: number } } = {};
+    for (const day of Object.keys(data)) {
+      eachDayTotal[day] = { kor: 0, tw: 0 };
+      for (const spending of data[day]) {
+        eachDayTotal[day]["kor"] += spending.kor;
+        eachDayTotal[day]["tw"] += spending.tw;
+      }
+    }
+
     return NextResponse.json(
-      { data, totalKor: totalKor ?? 0, totalTw: totalTw ?? 0 },
+      { data, eachDayTotal, totalKor: totalKor ?? 0, totalTw: totalTw ?? 0 },
       { status: 200 },
     );
   } catch (error) {
