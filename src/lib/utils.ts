@@ -14,8 +14,14 @@ export const months = [
   "December",
 ];
 
-export const getDayNumber = (reqDate: Date) => {
-  const myDate = new Date(reqDate);
+export const getTaipeiDate = (req: Date) => {
+  const myDate = new Date(req);
+  const taipeiDate = new Date(myDate.getTime() + 8 * 60 * 60 * 1000);
+  return taipeiDate;
+};
+
+export const getDayNumber = (req: Date) => {
+  const myDate = new Date(req);
   const baseDay: Date = new Date(2023, 11, 31, 22, 30);
   const myDateYear = myDate.getFullYear();
   const myDateMonth = myDate.getMonth();
@@ -24,15 +30,16 @@ export const getDayNumber = (reqDate: Date) => {
   const dayNumber = (newMyDate.valueOf() - baseDay.valueOf()) / 86400000 + 1;
   return dayNumber;
 };
-export const getWeekNumber = (reqDate: Date) => {
-  const myDate = new Date(reqDate);
+
+export const getWeekNumber = (req: Date) => {
+  const myDate = new Date(req);
   const dayNumber = getDayNumber(myDate);
   const weekNumber = Math.ceil(dayNumber / 7);
   return weekNumber;
 };
 
-export const getMonthNumber = (reqDate: Date) => {
-  const myDate = new Date(reqDate);
+export const getMonthNumber = (req: Date) => {
+  const myDate = new Date(req);
   const baseMonth: Date = new Date(2024, 0, 1, 22, 30);
   const myDateYear = myDate.getFullYear();
   const myDateMonth = myDate.getMonth();
