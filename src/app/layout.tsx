@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   // Google Calendar
   const clientId = privateEnv.AUTH_GOOGLE_ID;
-  const redirectUri = "https://chendlar.cinatrin.pro/api/auth/callback/google";
+  const redirectUri = "https://chendlar.vercel.app/api/auth/callback/google";
   const responseType = "code";
   const scope = [
     "https://www.googleapis.com/auth/calendar.readonly",
