@@ -40,7 +40,6 @@ next-env.d.ts
 /pg-data
 
 # public
-/public/*
 /public/sw.js
 /public/workbox-*.js
 /public/worker-*.js
