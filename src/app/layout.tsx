@@ -36,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} flex h-screen w-screen flex-col overflow-hidden`}
+        className={`${inter.className} flex h-screen w-screen flex-col overflow-hidden fixed top-0 bottom-0`}
       >
         <GoogleCalendarProvider>
           <DateProvider>
