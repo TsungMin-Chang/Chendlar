@@ -8,6 +8,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import type { DbAffair } from "@/lib/types";
+import { getTaipeiDate } from "@/lib/utils";
 
 import { heartTodo, deleteTodo } from "./actions";
 
@@ -62,16 +63,16 @@ export default function TodoCard({
             >
               <div className="justify-self-start text-zinc-200">
                 <span className="text-nowrap">
-                  {isHalfDay && new Date(todo.time2).getHours() > 12
-                    ? new Date(todo.time2).getHours() - 12
-                    : new Date(todo.time2).getHours()}
+                  {isHalfDay && getTaipeiDate(todo.time2).getHours() > 12
+                    ? getTaipeiDate(todo.time2).getHours() - 12
+                    : getTaipeiDate(todo.time2).getHours()}
                   {":"}
-                  {new Date(todo.time2)
+                  {getTaipeiDate(todo.time2)
                     .getMinutes()
                     .toString()
                     .padStart(2, "0")}{" "}
                   {isHalfDay &&
-                    (new Date(todo.time2).getHours() >= 12 ? "PM" : "AM")}
+                    (getTaipeiDate(todo.time2).getHours() >= 12 ? "PM" : "AM")}
                 </span>
                 <span className="pl-2">{todo.title}</span>
               </div>

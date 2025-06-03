@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { affairsTable } from "@/db/schema";
 import { handleDeleteFromGoogleCalendar } from "@/lib/googleCalendarAPIs";
 import type { DbEvent } from "@/lib/types";
-import { getDayNumber } from "@/lib/utils";
+import { getDayNumber, getTaipeiDate } from "@/lib/utils";
 
 export const heartTodo = async (todoId: string, todoIsDone: boolean) => {
   await db
@@ -60,8 +60,8 @@ export const deleteEvent = async (
           gt(affairsTable.order, deleteEventOrder),
           between(
             affairsTable.dayNumber,
-            getDayNumber(minTime1),
-            getDayNumber(maxTime2),
+            getDayNumber(getTaipeiDate(minTime1)),
+            getDayNumber(getTaipeiDate(maxTime2)),
           ),
         ),
       )
@@ -124,8 +124,8 @@ export const deleteEvent = async (
           lt(affairsTable.order, dbEvent.eventOrder),
           between(
             affairsTable.dayNumber,
-            getDayNumber(dbEvent.eventTime1),
-            getDayNumber(dbEvent.eventTime2),
+            getDayNumber(getTaipeiDate(dbEvent.eventTime1)),
+            getDayNumber(getTaipeiDate(dbEvent.eventTime2)),
           ),
         ),
       );

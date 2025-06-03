@@ -18,6 +18,7 @@ import {
   getDayNumber,
   getMonthNumber,
   getDates,
+  getTaipeiDate,
 } from "@/lib/utils";
 import {
   postAffairRequestSchema,
@@ -55,6 +56,7 @@ async function insertDb(
   //DB
   if (type === "todo") {
     // todo is given very large order and will later be sorted by time2
+
     try {
       await db
         .insert(affairsTable)
@@ -68,9 +70,9 @@ async function insertDb(
           time1: new Date(time1),
           time2: new Date(time2),
           order: 100,
-          monthNumber: getMonthNumber(time1),
-          weekNumber: getWeekNumber(time1),
-          dayNumber: getDayNumber(time1),
+          monthNumber: getMonthNumber(getTaipeiDate(time1)),
+          weekNumber: getWeekNumber(getTaipeiDate(time1)),
+          dayNumber: getDayNumber(getTaipeiDate(time1)),
         })
         .execute();
       return true;
@@ -92,8 +94,8 @@ async function insertDb(
           eq(affairsTable.type, "event"),
           between(
             affairsTable.dayNumber,
-            getDayNumber(time1),
-            getDayNumber(time2),
+            getDayNumber(getTaipeiDate(time1)),
+            getDayNumber(getTaipeiDate(time2)),
           ),
         ),
       );
@@ -112,9 +114,9 @@ async function insertDb(
             time1: new Date(time1),
             time2: new Date(time2),
             order: nextOrder === null ? 0 : nextOrder - 1,
-            monthNumber: getMonthNumber(date),
-            weekNumber: getWeekNumber(date),
-            dayNumber: getDayNumber(date),
+            monthNumber: getMonthNumber(getTaipeiDate(date)),
+            weekNumber: getWeekNumber(getTaipeiDate(date)),
+            dayNumber: getDayNumber(getTaipeiDate(date)),
           });
         }
         await db.insert(affairsTable).values(insertDataArray).execute();
@@ -150,8 +152,8 @@ async function insertDb(
                 eq(affairsTable.type, "event"),
                 between(
                   affairsTable.dayNumber,
-                  getDayNumber(minTime1),
-                  getDayNumber(maxTime2),
+                  getDayNumber(getTaipeiDate(minTime1)),
+                  getDayNumber(getTaipeiDate(maxTime2)),
                 ),
               ),
             )
@@ -186,9 +188,9 @@ async function insertDb(
             time1: new Date(time1),
             time2: new Date(time2),
             order: 0,
-            monthNumber: getMonthNumber(date),
-            weekNumber: getWeekNumber(date),
-            dayNumber: getDayNumber(date),
+            monthNumber: getMonthNumber(getTaipeiDate(date)),
+            weekNumber: getWeekNumber(getTaipeiDate(date)),
+            dayNumber: getDayNumber(getTaipeiDate(date)),
           });
         }
         await db.insert(affairsTable).values(insertDataArray).execute();
@@ -306,9 +308,9 @@ async function fastUpdate(
           time1: new Date(time1),
           time2: new Date(time2),
           isDone,
-          monthNumber: getMonthNumber(time1),
-          weekNumber: getWeekNumber(time1),
-          dayNumber: getDayNumber(time1),
+          monthNumber: getMonthNumber(getTaipeiDate(time1)),
+          weekNumber: getWeekNumber(getTaipeiDate(time1)),
+          dayNumber: getDayNumber(getTaipeiDate(time1)),
         })
         .where(eq(affairsTable.id, affairId))
         .execute();
