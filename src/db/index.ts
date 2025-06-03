@@ -8,7 +8,7 @@ import * as schema from "./schema";
 const client = new Client({
   connectionString: privateEnv.POSTGRES_URL,
   ssl: { rejectUnauthorized: false }, // Required for Supabase
-  connectionTimeoutMillis: 10000
+  connectionTimeoutMillis: 10000,
 });
 
 await client.connect();
