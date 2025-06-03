@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
-import { env } from "@/lib/env";
+import { privateEnv } from "@/lib/env/private";
 import DateProvider from "@/providers/DateProvider";
 import GoogleCalendarProvider from "@/providers/GoogleCalendarProvider";
 import RefreshProvider from "@/providers/RefreshProvider";
@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   // Google Calendar
-  const clientId = env.AUTH_GOOGLE_ID;
+  const clientId = privateEnv.AUTH_GOOGLE_ID;
   const redirectUri = "https://chendlar.cinatrin.pro/api/auth/callback/google";
   const responseType = "code";
   const scope = [

@@ -3050,9 +3050,9 @@ drizzle-kit@^0.20.14:
     zod "^3.20.2"
 
 drizzle-orm@^0.29.4:
-  version "0.29.4"
-  resolved "https://registry.yarnpkg.com/drizzle-orm/-/drizzle-orm-0.29.4.tgz#90845cf4cf2599f9109117c095068140ebc0142a"
-  integrity sha512-ZnSM8TAxFhzH7p1s3+w3pRE/eKaOeNkH9SKitm717pubDVVcV2I0BCDBPGKV+pe02+wMfw37ntlTcCyo2rA3IA==
+  version "0.29.5"
+  resolved "https://registry.yarnpkg.com/drizzle-orm/-/drizzle-orm-0.29.5.tgz#b82bb6d67101fff9438dacd4b09e9cd23109f49c"
+  integrity sha512-jS3+uyzTz4P0Y2CICx8FmRQ1eplURPaIMWDn/yq6k4ShRFj9V7vlJk67lSf2kyYPzQ60GkkNGXcJcwrxZ6QCRw==
 
 eastasianwidth@^0.2.0:
   version "0.2.0"
