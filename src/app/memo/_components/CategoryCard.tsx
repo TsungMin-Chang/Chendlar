@@ -64,7 +64,7 @@ function CategoryCard({
         const newMemos = [];
         for (let i = 0; i < addedNewMemos.length; i++) {
           newMemos.push({
-            userId: "55a0ef11-c9c8-471d-adeb-29b87d3d6bdc",
+            userId: "f60ff11e-d4e8-4faa-9eae-0c4e9567e48d",
             cardName: updatingCardName,
             title: addedNewMemos[i].title,
             description: addedNewMemos[i].description,
