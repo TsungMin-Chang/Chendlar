@@ -93,6 +93,7 @@ export default function Home() {
           ))}
         </div>
         <Slide
+          cssClass="h-[88.5vh]"
           vertical
           autoplay={false}
           arrows={false}

@@ -45,8 +45,8 @@ next-env.d.ts
 /public/sw.js.map
 /public/workbox-*.js.map
 /public/worker-*.js.map
-# /public/sw.js
-# /public/manifest.json
+# /public/sw.js -> 
+# /public/manifest.json -> 
 # /public/android
 # /public/ios
 # /public/windows11
